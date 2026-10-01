@@ -1,7 +1,5 @@
-TECHSHOP - iPhone 11 corrigido
+TECHSHOP - catálogo de peças
 
-Arquivos:
-- techshop.html
-- script.js
-
-Os dois últimos produtos foram atualizados com descrições técnicas baseadas em anúncios do Mercado Livre e imagens por URL.
+Foram adicionadas 13 peças de reposição como fallback caso não existam no /api/produtos.
+Os 13 preços novos usam o valor anunciado no Mercado Livre como referência e somam R$ 30,00.
+Os dois produtos de iPhone 11 que já existiam na loja foram mantidos nos preços atuais da TECHSHOP.

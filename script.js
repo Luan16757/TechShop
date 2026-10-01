@@ -564,7 +564,7 @@ function garantirProdutosIphone11(lista) {
             nome: "Tela Para Iphone 11 A2111 A2221 A2223 Display/touch Incell",
             preco: 130,
             categoria: "Celular e Proteção",
-            descricao: "Tela de reposição para iPhone 11 com módulo Display LCD + Touch e tecnologia Incell, compatível com A2111, A2221 e A2223. Indicada para recuperar imagem e touch. Teste a peça antes da instalação e, de preferência, faça a montagem com técnico especializado.",
+            descricao: "Módulo de tela para iPhone 11 com Display LCD + Touch e tecnologia Incell, compatível com A2111, A2221 e A2223. Peça indicada para reposição em aparelhos com tela quebrada, sem imagem ou com falhas de toque. Teste o display e o touch antes da instalação.",
             imagem: "https://media.cdn.kaufland.de/product-images/original/1879a2e27a881e45fd48104d8b1bc341.jpg"
         },
         {
@@ -572,8 +572,125 @@ function garantirProdutosIphone11(lista) {
             nome: "Flex Bateria Iphone 11 3110mah Wefix Oficial",
             preco: 150,
             categoria: "Celular e Proteção",
-            descricao: "Bateria Wefix para iPhone 11 com capacidade de 3110mAh, indicada para reposição e recuperação da autonomia do aparelho. Compatível com A2111, A2221 e A2223. Recomenda-se instalação por técnico especializado.",
+            descricao: "Bateria Wefix para iPhone 11 com capacidade de 3110mAh, indicada para reposição da bateria do aparelho. Compatível com A2111, A2221 e A2223. Recomenda-se teste e instalação por técnico especializado.",
             imagem: "https://http2.mlstatic.com/D_Q_NP_605979-MLB116841807748_092026-R-flex-bateria-iphone-11-3110mah-wefix-oficial-garantia-1-ano.webp"
+        },
+        {
+            id: "samsung-a15-tela-aro",
+            nome: "Tela Samsung Galaxy A15 4G/5G A155 A156 com Aro",
+            preco: 113.99,
+            precoBaseMercadoLivre: 83.99,
+            categoria: "Celular e Proteção",
+            descricao: "Frontal Display LCD Touch compatível com Samsung Galaxy A15 4G A155 e A15 5G A156, com aro. Produto de reposição indicado para aparelhos com display ou touch danificados.",
+            imagem: "https://images.tcdn.com.br/img/img_prod/996644/90_tela_display_lcd_samsung_a15_4g_a155_a15_5g_a156_incell_com_aro_7325_1_740478ed0b62e136bdb8c796ff1268ba.jpg"
+        },
+        {
+            id: "samsung-a15-placa-carga",
+            nome: "Placa Conector de Carga Samsung A15 A155/A156",
+            preco: 54.92,
+            precoBaseMercadoLivre: 24.92,
+            categoria: "Celular e Proteção",
+            descricao: "Placa de carga e conector compatível com Samsung Galaxy A15 A155/A156, indicada para reposição quando o aparelho apresenta falhas no carregamento ou no conector USB.",
+            imagem: "https://www.macfactory.in/cdn/shop/files/1729949804-671cf06c2ac3f_1200x1200_crop_center.webp?v=1750746833"
+        },
+        {
+            id: "samsung-a15-bateria-5000",
+            nome: "Bateria Samsung A15 EB-BA156ABY 5000mAh",
+            preco: 165.90,
+            precoBaseMercadoLivre: 135.90,
+            categoria: "Celular e Proteção",
+            descricao: "Bateria compatível com Samsung Galaxy A15 4G/5G, modelo EB-BA156ABY, com capacidade típica de 5000mAh. Indicada para substituição da bateria original e recuperação da autonomia do aparelho.",
+            imagem: "https://unlockr.ca/cdn/shop/files/a15-samsung-replacement-battery-EB-BA156ABY-Samsung-Galaxy-A156-A156U-A156W-devices-repair-replace-samsungbattery-a15-a156-canada-battery-replacement-parts-a155-a155u-a155w.jpg?v=1719511132"
+        },
+        {
+            id: "samsung-a15-camera-traseira",
+            nome: "Câmera Traseira Samsung Galaxy A15 A155",
+            preco: 159.99,
+            precoBaseMercadoLivre: 129.99,
+            categoria: "Celular e Proteção",
+            descricao: "Módulo de câmera traseira compatível com Samsung Galaxy A15 A155, indicado para reposição quando a câmera apresenta falhas de imagem, foco ou funcionamento.",
+            imagem: "https://http2.mlstatic.com/D_NQ_NP_809265-CBT92718856218_092025-O.webp"
+        },
+        {
+            id: "moto-g22-tela",
+            nome: "Tela Moto G22 XT2231 Display LCD Touch",
+            preco: 85.99,
+            precoBaseMercadoLivre: 55.99,
+            categoria: "Celular e Proteção",
+            descricao: "Tela frontal Display LCD Touch compatível com Motorola Moto G22 XT2231 e modelos relacionados. Indicada para reposição de tela quebrada ou com falha de imagem e touch. Teste a peça antes da instalação.",
+            imagem: "https://www.iprogadgets.com/cdn/shop/files/9c22bba007e2ab3dabd3d202e60ed89a_1200x1200.jpg?v=1695954112"
+        },
+        {
+            id: "redmi-note-13-tela-incell",
+            nome: "Tela Redmi Note 13 4G Display Incell",
+            preco: 139.15,
+            precoBaseMercadoLivre: 109.15,
+            categoria: "Celular e Proteção",
+            descricao: "Display frontal Incell compatível com Xiaomi Redmi Note 13 4G, indicado para reposição de tela danificada. Confira o modelo do aparelho antes da compra e teste touch, imagem, brilho e sensores antes da montagem definitiva.",
+            imagem: "https://cdn.awsli.com.br/800x800/2756/2756507/produto/302143767/note-13-4g-incell-sem-aro-qdtw8ydmw7.jpg"
+        },
+        {
+            id: "redmi-note-13-flex-carga",
+            nome: "Flex Conector de Carga Redmi Note 13 4G",
+            preco: 60.90,
+            precoBaseMercadoLivre: 30.90,
+            categoria: "Celular e Proteção",
+            descricao: "Flex conector de carga compatível com Redmi Note 13 4G, com conjunto voltado ao carregamento e conexão USB. Indicado para substituição de peça com defeito no conector de carga.",
+            imagem: ""
+        },
+        {
+            id: "redmi-note-13-bateria-bn5p",
+            nome: "Bateria Redmi Note 13 4G/5G BN5P 5000mAh",
+            preco: 104.47,
+            precoBaseMercadoLivre: 74.47,
+            categoria: "Celular e Proteção",
+            descricao: "Bateria BN5P para Redmi Note 13 4G/5G com capacidade típica de 5000mAh. Indicada para reposição e recuperação da autonomia do aparelho. Confirme o código BN5P antes da instalação.",
+            imagem: "https://i.ebayimg.com/images/g/W9IAAOSweXtoHORH/s-l1200.jpg"
+        },
+        {
+            id: "iphone-11-flex-carga-foxconn",
+            nome: "Flex Carga iPhone 11 Foxconn A2111 A2221 A2223",
+            preco: 119.90,
+            precoBaseMercadoLivre: 89.90,
+            categoria: "Celular e Proteção",
+            descricao: "Flex de carga compatível com iPhone 11 A2111, A2221 e A2223, indicado para substituição do conjunto responsável pelo carregamento e conexão USB do aparelho.",
+            imagem: "https://cdn.shopify.com/s/files/1/0596/3966/0717/products/ip11-sp-dockconnector-green_1_1200x1200.jpg?v=1630005643"
+        },
+        {
+            id: "iphone-11-placa-carga",
+            nome: "Placa Conector de Carga Compatível iPhone 11",
+            preco: 84.70,
+            precoBaseMercadoLivre: 54.70,
+            categoria: "Celular e Proteção",
+            descricao: "Placa de conector de carga compatível com iPhone 11, indicada para reposição do conjunto de carga quando o aparelho apresenta falhas de conexão ou carregamento.",
+            imagem: ""
+        },
+        {
+            id: "iphone-11-auricular-proximidade",
+            nome: "Flex Auricular e Sensor de Proximidade iPhone 11",
+            preco: 79.70,
+            precoBaseMercadoLivre: 49.70,
+            categoria: "Celular e Proteção",
+            descricao: "Flex com alto-falante auricular e sensor de proximidade para iPhone 11, indicado para reposição do conjunto interno quando há falhas no áudio de chamadas ou no sensor.",
+            imagem: "https://www.fixo.com.au/cdn/shop/files/iPhone-11-Replacement-Earpiece-Speaker-with-Proximity-Sensor.jpg?v=1761891307"
+        },
+        {
+            id: "iphone-11-tampa-traseira",
+            nome: "Tampa Traseira de Vidro iPhone 11 Furo Maior",
+            preco: 59.99,
+            precoBaseMercadoLivre: 29.99,
+            categoria: "Celular e Proteção",
+            descricao: "Tampa traseira de vidro compatível com iPhone 11 e abertura maior para o conjunto das câmeras. Peça indicada para reposição da traseira quebrada ou danificada. Escolha a cor antes da compra.",
+            imagem: "https://www.repairsuniverse.com/cdn/shop/products/iphone-11-rear-glass-cover-black.jpg"
+        },
+        {
+            id: "iphone-xr-bateria",
+            nome: "Bateria iPhone XR 2942mAh",
+            preco: 104.95,
+            precoBaseMercadoLivre: 74.95,
+            categoria: "Celular e Proteção",
+            descricao: "Bateria de reposição para iPhone XR com capacidade de 2942mAh, indicada para recuperação da autonomia do aparelho. Confira o modelo e faça a instalação com técnico especializado.",
+            imagem: "https://www.bunnings.com.au/dj/images/1086174.jpg"
         }
     ];
 
