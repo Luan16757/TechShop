@@ -5,6 +5,7 @@ const path = require("path");
 const fs = require("fs");
 const crypto = require("crypto");
 const serverless = require("serverless-http");
+const { neon } = require("@neondatabase/serverless");
 
 dotenv.config();
 
@@ -32,6 +33,212 @@ const ADMIN_USER = process.env.ADMIN_USER || "admin";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "123456";
 
 const MP_ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN || "";
+
+/* =========================================================
+   BANCO PERSISTENTE (NEON / NETLIFY)
+========================================================= */
+
+const DATABASE_URL =
+    process.env.NETLIFY_DATABASE_URL ||
+    process.env.NETLIFY_DB_URL ||
+    process.env.DATABASE_URL ||
+    "";
+
+const db = DATABASE_URL
+    ? neon(DATABASE_URL)
+    : null;
+
+let bancoInicializadoPromise = null;
+
+function hashToken(token) {
+    return crypto
+        .createHash("sha256")
+        .update(String(token))
+        .digest("hex");
+}
+
+async function inicializarBanco() {
+    if (!db) {
+        return false;
+    }
+
+    if (bancoInicializadoPromise) {
+        return bancoInicializadoPromise;
+    }
+
+    bancoInicializadoPromise = (async () => {
+        await db`
+            CREATE TABLE IF NOT EXISTS techshop_usuarios (
+                id TEXT PRIMARY KEY,
+                nome TEXT NOT NULL,
+                email TEXT NOT NULL UNIQUE,
+                telefone TEXT NOT NULL DEFAULT '',
+                cpf TEXT NOT NULL DEFAULT '',
+                senha TEXT NOT NULL,
+                criado_em TIMESTAMPTZ NOT NULL DEFAULT NOW()
+            )
+        `;
+
+        await db`
+            CREATE TABLE IF NOT EXISTS techshop_sessoes (
+                token_hash TEXT PRIMARY KEY,
+                usuario_id TEXT NOT NULL REFERENCES techshop_usuarios(id) ON DELETE CASCADE,
+                expira_em TIMESTAMPTZ NOT NULL
+            )
+        `;
+
+        await db`
+            CREATE INDEX IF NOT EXISTS idx_techshop_sessoes_usuario
+            ON techshop_sessoes(usuario_id)
+        `;
+
+        await migrarUsuariosJsonParaBanco();
+        return true;
+    })().catch(erro => {
+        bancoInicializadoPromise = null;
+        throw erro;
+    });
+
+    return bancoInicializadoPromise;
+}
+
+async function migrarUsuariosJsonParaBanco() {
+    if (!db || !fs.existsSync(usuariosFile)) {
+        return;
+    }
+
+    const usuarios = lerJSON(usuariosFile, []);
+
+    if (!Array.isArray(usuarios) || !usuarios.length) {
+        return;
+    }
+
+    const existentes = await db`SELECT COUNT(*)::int AS total FROM techshop_usuarios`;
+
+    if (Number(existentes?.[0]?.total || 0) > 0) {
+        return;
+    }
+
+    for (const usuario of usuarios) {
+        if (!usuario?.id || !usuario?.email || !usuario?.senha) {
+            continue;
+        }
+
+        await db`
+            INSERT INTO techshop_usuarios
+                (id, nome, email, telefone, cpf, senha, criado_em)
+            VALUES
+                (${String(usuario.id)},
+                 ${String(usuario.nome || "")},
+                 ${String(usuario.email).trim().toLowerCase()},
+                 ${String(usuario.telefone || "")},
+                 ${String(usuario.cpf || "")},
+                 ${String(usuario.senha)},
+                 ${usuario.criadoEm ? new Date(usuario.criadoEm) : new Date()})
+            ON CONFLICT (email) DO NOTHING
+        `;
+    }
+}
+
+function cookieSeguro() {
+    return process.env.URL?.startsWith("https://") ? "; Secure" : "";
+}
+
+async function buscarUsuarioPorEmail(email) {
+    const normalizado = String(email || "").trim().toLowerCase();
+
+    if (db) {
+        await inicializarBanco();
+
+        const rows = await db`
+            SELECT id, nome, email, telefone, cpf, senha, criado_em
+            FROM techshop_usuarios
+            WHERE email = ${normalizado}
+            LIMIT 1
+        `;
+
+        const row = rows[0];
+
+        return row
+            ? {
+                id: row.id,
+                nome: row.nome,
+                email: row.email,
+                telefone: row.telefone || "",
+                cpf: row.cpf || "",
+                senha: row.senha,
+                criadoEm: row.criado_em
+            }
+            : null;
+    }
+
+    const usuarios = lerJSON(usuariosFile, []);
+    return usuarios.find(
+        u => String(u.email || "").trim().toLowerCase() === normalizado
+    ) || null;
+}
+
+async function buscarUsuarioPorId(id) {
+    if (db) {
+        await inicializarBanco();
+
+        const rows = await db`
+            SELECT id, nome, email, telefone, cpf, senha, criado_em
+            FROM techshop_usuarios
+            WHERE id = ${String(id)}
+            LIMIT 1
+        `;
+
+        const row = rows[0];
+
+        return row
+            ? {
+                id: row.id,
+                nome: row.nome,
+                email: row.email,
+                telefone: row.telefone || "",
+                cpf: row.cpf || "",
+                senha: row.senha,
+                criadoEm: row.criado_em
+            }
+            : null;
+    }
+
+    const usuarios = lerJSON(usuariosFile, []);
+    return usuarios.find(u => u.id === id) || null;
+}
+
+async function criarSessaoCliente(usuarioId) {
+    const token = criarToken();
+
+    if (db) {
+        await inicializarBanco();
+
+        const tokenHash = hashToken(token);
+        const expiraEm = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+        await db`
+            INSERT INTO techshop_sessoes (token_hash, usuario_id, expira_em)
+            VALUES (${tokenHash}, ${String(usuarioId)}, ${expiraEm})
+        `;
+    } else {
+        sessoesClientes.set(token, usuarioId);
+    }
+
+    return token;
+}
+
+async function apagarSessaoCliente(token) {
+    if (!token) return;
+
+    if (db) {
+        await inicializarBanco();
+        await db`DELETE FROM techshop_sessoes WHERE token_hash = ${hashToken(token)}`;
+        return;
+    }
+
+    sessoesClientes.delete(token);
+}
 
 /* =========================================================
    MIDDLEWARE
@@ -325,7 +532,7 @@ function definirCookie(res, nome, valor) {
 
     res.setHeader(
         "Set-Cookie",
-        `${nome}=${encodeURIComponent(valor)}; HttpOnly; Path=/; SameSite=Lax`
+        `${nome}=${encodeURIComponent(valor)}; HttpOnly; Path=/; SameSite=Lax; Max-Age=604800${cookieSeguro()}`
     );
 }
 
@@ -392,52 +599,74 @@ function verificarSenha(senha, senhaArmazenada) {
    MIDDLEWARE CLIENTE
 ========================================================= */
 
-function exigirCliente(req, res, next) {
+async function exigirCliente(req, res, next) {
 
-    const token =
-        obterCookie(
-            req,
-            "techshop_cliente"
-        );
+    try {
+        const token = obterCookie(req, "techshop_cliente");
 
-    if (!token) {
+        if (!token) {
+            return res.status(401).json({
+                erro: "Cliente não autenticado."
+            });
+        }
 
-        return res.status(401).json({
-            erro: "Cliente não autenticado."
+        if (db) {
+            await inicializarBanco();
+
+            const rows = await db`
+                SELECT u.id, u.nome, u.email, u.telefone, u.cpf, u.senha
+                FROM techshop_sessoes s
+                INNER JOIN techshop_usuarios u
+                    ON u.id = s.usuario_id
+                WHERE s.token_hash = ${hashToken(token)}
+                  AND s.expira_em > NOW()
+                LIMIT 1
+            `;
+
+            const row = rows[0];
+
+            if (!row) {
+                return res.status(401).json({
+                    erro: "Sessão expirada."
+                });
+            }
+
+            req.usuario = {
+                id: row.id,
+                nome: row.nome,
+                email: row.email,
+                telefone: row.telefone || "",
+                cpf: row.cpf || "",
+                senha: row.senha
+            };
+
+            return next();
+        }
+
+        const usuarioId = sessoesClientes.get(token);
+
+        if (!usuarioId) {
+            return res.status(401).json({
+                erro: "Sessão expirada."
+            });
+        }
+
+        const usuario = await buscarUsuarioPorId(usuarioId);
+
+        if (!usuario) {
+            return res.status(401).json({
+                erro: "Usuário não encontrado."
+            });
+        }
+
+        req.usuario = usuario;
+        next();
+    } catch (erro) {
+        console.error("Erro na autenticação do cliente:", erro);
+        res.status(500).json({
+            erro: "Erro ao verificar a sessão do cliente."
         });
     }
-
-    const usuarioId =
-        sessoesClientes.get(token);
-
-    if (!usuarioId) {
-
-        return res.status(401).json({
-            erro: "Sessão expirada."
-        });
-    }
-
-    const usuarios =
-        lerJSON(
-            usuariosFile,
-            []
-        );
-
-    const usuario =
-        usuarios.find(
-            u => u.id === usuarioId
-        );
-
-    if (!usuario) {
-
-        return res.status(401).json({
-            erro: "Usuário não encontrado."
-        });
-    }
-
-    req.usuario = usuario;
-
-    next();
 }
 
 /* =========================================================
@@ -506,7 +735,7 @@ app.get(
 
 app.post(
     "/api/cliente/cadastro",
-    (req, res) => {
+    async (req, res) => {
 
         try {
 
@@ -518,94 +747,58 @@ app.post(
                 senha
             } = req.body;
 
-            if (
-                !nome ||
-                !email ||
-                !senha
-            ) {
-
+            if (!nome || !email || !senha) {
                 return res.status(400).json({
                     erro: "Preencha nome, e-mail e senha."
                 });
             }
 
-            const usuarios =
-                lerJSON(
-                    usuariosFile,
-                    []
-                );
-
             const emailNormalizado =
-                String(email)
-                    .trim()
-                    .toLowerCase();
+                String(email).trim().toLowerCase();
 
-            const existe =
-                usuarios.find(
-                    u =>
-                        u.email ===
-                        emailNormalizado
-                );
+            const existe = await buscarUsuarioPorEmail(
+                emailNormalizado
+            );
 
             if (existe) {
-
                 return res.status(400).json({
                     erro: "Este e-mail já está cadastrado."
                 });
             }
 
             const usuario = {
-
-                id: crypto
-                    .randomUUID(),
-
-                nome:
-                    String(nome).trim(),
-
-                email:
-                    emailNormalizado,
-
-                telefone:
-                    telefone || "",
-
-                cpf:
-                    cpf || "",
-
-                senha:
-                    gerarHashSenha(
-                        String(senha)
-                    ),
-
-                criadoEm:
-                    new Date().toISOString()
-
+                id: crypto.randomUUID(),
+                nome: String(nome).trim(),
+                email: emailNormalizado,
+                telefone: String(telefone || ""),
+                cpf: String(cpf || ""),
+                senha: gerarHashSenha(String(senha)),
+                criadoEm: new Date().toISOString()
             };
 
-            usuarios.push(usuario);
+            if (db) {
+                await inicializarBanco();
 
-            salvarJSON(
-                usuariosFile,
-                usuarios
-            );
+                await db`
+                    INSERT INTO techshop_usuarios
+                        (id, nome, email, telefone, cpf, senha, criado_em)
+                    VALUES
+                        (${usuario.id}, ${usuario.nome}, ${usuario.email},
+                         ${usuario.telefone}, ${usuario.cpf}, ${usuario.senha},
+                         ${new Date(usuario.criadoEm)})
+                `;
+            } else {
+                const usuarios = lerJSON(usuariosFile, []);
+                usuarios.push(usuario);
+                salvarJSON(usuariosFile, usuarios);
+            }
 
-            const token =
-                criarToken();
+            const token = await criarSessaoCliente(usuario.id);
 
-            sessoesClientes.set(
-                token,
-                usuario.id
-            );
-
-            definirCookie(
-                res,
-                "techshop_cliente",
-                token
-            );
+            definirCookie(res, "techshop_cliente", token);
 
             res.json({
-
                 sucesso: true,
-
                 usuario: {
                     id: usuario.id,
                     nome: usuario.nome,
@@ -613,21 +806,16 @@ app.post(
                     telefone: usuario.telefone,
                     cpf: usuario.cpf
                 }
-
             });
 
         } catch (erro) {
 
-            console.error(
-                "Erro no cadastro:",
-                erro
-            );
+            console.error("Erro no cadastro:", erro);
 
             res.status(500).json({
                 erro: "Erro ao criar conta."
             });
         }
-
     }
 );
 
@@ -637,61 +825,29 @@ app.post(
 
 app.post(
     "/api/cliente/login",
-    (req, res) => {
+    async (req, res) => {
 
         try {
 
-            const {
-                email,
-                senha
-            } = req.body;
+            const { email, senha } = req.body;
 
-            const usuarios =
-                lerJSON(
-                    usuariosFile,
-                    []
-                );
+            const usuario = await buscarUsuarioPorEmail(email);
 
-            const usuario =
-                usuarios.find(
-                    u =>
-                        u.email ===
-                        String(email)
-                            .trim()
-                            .toLowerCase()
-                );
-
-            if (
-                !usuario ||
-                !verificarSenha(
-                    String(senha || ""),
-                    usuario.senha
-                )
-            ) {
-
+            if (!usuario || !verificarSenha(
+                String(senha || ""),
+                String(usuario.senha || "")
+            )) {
                 return res.status(401).json({
                     erro: "E-mail ou senha incorretos."
                 });
             }
 
-            const token =
-                criarToken();
+            const token = await criarSessaoCliente(usuario.id);
 
-            sessoesClientes.set(
-                token,
-                usuario.id
-            );
-
-            definirCookie(
-                res,
-                "techshop_cliente",
-                token
-            );
+            definirCookie(res, "techshop_cliente", token);
 
             res.json({
-
                 sucesso: true,
-
                 usuario: {
                     id: usuario.id,
                     nome: usuario.nome,
@@ -699,21 +855,16 @@ app.post(
                     telefone: usuario.telefone,
                     cpf: usuario.cpf
                 }
-
             });
 
         } catch (erro) {
 
-            console.error(
-                "Erro no login:",
-                erro
-            );
+            console.error("Erro no login:", erro);
 
             res.status(500).json({
                 erro: "Erro ao fazer login."
             });
         }
-
     }
 );
 
@@ -749,27 +900,21 @@ app.get(
 
 app.post(
     "/api/cliente/logout",
-    (req, res) => {
+    async (req, res) => {
 
-        const token =
-            obterCookie(
-                req,
-                "techshop_cliente"
-            );
+        try {
+            const token = obterCookie(req, "techshop_cliente");
+            await apagarSessaoCliente(token);
 
-        if (token) {
-            sessoesClientes.delete(token);
+            apagarCookie(res, "techshop_cliente");
+
+            res.json({ sucesso: true });
+        } catch (erro) {
+            console.error("Erro no logout:", erro);
+            res.status(500).json({
+                erro: "Erro ao encerrar a sessão."
+            });
         }
-
-        apagarCookie(
-            res,
-            "techshop_cliente"
-        );
-
-        res.json({
-            sucesso: true
-        });
-
     }
 );
 

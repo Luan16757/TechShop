@@ -1,0 +1,26 @@
+TECHSHOP - CORRECAO NETLIFY API.CJS
+
+O erro do deploy acontecia porque o repositorio ainda continha:
+netlify/functions/api.js
+
+Este pacote usa:
+netlify/functions/api.cjs
+
+IMPORTANTE:
+Nao deixe api.js junto com api.cjs.
+
+1. Extraia este pacote por cima do projeto atual.
+2. No VS Code, abra o terminal na pasta do projeto.
+3. Execute no PowerShell:
+   .\corrigir-api-cjs.ps1
+4. Depois:
+   git commit -m "Corrige Netlify api para CommonJS"
+   git push
+
+No proximo deploy, o Netlify deve listar:
+_http.js
+api.cjs
+pix.js
+produtos.js
+
+Nao deve aparecer api.js.

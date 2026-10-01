@@ -1,12 +1,6 @@
-const serverless = require("serverless-http");
-const { connectLambda } = require("@netlify/blobs");
+import { createRequire } from "node:module";
 
-const app = require("../../server.js");
-const handler = serverless(app);
+const require = createRequire(import.meta.url);
+const api = require("./api.cjs");
 
-exports.handler = async (event, context) => {
-    // serverless-http usa o modo Lambda compatibility.
-    // O Netlify Blobs precisa receber o evento Lambda antes do getStore().
-    connectLambda(event);
-    return handler(event, context);
-};
+export const handler = api.handler;

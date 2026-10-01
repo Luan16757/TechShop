@@ -6,6 +6,7 @@
     "build": "node --check netlify/functions/api.cjs && node --check netlify/functions/pix.js && node --check netlify/functions/produtos.js"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
     "express": "^4.21.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
