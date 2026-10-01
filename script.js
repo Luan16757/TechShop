@@ -132,13 +132,15 @@ function obterDescricaoProduto(produto) {
         return String(descricaoBackend).trim();
     }
 
-    const nome = normalizarTexto(produto?.nome || produto?.name || "");
+    const nomeOriginal = String(produto?.nome || produto?.name || "Produto TechShop").trim();
+    const nome = normalizarTexto(nomeOriginal);
+
     if (DESCRICOES_PRODUTOS[nome]) {
         return DESCRICOES_PRODUTOS[nome];
     }
 
-    const categoria = produto?.categoria || produto?.category || "tecnologia";
-    return `Produto ${String(categoria).toLowerCase()} da TechShop, ideal para facilitar seu dia a dia com praticidade e qualidade.`;
+    const categoria = String(produto?.categoria || produto?.category || "Tecnologia").trim();
+    return `${nomeOriginal}: produto da categoria ${categoria}, selecionado para oferecer praticidade no dia a dia. Confira as especificacoes do anuncio antes da compra.`;
 }
 
 function obterImagemProduto(produto) {
@@ -661,7 +663,7 @@ function renderizarProdutos(lista = produtos) {
                         type="button"
                         class="btn-comprar buy-btn"
                         data-produto-id="${escaparAtributo(id)}"
-                        onclick='adicionarCarrinho(${JSON.stringify(id)})'
+                        aria-label="Adicionar ${escaparAtributo(nome)} ao carrinho"
                     >
                         🛒 Adicionar ao carrinho
                     </button>
@@ -835,11 +837,17 @@ function mostrarToastCarrinho(titulo, texto) {
     if (message) message.textContent = texto;
 
     toast.classList.add("show");
+    toast.style.opacity = "1";
+    toast.style.transform = "translateY(0)";
+    toast.style.pointerEvents = "auto";
 
     clearTimeout(cartToastTimer);
 
     cartToastTimer = setTimeout(() => {
         toast.classList.remove("show");
+        toast.style.opacity = "0";
+        toast.style.transform = "translateY(14px)";
+        toast.style.pointerEvents = "none";
     }, 2800);
 }
 
@@ -2731,6 +2739,18 @@ document.addEventListener(
         atualizarCarrinhoInterface();
         configurarFiltrosCategoria();
         configurarPesquisa();
+
+        // Clique delegado: funciona mesmo quando os cards sao recriados pelo filtro/busca.
+        if (!document.body.dataset.techshopCartClickBound) {
+            document.body.dataset.techshopCartClickBound = "1";
+            document.body.addEventListener("click", event => {
+                const botao = event.target.closest(".buy-btn[data-produto-id]");
+                if (!botao) return;
+                event.preventDefault();
+                event.stopPropagation();
+                adicionarCarrinho(botao.dataset.produtoId);
+            });
+        }
 
         if (loginForm) {
             loginForm.addEventListener(
