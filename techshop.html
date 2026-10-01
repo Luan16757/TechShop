@@ -195,6 +195,38 @@
             border-color: var(--orange);
         }
 
+
+        .password-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-wrap input {
+            padding-right: 92px;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 8px;
+            top: 7px;
+            height: 32px;
+            min-width: 74px;
+            padding: 0 10px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: #161616;
+            color: #cfcfcf;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .password-toggle:hover {
+            border-color: var(--orange);
+            color: white;
+        }
+
         .auth-submit {
             width: 100%;
 
@@ -2013,7 +2045,6 @@
         <form
             id="loginForm"
             class="auth-form active"
-            onsubmit="fazerLogin(event)"
         >
 
             <div
@@ -2043,12 +2074,25 @@
                     Senha
                 </label>
 
-                <input
-                    id="loginSenha"
-                    type="password"
-                    placeholder="Sua senha"
-                    required
-                >
+                <div class="password-wrap">
+
+                    <input
+                        id="loginSenha"
+                        type="password"
+                        placeholder="Sua senha"
+                        required
+                    >
+
+                    <button
+                        class="password-toggle"
+                        type="button"
+                        onclick="mostrarSenha('loginSenha', this)"
+                        aria-label="Mostrar senha"
+                    >
+                        Mostrar
+                    </button>
+
+                </div>
 
             </div>
 
@@ -2069,7 +2113,6 @@
         <form
             id="cadastroForm"
             class="auth-form"
-            onsubmit="fazerCadastro(event)"
         >
 
             <div
@@ -2148,13 +2191,26 @@
                     Senha
                 </label>
 
-                <input
-                    id="cadastroSenha"
-                    type="password"
-                    placeholder="Crie uma senha"
-                    minlength="6"
-                    required
-                >
+                <div class="password-wrap">
+
+                    <input
+                        id="cadastroSenha"
+                        type="password"
+                        placeholder="Crie uma senha"
+                        minlength="6"
+                        required
+                    >
+
+                    <button
+                        class="password-toggle"
+                        type="button"
+                        onclick="mostrarSenha('cadastroSenha', this)"
+                        aria-label="Mostrar senha"
+                    >
+                        Mostrar
+                    </button>
+
+                </div>
 
             </div>
 

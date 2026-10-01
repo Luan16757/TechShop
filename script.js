@@ -350,6 +350,54 @@ function mostrarCadastro() {
 }
 
 /* =========================================================
+   MOSTRAR / OCULTAR SENHA
+========================================================= */
+
+function mostrarSenha(id, botao) {
+
+    const input = document.getElementById(id);
+
+    if (!input) return;
+
+    const mostrando = input.type === "password";
+
+    input.type = mostrando ? "text" : "password";
+
+    if (botao) {
+        botao.textContent = mostrando ? "Ocultar" : "Mostrar";
+        botao.setAttribute(
+            "aria-label",
+            mostrando ? "Ocultar senha" : "Mostrar senha"
+        );
+    }
+}
+
+
+/* =========================================================
+   RESPOSTA JSON SEGURA
+========================================================= */
+
+async function lerRespostaJSON(resposta) {
+
+    const texto = await resposta.text();
+
+    if (!texto) {
+        return {};
+    }
+
+    try {
+        return JSON.parse(texto);
+    } catch (erro) {
+        console.error("Resposta que não é JSON:", texto);
+        return {
+            erro:
+                `O servidor retornou uma resposta inválida (HTTP ${resposta.status}).`
+        };
+    }
+}
+
+
+/* =========================================================
    VERIFICAR CLIENTE
 ========================================================= */
 
@@ -369,7 +417,7 @@ async function verificarCliente() {
             return;
         }
 
-        const dados = await resposta.json();
+        const dados = await lerRespostaJSON(resposta);
 
         if (
             dados.autenticado ||
@@ -461,7 +509,7 @@ async function fazerLogin(event) {
             }
         );
 
-        const dados = await resposta.json();
+        const dados = await lerRespostaJSON(resposta);
 
         if (!resposta.ok) {
 
@@ -2181,12 +2229,9 @@ document.addEventListener(
 
         configurarPesquisa();
 
-        /*
-         * Eventos dos formulários
-         */
+        /* Formulários já são ligados de forma única aqui. */
 
         if (loginForm) {
-
             loginForm.addEventListener(
                 "submit",
                 fazerLogin
@@ -2194,7 +2239,6 @@ document.addEventListener(
         }
 
         if (cadastroForm) {
-
             cadastroForm.addEventListener(
                 "submit",
                 fazerCadastro

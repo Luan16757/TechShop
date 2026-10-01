@@ -40,8 +40,8 @@ const SESSION_SECRET =
     process.env.SESSION_SECRET ||
     (IS_NETLIFY ? "" : "techshop-local-session-secret");
 
-const USUARIOS_KEY = "usuarios";
-const PEDIDOS_KEY = "pedidos";
+const USUARIOS_KEY = "usuarios-v2";
+const PEDIDOS_KEY = "pedidos-v2";
 
 let netlifyStore = null;
 let dadosNetlifyPromise = null;
@@ -129,7 +129,10 @@ async function obterNetlifyStore() {
             await import("@netlify/blobs");
 
         netlifyStore =
-            getStore("techshop-data");
+            getStore({
+                name: "techshop-data-v2",
+                consistency: "strong"
+            });
     }
 
     return netlifyStore;
@@ -151,13 +154,19 @@ async function carregarDadosNetlify() {
             let usuarios =
                 await store.get(
                     USUARIOS_KEY,
-                    { type: "json" }
+                    {
+                        type: "json",
+                        consistency: "strong"
+                    }
                 );
 
             let pedidos =
                 await store.get(
                     PEDIDOS_KEY,
-                    { type: "json" }
+                    {
+                        type: "json",
+                        consistency: "strong"
+                    }
                 );
 
             if (!Array.isArray(usuarios)) {
