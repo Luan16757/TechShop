@@ -504,56 +504,6 @@
                 3px;
         }
 
-        .delivery-box {
-
-            background:
-                linear-gradient(145deg, rgba(59,130,246,.08), rgba(255,255,255,.02));
-
-            border:
-                1px solid rgba(59,130,246,.18);
-
-            border-radius:
-                14px;
-
-            padding:
-                15px;
-
-            margin-bottom:
-                18px;
-        }
-
-        .delivery-title {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 10px;
-            font-weight: 900;
-        }
-
-        .delivery-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 8px 18px;
-        }
-
-        .delivery-item {
-            color: var(--muted);
-            font-size: 13px;
-            line-height: 1.45;
-        }
-
-        .delivery-item strong {
-            color: #eef2f7;
-            font-weight: 700;
-        }
-
-        @media (max-width: 650px) {
-            .delivery-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
         .products {
 
             margin-bottom:
@@ -639,28 +589,6 @@
         .status-button:hover {
             background:
                 var(--orange2);
-        }
-
-        .cancelled-actions {
-
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 12px;
-        }
-
-        .delete-order-button {
-
-            border: 1px solid rgba(239,68,68,.30);
-            background: rgba(239,68,68,.10);
-            color: #fecaca;
-            padding: 10px 14px;
-            border-radius: 10px;
-            font-weight: 800;
-            cursor: pointer;
-        }
-
-        .delete-order-button:hover {
-            background: rgba(239,68,68,.18);
         }
 
         .updated {
@@ -755,6 +683,98 @@
                 rgba(239,68,68,.3);
         }
 
+
+        /* FUNDO ANIMADO DO PAINEL */
+        #adminApp {
+            position: relative;
+            min-height: 100vh;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 10% 10%, rgba(255,107,0,.08), transparent 24%),
+                radial-gradient(circle at 88% 82%, rgba(59,130,246,.06), transparent 26%);
+        }
+        #adminApp::before,
+        #adminApp::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+        }
+        #adminApp::before {
+            z-index: 0;
+            opacity: .34;
+            background-image:
+                linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px);
+            background-size: 42px 42px;
+            mask-image: radial-gradient(circle at center, black 30%, transparent 85%);
+            animation: panelGrid 22s linear infinite;
+        }
+        #adminApp::after {
+            z-index: 0;
+            opacity: .32;
+            background-image:
+                radial-gradient(circle, rgba(255,255,255,.7) 0 1px, transparent 1.5px),
+                radial-gradient(circle, rgba(255,107,0,.8) 0 1px, transparent 1.5px);
+            background-size: 150px 150px, 220px 220px;
+            background-position: 20px 10px, 90px 50px;
+            animation: panelParticles 28s linear infinite;
+        }
+        #adminApp > * { position: relative; z-index: 1; }
+        .dashboard .stat { animation: cardIn .55s ease both; }
+        .dashboard .stat:nth-child(2) { animation-delay: .06s; }
+        .dashboard .stat:nth-child(3) { animation-delay: .12s; }
+        .dashboard .stat:nth-child(4) { animation-delay: .18s; }
+        .status-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+        .status-tab {
+            border: 1px solid rgba(255,255,255,.07);
+            background: rgba(255,255,255,.025);
+            color: #aeb6c2;
+            padding: 9px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 800;
+            transition: .2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+        .status-tab:hover {
+            transform: translateY(-1px);
+            border-color: rgba(255,107,0,.28);
+            color: #fff;
+        }
+        .status-tab.active {
+            background: rgba(255,107,0,.12);
+            border-color: rgba(255,107,0,.34);
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(255,107,0,.09);
+        }
+        .status-tab .count {
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            background: rgba(255,255,255,.08);
+            font-size: 10px;
+        }
+        .order-card { animation: orderIn .45s ease both; }
+        .filter-info { margin: -4px 0 14px; color: var(--muted); font-size: 12px; }
+        @keyframes panelGrid { from { transform: translate3d(0,0,0); } to { transform: translate3d(42px,42px,0); } }
+        @keyframes panelParticles { from { background-position: 20px 10px, 90px 50px; } to { background-position: 20px 650px, 420px 760px; } }
+        @keyframes cardIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes orderIn { from { opacity: 0; transform: translateY(12px) scale(.995); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @media (prefers-reduced-motion: reduce) {
+            #adminApp::before, #adminApp::after, .dashboard .stat, .order-card { animation: none !important; }
+        }
         @media(max-width:900px) {
 
             .dashboard {
@@ -972,13 +992,17 @@
 
                 <button
                     class="refresh"
-                    onclick="carregarPedidos()"
+                    onclick="carregarPedidos(true)"
                 >
                     ↻ Atualizar
                 </button>
 
             </div>
 
+
+            <div id="statusTabs" class="status-tabs"></div>
+
+            <div id="filterInfo" class="filter-info"></div>
 
             <div
                 id="orders"
@@ -1005,6 +1029,7 @@
 <script>
 
 let pedidos = [];
+let filtroStatus = "Todos";
 
 /* =========================================================
    AUTENTICAÇÃO ADMINISTRATIVA
@@ -1218,44 +1243,28 @@ function abrirPainel(usuario) {
    PEDIDOS
 ========================================================= */
 
-async function carregarPedidos() {
+async function carregarPedidos(mostrarLoading = false) {
 
-    const container =
-        document
-            .getElementById(
-                "orders"
-            );
+    const container = document.getElementById("orders");
 
-    container.innerHTML = `
-        <div class="loading">
-            🔄 Carregando pedidos...
-        </div>
-    `;
+    if (mostrarLoading && !pedidos.length) {
+        container.innerHTML = `
+            <div class="loading">
+                🔄 Carregando pedidos...
+            </div>
+        `;
+    }
 
     try {
-
-        const dados =
-            await fetchAdmin(
-                "/api/pedidos"
-            );
-
-
-        pedidos =
-            Array.isArray(dados)
-                ? dados
-                : [];
-
+        const dados = await fetchAdmin("/api/pedidos");
+        pedidos = Array.isArray(dados) ? dados : [];
         atualizarDashboard();
-
+        renderizarAbasStatus();
         renderizarPedidos();
-
     } catch (erro) {
-
         container.innerHTML = `
             <div class="empty">
-                ❌ ${escapeHtml(
-                    erro.message
-                )}
+                ❌ ${escapeHtml(erro.message)}
             </div>
         `;
     }
@@ -1316,30 +1325,69 @@ function atualizarDashboard() {
 
 function renderizarPedidos() {
 
-    const container =
-        document
-            .getElementById(
-                "orders"
-            );
+    const container = document.getElementById("orders");
+    const filtrados = filtroStatus === "Todos"
+        ? pedidos
+        : pedidos.filter(p => p.status === filtroStatus);
 
-    if (!pedidos.length) {
+    const info = document.getElementById("filterInfo");
+    if (info) {
+        const nomeFiltro = filtroStatus === "Pagamento aprovado"
+            ? "Aceitos / Pagamento aprovado"
+            : filtroStatus;
+        info.textContent = `${filtrados.length} pedido(s) em “${nomeFiltro}”.`;
+    }
 
+    if (!filtrados.length) {
         container.innerHTML = `
             <div class="empty">
-                📦 Nenhum pedido encontrado.
+                📦 Nenhum pedido nesta categoria.
             </div>
         `;
-
         return;
     }
 
-    container.innerHTML =
-        pedidos.map(
-            pedido =>
-                criarPedidoCard(
-                    pedido
-                )
-        ).join("");
+    container.innerHTML = filtrados.map((pedido, index) => {
+        const html = criarPedidoCard(pedido);
+        return html.replace('class="order-card"', `class="order-card" style="animation-delay:${Math.min(index * 45, 360)}ms"`);
+    }).join("");
+}
+
+function renderizarAbasStatus() {
+
+    const el = document.getElementById("statusTabs");
+    if (!el) return;
+
+    const abas = [
+        { key: "Todos", label: "Todos", icon: "📋" },
+        { key: "Aguardando pagamento", label: "Aguardando", icon: "💳" },
+        { key: "Pagamento aprovado", label: "Aceitos", icon: "✅" },
+        { key: "Preparando pedido", label: "Preparando", icon: "📦" },
+        { key: "Enviado", label: "Enviados", icon: "🚚" },
+        { key: "Em transporte", label: "Em transporte", icon: "🛵" },
+        { key: "Entregue", label: "Entregues", icon: "🎉" },
+        { key: "Cancelado", label: "Cancelados", icon: "❌" }
+    ];
+
+    el.innerHTML = abas.map(aba => {
+        const count = aba.key === "Todos"
+            ? pedidos.length
+            : pedidos.filter(p => p.status === aba.key).length;
+        const active = filtroStatus === aba.key ? "active" : "";
+        return `
+            <button class="status-tab ${active}" onclick="selecionarFiltro('${escapeJs(aba.key)}')">
+                <span>${aba.icon}</span>
+                <span>${escapeHtml(aba.label)}</span>
+                <span class="count">${count}</span>
+            </button>
+        `;
+    }).join("");
+}
+
+function selecionarFiltro(status) {
+    filtroStatus = status;
+    renderizarAbasStatus();
+    renderizarPedidos();
 }
 
 
@@ -1359,10 +1407,6 @@ function criarPedidoCard(
 
     const cliente =
         pedido.cliente ||
-        {};
-
-    const entrega =
-        pedido.entrega ||
         {};
 
     const produtos =
@@ -1469,58 +1513,6 @@ function criarPedidoCard(
                         "-"
                     )}
                 </span>
-
-                <span>
-                    🪪 CPF:
-                    ${escapeHtml(
-                        cliente.cpf ||
-                        "-"
-                    )}
-                </span>
-
-            </div>
-
-
-            <div class="delivery-box">
-
-                <div class="delivery-title">
-                    <span>📍 Dados da entrega</span>
-                    <small style="color:var(--muted);font-weight:600">Informações enviadas no checkout</small>
-                </div>
-
-                <div class="delivery-grid">
-
-                    <div class="delivery-item">
-                        📱 Telefone: 
-                        <strong>${escapeHtml(entrega.telefone || cliente.telefone || "-")}</strong>
-                    </div>
-
-                    <div class="delivery-item">
-                        📮 CEP: 
-                        <strong>${escapeHtml(entrega.cep || "-")}</strong>
-                    </div>
-
-                    <div class="delivery-item">
-                        🏠 Endereço: 
-                        <strong>${escapeHtml(entrega.endereco || "-")}</strong>
-                    </div>
-
-                    <div class="delivery-item">
-                        🔢 Número: 
-                        <strong>${escapeHtml(entrega.numero || "-")}</strong>
-                    </div>
-
-                    <div class="delivery-item">
-                        🏙️ Cidade: 
-                        <strong>${escapeHtml(entrega.cidade || "-")}</strong>
-                    </div>
-
-                    <div class="delivery-item">
-                        🗺️ Estado: 
-                        <strong>${escapeHtml(entrega.estado || "-")}</strong>
-                    </div>
-
-                </div>
 
             </div>
 
@@ -1645,21 +1637,6 @@ function criarPedidoCard(
             </div>
 
 
-            ${status === "Cancelado" ? `
-
-            <div class="cancelled-actions">
-
-                <button
-                    class="delete-order-button"
-                    onclick="excluirPedidoCancelado('${escapeJs(numero)}')"
-                >
-                    🗑️ Excluir pedido cancelado
-                </button>
-
-            </div>
-
-            ` : ""}
-
             <div class="updated">
 
                 Última atualização:
@@ -1740,67 +1717,24 @@ async function atualizarStatus(
                 }
             );
 
+        if (!dados || dados.erro) {
+            throw new Error(
+                dados?.erro ||
+                "Não foi possível atualizar."
+            );
+        }
+
         mostrarToast(
             `Pedido #${numero} atualizado para "${status}".`,
             "success"
         );
 
-        await carregarPedidos();
+        await carregarPedidos(false);
 
     } catch (erro) {
 
         mostrarToast(
             erro.message,
-            "error"
-        );
-    }
-}
-
-
-/* =========================================================
-   EXCLUIR PEDIDO CANCELADO
-========================================================= */
-
-async function excluirPedidoCancelado(numero) {
-
-    const pedido = pedidos.find(
-        item => String(item.numero) === String(numero)
-    );
-
-    if (!pedido || pedido.status !== "Cancelado") {
-        mostrarToast(
-            "Somente pedidos cancelados podem ser excluídos.",
-            "error"
-        );
-        return;
-    }
-
-    const confirmar = window.confirm(
-        `Excluir definitivamente o pedido #${numero}?\n\nEssa ação não pode ser desfeita.`
-    );
-
-    if (!confirmar) return;
-
-    try {
-
-        await fetchAdmin(
-            `/api/pedidos/${encodeURIComponent(numero)}`,
-            {
-                method: "DELETE"
-            }
-        );
-
-        mostrarToast(
-            `Pedido #${numero} excluído.`,
-            "success"
-        );
-
-        await carregarPedidos();
-
-    } catch (erro) {
-
-        mostrarToast(
-            erro.message || "Não foi possível excluir o pedido.",
             "error"
         );
     }
@@ -1940,13 +1874,12 @@ function mostrarToast(
 
 verificarAdmin();
 
-// Atualiza os pedidos automaticamente sem precisar apertar F5.
 setInterval(() => {
     const app = document.getElementById("adminApp");
-    if (app && app.style.display !== "none" && tokenAdmin()) {
-        carregarPedidos();
+    if (app && app.style.display !== "none") {
+        carregarPedidos(false);
     }
-}, 5000);
+}, 15000);
 
 </script>
 

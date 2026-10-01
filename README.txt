@@ -1,11 +1,14 @@
-TECHSHOP — CHECKOUT BAIRRO + RESUMO PRO
+TECHSHOP — PAINEL PRO COM ABAS
 
-Substitua somente o arquivo techshop.html.
+Substitua SOMENTE o admin.html.
 
-Alterações:
-- Campo obrigatório Bairro no finalizar pedido.
-- Resumo do pedido com visual mais profissional.
-- Destaque do total e aviso de pagamento via Pix.
-- Responsivo para celular.
+Novidades:
+- Abas/filtros: Todos, Aguardando, Aceitos, Preparando, Enviados, Em transporte, Entregues e Cancelados.
+- Contadores em cada aba.
+- Fundo tecnológico animado com grade e partículas.
+- Cards dos pedidos com animação de entrada.
+- Atualização automática silenciosa a cada 15 segundos, sem piscar.
+- Botão de atualização manual.
+- Correção do fluxo de atualização de status.
 
-Não substitua server.js, script.js ou .env com este pacote.
+Não altere server.js ou .env.
