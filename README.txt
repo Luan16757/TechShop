@@ -1,14 +1,21 @@
-TECHSHOP — CORREÇÃO DO LOGIN DO ADMIN
+TECHSHOP - PATCH DA LOJA
 
-1. Substitua no seu projeto APENAS:
-   - server.js
-   - admin.html
+Arquivos para substituir no projeto:
+- techshop.html
+- script.js
+- server.js
 
-2. GitHub Desktop → Commit
-3. Push origin
-4. Espere o Netlify mostrar Published
-5. Abra https://SEU-SITE.netlify.app/admin em uma aba anônima
+Melhorias:
+- carrinho em formato de painel lateral/bottom-sheet no celular
+- cards do carrinho mais organizados
+- quantidade +/-, subtotal, remoção e resumo
+- aviso visual quando produto entra no carrinho
+- checkout com dados de entrega enviados ao pedido
+- correção do payload do Pix para enviar itens
+- notificações automáticas via WhatsApp Cloud API quando configurada
+- notificação de novo pedido e de pagamento aprovado
 
-Esta versão não depende apenas do cookie. O login retorna um token e o painel envia Authorization: Bearer nas requisições administrativas. Também corrige o problema em que erro 401 recarregava a página silenciosamente.
+ATENCAO:
+O WhatsApp automático usa a WhatsApp Cloud API da Meta. O código não precisa do token do WhatsApp no arquivo; configure as variáveis WHATSAPP_ACCESS_TOKEN, WHATSAPP_PHONE_NUMBER_ID e WHATSAPP_TO nas Environment Variables do Netlify.
 
-Não mexa no Pix, checkout, clientes ou produtos.
+Sem essas credenciais, a loja continua funcionando e o Pix não é bloqueado.

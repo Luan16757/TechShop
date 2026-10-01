@@ -1546,11 +1546,6 @@
 
 
         /* =================================================
-           CHECKOUT MODERNO E PIX
-        ================================================= */
-        .checkout-modern{width:min(1080px,96vw);max-height:92vh;overflow:auto}.checkout-kicker{color:var(--orange);font-size:11px;font-weight:900;letter-spacing:1.4px}.checkout-subtitle{color:#818181;font-size:12px;margin-top:4px}.checkout-modern-form{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,.85fr);gap:16px;margin-top:8px}.checkout-column{display:flex;flex-direction:column;gap:14px}.checkout-section,.checkout-sidebar>.checkout-summary-modern,.checkout-sidebar>.secure-payment-card{background:#0b0b0b;border:1px solid #242424;border-radius:14px}.checkout-section{padding:18px}.checkout-section-title{display:flex;gap:10px;align-items:center;margin-bottom:16px}.checkout-section-title>span{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:rgba(255,115,0,.12);color:var(--orange);font-weight:900}.checkout-section-title strong,.checkout-section-title small{display:block}.checkout-section-title small{color:#777;font-size:11px;margin-top:2px}.checkout-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.checkout-form .field label{display:block;color:#ccc;font-size:12px;font-weight:700;margin-bottom:7px}.checkout-form input,.checkout-form select{width:100%;height:46px;background:#060606;border:1px solid #303030;color:#fff;border-radius:10px;padding:0 12px;outline:none;font-size:14px}.checkout-form input:focus,.checkout-form select:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(255,115,0,.08)}.checkout-sidebar{display:flex;flex-direction:column;gap:12px;align-self:start;position:sticky;top:0}.checkout-summary-modern{margin:0;padding:18px}.resumo-item{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #1f1f1f;font-size:13px}.resumo-item span{color:#c8c8c8}.resumo-item strong{white-space:nowrap;color:#fff}.resumo-total{display:flex;justify-content:space-between;padding-top:16px;margin-top:4px;font-size:18px}.resumo-total strong{color:var(--orange)}.secure-payment-card{display:flex;gap:10px;padding:15px;align-items:flex-start}.secure-payment-icon{font-size:22px}.secure-payment-card strong{display:block;margin-bottom:4px}.secure-payment-card p{color:#777;font-size:11px;line-height:1.45}.checkout-pay-button{margin-top:0;height:50px;font-size:14px;cursor:pointer}.checkout-pay-button:disabled{opacity:.6;cursor:wait}.checkout-back-button{height:43px;border:1px solid #2b2b2b;background:transparent;color:#aaa;border-radius:9px;font-weight:700;cursor:pointer}.pix-modal-modern{width:min(560px,94vw);max-height:92vh;overflow:auto}.pix-result-modern{text-align:center}.pix-status-badge{display:inline-flex;padding:7px 10px;border-radius:999px;background:rgba(34,197,94,.12);color:#67e08b;font-size:12px;font-weight:800}.pix-order-info{text-align:left;margin-top:14px;padding:12px 14px;border:1px solid #242424;background:#0b0b0b;border-radius:10px}.pix-order-info span,.pix-copy-modern label{display:block;color:#777;font-size:11px;margin-bottom:5px}.pix-order-info strong{color:#fff;font-size:13px;word-break:break-all}.pix-value-modern{margin:12px auto}.pix-qr-card{background:#0b0b0b;border:1px solid #242424;border-radius:14px;padding:14px}.pix-qr-title{font-weight:800;margin-bottom:8px}.pix-qr{width:260px;height:260px;margin:0 auto;background:#fff;padding:10px;border-radius:12px}.pix-qr img{width:100%;height:100%;object-fit:contain;display:block}.pix-qr-error{color:#ff8b8b;font-size:12px;margin-top:8px}.pix-copy-modern{text-align:left;margin-top:14px}.pix-copy textarea{flex:1;min-width:0;min-height:78px;resize:none;background:#080808;border:1px solid #292929;color:#fff;border-radius:8px;padding:10px;font-size:11px;line-height:1.4}.pix-ticket-button{display:block;margin-top:12px;padding:12px;border-radius:9px;background:var(--orange);color:#fff;font-weight:800;text-align:center}.pix-help{color:#777;font-size:12px;margin-top:12px;line-height:1.5}@media(max-width:850px){.checkout-modern-form{grid-template-columns:1fr}.checkout-sidebar{position:static}}@media(max-width:560px){.checkout-grid{grid-template-columns:1fr}.checkout-full{grid-column:1}.pix-qr{width:230px;height:230px}}
-
-        /* =================================================
            CONTA
         ================================================= */
 
@@ -1960,6 +1955,300 @@
                 padding: 16px;
             }
 
+        }
+
+
+        /* =================================================
+           CARRINHO - NOVO LAYOUT
+        ================================================= */
+
+        #cartModal {
+            align-items: stretch;
+            justify-content: flex-end;
+            padding: 0;
+        }
+
+        #cartModal .modal-content {
+            width: min(460px, 100vw);
+            max-width: none;
+            height: 100vh;
+            max-height: 100vh;
+            overflow-y: auto;
+            border-radius: 24px 0 0 24px;
+            padding: 22px;
+            background:
+                linear-gradient(180deg, #151515 0%, #0d0d0d 100%);
+            box-shadow: -20px 0 80px rgba(0,0,0,.55);
+            animation: cartIn .25s ease;
+        }
+
+        @keyframes cartIn {
+            from { transform: translateX(100%); opacity: .7; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        #cartModal .modal-header {
+            position: sticky;
+            top: -22px;
+            z-index: 5;
+            margin: -22px -22px 18px;
+            padding: 18px 22px;
+            background: rgba(17,17,17,.96);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #242424;
+        }
+
+        #cartModal .modal-header h2 {
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #cartItems {
+            min-height: 170px;
+        }
+
+        #cartItems .cart-item {
+            display: grid;
+            grid-template-columns: 72px minmax(0,1fr);
+            gap: 13px;
+            padding: 13px;
+            background: rgba(255,255,255,.025);
+            border: 1px solid #272727;
+            border-radius: 15px;
+            transition: border-color .2s ease, transform .2s ease;
+        }
+
+        #cartItems .cart-item:hover {
+            border-color: rgba(255,115,0,.45);
+            transform: translateY(-1px);
+        }
+
+        #cartItems .cart-item-image {
+            width: 72px;
+            height: 72px;
+            flex-basis: 72px;
+            border-radius: 12px;
+            background: #080808;
+            border: 1px solid #222;
+        }
+
+        #cartItems .cart-item-image img {
+            max-width: 62px;
+            max-height: 62px;
+        }
+
+        #cartItems .cart-item-info {
+            padding: 1px 0;
+        }
+
+        #cartItems .cart-item-info h4 {
+            font-size: 14px;
+            line-height: 1.35;
+            margin: 0 0 6px;
+            color: #fff;
+        }
+
+        #cartItems .cart-item-info strong {
+            display: block;
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        #cartItems .cart-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        #cartItems .cart-item-actions button {
+            width: 32px;
+            height: 32px;
+            border-radius: 9px;
+            border: 1px solid #2c2c2c;
+            background: #171717;
+            color: #fff;
+            font-weight: 900;
+            transition: .2s ease;
+        }
+
+        #cartItems .cart-item-actions button:hover {
+            border-color: var(--orange);
+            background: rgba(255,115,0,.12);
+        }
+
+        #cartItems .cart-item-actions span {
+            min-width: 34px;
+            text-align: center;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        #cartItems .cart-item-actions .cart-remove {
+            margin-left: auto;
+            color: #ff7373;
+        }
+
+        .cart-summary-box {
+            margin-top: 18px;
+            padding: 16px;
+            border: 1px solid #292929;
+            border-radius: 15px;
+            background: #090909;
+        }
+
+        .cart-summary-line {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            color: #999;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .cart-summary-line.total {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #252525;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .cart-summary-line.total strong {
+            color: var(--orange);
+            font-size: 20px;
+        }
+
+        .cart-drawer-actions {
+            display: grid;
+            grid-template-columns: .9fr 1.4fr;
+            gap: 9px;
+            margin-top: 11px;
+        }
+
+        .cart-secondary-button {
+            width: 100%;
+            height: 46px;
+            border-radius: 11px;
+            border: 1px solid #2b2b2b;
+            background: #151515;
+            color: #fff;
+            font-weight: 800;
+        }
+
+        .cart-secondary-button:hover {
+            border-color: var(--orange);
+        }
+
+        .cart-empty-modern {
+            display: flex;
+            min-height: 280px;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            color: #777;
+            padding: 30px 15px;
+        }
+
+        .cart-empty-modern .empty-cart-icon {
+            width: 78px;
+            height: 78px;
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            font-size: 34px;
+            background: rgba(255,115,0,.08);
+            border: 1px solid rgba(255,115,0,.18);
+        }
+
+        .cart-empty-modern h3 {
+            color: #fff;
+            margin-bottom: 6px;
+            font-size: 17px;
+        }
+
+        .cart-empty-modern p {
+            font-size: 13px;
+            line-height: 1.5;
+            max-width: 260px;
+        }
+
+        #cartToast {
+            position: fixed;
+            right: 22px;
+            bottom: 22px;
+            z-index: 10000;
+            min-width: 290px;
+            max-width: min(380px, calc(100vw - 30px));
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 13px 15px;
+            border: 1px solid rgba(255,115,0,.35);
+            border-radius: 14px;
+            background: rgba(18,18,18,.97);
+            box-shadow: 0 18px 50px rgba(0,0,0,.45);
+            color: #fff;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(14px);
+            transition: .22s ease;
+        }
+
+        #cartToast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #cartToast .toast-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,115,0,.12);
+            color: var(--orange);
+            font-weight: 900;
+        }
+
+        #cartToast small {
+            display: block;
+            color: #999;
+            margin-top: 2px;
+            font-size: 11px;
+        }
+
+        @media (max-width: 600px) {
+            #cartModal .modal-content {
+                width: 100vw;
+                border-radius: 22px 22px 0 0;
+                height: min(92vh, 760px);
+                align-self: flex-end;
+                animation: cartUp .25s ease;
+            }
+
+            #cartModal {
+                align-items: flex-end;
+            }
+
+            @keyframes cartUp {
+                from { transform: translateY(100%); opacity: .8; }
+                to { transform: translateY(0); opacity: 1; }
+            }
+
+            #cartToast {
+                left: 15px;
+                right: 15px;
+                bottom: 15px;
+                min-width: 0;
+            }
         }
 
     </style>
@@ -2531,6 +2820,15 @@
 
 
 
+<div id="cartToast" role="status" aria-live="polite">
+    <div class="toast-icon">✓</div>
+    <div>
+        <strong id="cartToastTitle">Produto adicionado</strong>
+        <small id="cartToastText">O item foi colocado no carrinho.</small>
+    </div>
+</div>
+
+
 <!-- =====================================================
      MODAL CARRINHO
 ===================================================== -->
@@ -2538,19 +2836,22 @@
 <div
     id="cartModal"
     class="modal"
+    aria-hidden="true"
 >
 
     <div class="modal-content">
 
         <div class="modal-header">
 
-            <h2>
-                🛒 Meu carrinho
-            </h2>
+            <div>
+                <h2>🛒 Seu carrinho</h2>
+                <span style="display:block;color:#777;font-size:12px;margin-top:4px;">Revise seus produtos antes de pagar</span>
+            </div>
 
             <button
                 class="close-modal"
                 type="button"
+                aria-label="Fechar carrinho"
                 onclick="fecharCarrinho()"
             >
                 ×
@@ -2558,33 +2859,41 @@
 
         </div>
 
-
         <div
             id="cartItems"
             class="cart-items"
         ></div>
 
-
-        <div class="cart-total">
-
-            <span>
-                Total
-            </span>
-
-            <strong id="cartTotal">
-                R$ 0,00
-            </strong>
-
+        <div id="cartSummaryBox" class="cart-summary-box" style="display:none;">
+            <div class="cart-summary-line">
+                <span>Itens</span>
+                <strong id="cartItemsSummary">0</strong>
+            </div>
+            <div class="cart-summary-line total">
+                <span>Total</span>
+                <strong id="cartTotal">R$ 0,00</strong>
+            </div>
         </div>
 
+        <div class="cart-drawer-actions">
+            <button
+                class="cart-secondary-button"
+                type="button"
+                onclick="fecharCarrinho()"
+            >
+                Continuar comprando
+            </button>
 
-        <button
-            class="checkout-button"
-            type="button"
-            onclick="abrirCheckout()"
-        >
-            Continuar para pagamento →
-        </button>
+            <button
+                id="cartCheckoutButton"
+                class="checkout-button"
+                style="margin-top:0;"
+                type="button"
+                onclick="abrirCheckout()"
+            >
+                Finalizar pedido →
+            </button>
+        </div>
 
     </div>
 
@@ -2596,70 +2905,218 @@
      MODAL CHECKOUT
 ===================================================== -->
 
-<div id="checkoutModal" class="modal">
-  <div class="modal-content modal-large checkout-modern">
-    <div class="modal-header">
-      <div>
-        <div class="checkout-kicker">TECHSHOP CHECKOUT</div>
-        <h2>🛍️ Finalizar pedido</h2>
-        <p class="checkout-subtitle">Preencha seus dados para receber o pedido e gerar o Pix.</p>
-      </div>
-      <button class="close-modal" type="button" onclick="fecharCheckout()">×</button>
+<div
+    id="checkoutModal"
+    class="modal"
+>
+
+    <div class="modal-content modal-large">
+
+        <div class="modal-header">
+
+            <h2>
+                📦 Finalizar pedido
+            </h2>
+
+            <button
+                class="close-modal"
+                type="button"
+                onclick="fecharCheckout()"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <form
+            class="checkout-form"
+            onsubmit="finalizarPedido(event)"
+        >
+
+            <div class="field">
+
+                <label>
+                    Nome
+                </label>
+
+                <input
+                    id="nome"
+                    type="text"
+                    readonly
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    E-mail
+                </label>
+
+                <input
+                    id="email"
+                    type="email"
+                    readonly
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Telefone
+                </label>
+
+                <input
+                    id="telefone"
+                    type="text"
+                    required
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    CEP
+                </label>
+
+                <input
+                    id="cep"
+                    type="text"
+                    placeholder="00000-000"
+                    required
+                >
+
+            </div>
+
+
+            <div
+                class="field checkout-full"
+            >
+
+                <label>
+                    Endereço
+                </label>
+
+                <input
+                    id="endereco"
+                    type="text"
+                    placeholder="Rua, avenida..."
+                    required
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Número
+                </label>
+
+                <input
+                    id="numero"
+                    type="text"
+                    required
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Cidade
+                </label>
+
+                <input
+                    id="cidade"
+                    type="text"
+                    required
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Estado
+                </label>
+
+                <input
+                    id="estado"
+                    type="text"
+                    maxlength="2"
+                    placeholder="SP"
+                    required
+                >
+
+            </div>
+
+
+            <div
+                id="checkoutResumo"
+                class="checkout-summary checkout-full"
+            ></div>
+
+
+            <button
+                id="finalizarBtn"
+                class="checkout-button checkout-full"
+                type="submit"
+            >
+                Gerar pagamento Pix →
+            </button>
+
+        </form>
+
     </div>
 
-    <form class="checkout-form checkout-modern-form" onsubmit="finalizarPedido(event)">
-      <div class="checkout-column">
-        <div class="checkout-section">
-          <div class="checkout-section-title"><span>1</span><div><strong>Dados do cliente</strong><small>Você pode editar nome e e-mail antes de pagar</small></div></div>
-          <div class="checkout-grid">
-            <div class="field"><label for="nome">Nome completo</label><input id="nome" type="text" placeholder="Seu nome completo" autocomplete="name" required></div>
-            <div class="field"><label for="email">E-mail</label><input id="email" type="email" placeholder="seu@email.com" autocomplete="email" required></div>
-            <div class="field"><label for="telefone">Telefone / WhatsApp</label><input id="telefone" type="tel" placeholder="(00) 00000-0000" autocomplete="tel" required></div>
-            <div class="field"><label for="cpf">CPF</label><input id="cpf" type="text" placeholder="000.000.000-00" inputmode="numeric" required></div>
-          </div>
-        </div>
-
-        <div class="checkout-section">
-          <div class="checkout-section-title"><span>2</span><div><strong>Endereço de entrega</strong><small>Informe onde seu pedido será entregue</small></div></div>
-          <div class="checkout-grid">
-            <div class="field"><label for="cep">CEP</label><input id="cep" type="text" placeholder="00000-000" inputmode="numeric" autocomplete="postal-code" required></div>
-            <div class="field"><label for="numero">Número</label><input id="numero" type="text" placeholder="123" required></div>
-            <div class="field checkout-full"><label for="endereco">Rua / Avenida</label><input id="endereco" type="text" placeholder="Rua, avenida, travessa..." autocomplete="street-address" required></div>
-            <div class="field"><label for="complemento">Complemento</label><input id="complemento" type="text" placeholder="Apto, bloco, casa..."></div>
-            <div class="field"><label for="bairro">Bairro</label><input id="bairro" type="text" placeholder="Seu bairro" required></div>
-            <div class="field"><label for="cidade">Cidade</label><input id="cidade" type="text" placeholder="Sua cidade" autocomplete="address-level2" required></div>
-            <div class="field"><label for="estado">Estado</label><select id="estado" required><option value="">Selecione</option><option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option></select></div>
-          </div>
-        </div>
-      </div>
-
-      <aside class="checkout-sidebar">
-        <div id="checkoutResumo" class="checkout-summary checkout-summary-modern"></div>
-        <div class="secure-payment-card"><div class="secure-payment-icon">🔐</div><div><strong>Pagamento seguro</strong><p>O Pix é gerado pelo Mercado Pago.</p></div></div>
-        <button id="finalizarBtn" class="checkout-button checkout-full checkout-pay-button" type="submit">Gerar pagamento Pix</button>
-        <button class="checkout-back-button" type="button" onclick="fecharCheckout()">Voltar para o carrinho</button>
-      </aside>
-    </form>
-  </div>
 </div>
+
+
 
 <!-- =====================================================
      MODAL PIX
 ===================================================== -->
 
-<div id="pixModal" class="modal">
-  <div class="modal-content pix-modal-modern">
-    <div class="modal-header"><div><div class="checkout-kicker">PAGAMENTO</div><h2>💠 Pague com Pix</h2><p class="checkout-subtitle">Escaneie o QR Code ou copie o Pix Copia e Cola.</p></div><button class="close-modal" type="button" onclick="fecharPix()">×</button></div>
-    <div id="pixResultado" class="pix-result-modern">
-      <div class="pix-status-badge">● Pix gerado</div>
-      <div class="pix-order-info"><span>Pedido</span><strong id="pixNumeroPedido">—</strong></div>
-      <div class="pix-value pix-value-modern"><span>Valor</span><strong id="pixValor">R$ 0,00</strong></div>
-      <div class="pix-qr-card"><div class="pix-qr-title">Escaneie o QR Code</div><div class="pix-qr"><img id="pixQrCode" alt="QR Code Pix"></div><div id="pixQrError" class="pix-qr-error" style="display:none;">O QR Code não foi recebido. Use o Pix Copia e Cola.</div></div>
-      <div class="pix-copy-modern"><label for="pixCopiaCola">Pix Copia e Cola</label><div class="pix-copy"><textarea id="pixCopiaCola" readonly placeholder="O código Pix aparecerá aqui"></textarea><button type="button" onclick="copiarPix()">Copiar</button></div></div>
-      <p class="pix-help">Depois do pagamento, o status do pedido será atualizado automaticamente.</p>
+<div
+    id="pixModal"
+    class="modal"
+>
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>
+                💳 Pagamento Pix
+            </h2>
+
+            <button
+                class="close-modal"
+                type="button"
+                onclick="fecharPix()"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div id="pixResultado"></div>
+
     </div>
-  </div>
+
 </div>
+
+
 
 <!-- =====================================================
      MODAL CONTA
