@@ -1,21 +1,24 @@
-TECHSHOP - PATCH DA LOJA
+TECHSHOP - CORREÇÃO CONTA + ACOMPANHAMENTO EM TEMPO REAL
 
-Arquivos para substituir no projeto:
-- techshop.html
-- script.js
-- server.js
+Substitua no projeto:
+1. techshop.html
+2. script.js
+3. server.js
 
-Melhorias:
-- carrinho em formato de painel lateral/bottom-sheet no celular
-- cards do carrinho mais organizados
-- quantidade +/-, subtotal, remoção e resumo
-- aviso visual quando produto entra no carrinho
-- checkout com dados de entrega enviados ao pedido
-- correção do payload do Pix para enviar itens
-- notificações automáticas via WhatsApp Cloud API quando configurada
-- notificação de novo pedido e de pagamento aprovado
+Correções desta versão:
+- Corrige o erro que impedia criar novas contas.
+- Corrige abas Entrar / Criar conta.
+- Remove envio duplicado dos formulários de login/cadastro.
+- Mantém as informações da conta do cliente.
+- Acompanhar pedido atualiza automaticamente a cada 3 segundos.
+- Mostra o histórico de cada mudança de status com data/hora.
+- Status: Aguardando pagamento -> Pagamento aprovado -> Preparando pedido -> Enviado -> Em transporte -> Entregue.
+- Cancelamento aparece no histórico.
+- Endpoint público de acompanhamento foi configurado sem cache.
+- Netlify Blobs são atualizados por requisição para reduzir dados desatualizados durante o acompanhamento.
+- Mantém Mercado Pago/Pix e integração WhatsApp existentes do server.js.
 
-ATENCAO:
-O WhatsApp automático usa a WhatsApp Cloud API da Meta. O código não precisa do token do WhatsApp no arquivo; configure as variáveis WHATSAPP_ACCESS_TOKEN, WHATSAPP_PHONE_NUMBER_ID e WHATSAPP_TO nas Environment Variables do Netlify.
+Depois de substituir os arquivos:
+GitHub Desktop -> Commit -> Push origin -> aguarde o Netlify publicar.
 
-Sem essas credenciais, a loja continua funcionando e o Pix não é bloqueado.
+Não substitua outros arquivos da loja nesta etapa.

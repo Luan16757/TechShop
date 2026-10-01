@@ -137,13 +137,13 @@ async function obterNetlifyStore() {
     return netlifyStore;
 }
 
-async function carregarDadosNetlify() {
+async function carregarDadosNetlify(forcar = false) {
 
     if (!IS_NETLIFY) {
         return;
     }
 
-    if (!dadosNetlifyPromise) {
+    if (!dadosNetlifyPromise || forcar) {
 
         dadosNetlifyPromise = (async () => {
 
@@ -265,7 +265,7 @@ app.use(
         }
 
         try {
-            await carregarDadosNetlify();
+            await carregarDadosNetlify(true);
             next();
         } catch (erro) {
             console.error(
@@ -1160,6 +1160,29 @@ app.get(
    STATUS DO PEDIDO ADMIN
 ========================================================= */
 
+function registrarHistoricoStatus(pedido, novoStatus, quando = new Date().toISOString()) {
+
+    if (!pedido || !novoStatus) return;
+
+    if (!Array.isArray(pedido.historicoStatus)) {
+        pedido.historicoStatus = [];
+    }
+
+    const ultimo = pedido.historicoStatus[pedido.historicoStatus.length - 1];
+
+    if (!ultimo || ultimo.status !== novoStatus) {
+        pedido.historicoStatus.push({
+            status: novoStatus,
+            em: quando
+        });
+    } else {
+        ultimo.em = quando;
+    }
+
+    pedido.status = novoStatus;
+    pedido.atualizadoEm = quando;
+}
+
 const statusPermitidos = [
 
     "Aguardando pagamento",
@@ -1212,11 +1235,10 @@ app.put(
             });
         }
 
-        pedidos[indice].status =
-            status;
-
-        pedidos[indice].atualizadoEm =
-            new Date().toISOString();
+        registrarHistoricoStatus(
+            pedidos[indice],
+            status
+        );
 
         await salvarJSON(
             pedidosFile,
@@ -1351,6 +1373,10 @@ app.get(
     "/api/pedido/:numero/status",
     (req, res) => {
 
+        res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+        res.setHeader("Pragma", "no-cache");
+        res.setHeader("Expires", "0");
+
         const pedidos =
             lerJSON(
                 pedidosFile,
@@ -1383,7 +1409,17 @@ app.get(
                 pedido.atualizadoEm,
 
             criadoEm:
-                pedido.criadoEm
+                pedido.criadoEm,
+
+            historicoStatus:
+                Array.isArray(pedido.historicoStatus)
+                    ? pedido.historicoStatus
+                    : [
+                        {
+                            status: pedido.status || "Aguardando pagamento",
+                            em: pedido.atualizadoEm || pedido.criadoEm
+                        }
+                    ]
 
         });
 
@@ -1435,11 +1471,10 @@ app.post(
             });
         }
 
-        pedidos[indice].status =
-            "Cancelado";
-
-        pedidos[indice].atualizadoEm =
-            new Date().toISOString();
+        registrarHistoricoStatus(
+            pedidos[indice],
+            "Cancelado"
+        );
 
         await salvarJSON(
             pedidosFile,
@@ -1890,7 +1925,14 @@ app.post(
                     new Date().toISOString(),
 
                 atualizadoEm:
-                    new Date().toISOString()
+                    new Date().toISOString(),
+
+                historicoStatus: [
+                    {
+                        status: "Aguardando pagamento",
+                        em: new Date().toISOString()
+                    }
+                ]
 
             };
 
@@ -2066,8 +2108,10 @@ app.post(
                 "approved"
             ) {
 
-                pedidos[indice].status =
-                    "Pagamento aprovado";
+                registrarHistoricoStatus(
+                    pedidos[indice],
+                    "Pagamento aprovado"
+                );
 
                 if (
                     WHATSAPP_ACCESS_TOKEN &&
@@ -2100,12 +2144,14 @@ app.post(
 
             ) {
 
-                pedidos[indice].status =
-                    "Cancelado";
+                registrarHistoricoStatus(
+                    pedidos[indice],
+                    "Cancelado"
+                );
             }
 
             pedidos[indice].atualizadoEm =
-                new Date().toISOString();
+                pedidos[indice].atualizadoEm || new Date().toISOString();
 
             await salvarJSON(
                 pedidosFile,

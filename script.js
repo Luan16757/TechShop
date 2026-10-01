@@ -356,6 +356,42 @@ async function verificarCliente() {
 
 
 /* =========================================================
+   ABAS DE AUTENTICAÇÃO
+========================================================= */
+
+function mostrarLogin() {
+    const login = document.getElementById("loginForm");
+    const cadastro = document.getElementById("cadastroForm");
+    const tabLogin = document.getElementById("tabLogin");
+    const tabCadastro = document.getElementById("tabCadastro");
+
+    login?.classList.add("active");
+    cadastro?.classList.remove("active");
+    tabLogin?.classList.add("active");
+    tabCadastro?.classList.remove("active");
+}
+
+function mostrarCadastro() {
+    const login = document.getElementById("loginForm");
+    const cadastro = document.getElementById("cadastroForm");
+    const tabLogin = document.getElementById("tabLogin");
+    const tabCadastro = document.getElementById("tabCadastro");
+
+    login?.classList.remove("active");
+    cadastro?.classList.add("active");
+    tabLogin?.classList.remove("active");
+    tabCadastro?.classList.add("active");
+
+    const msg = document.getElementById("cadastroMessage");
+    if (msg) msg.textContent = "";
+    if (msg) msg.style.display = "none";
+}
+
+// Compatibilidade com o onsubmit antigo do HTML.
+window.criarConta = fazerCadastro;
+window.fazerCadastro = fazerCadastro;
+
+/* =========================================================
    LOGIN
 ========================================================= */
 
@@ -1996,34 +2032,45 @@ const etapasPedido = [
     { status:"Entregue", icone:"🏠", descricao:"Pedido entregue. Obrigado pela compra!" }
 ];
 
-function renderizarTimelinePedido(status) {
+function renderizarTimelinePedido(status, historico = []) {
     const timeline = document.getElementById("timelinePedido");
     if (!timeline) return;
 
     if (status === "Cancelado") {
-        timeline.innerHTML = `
-            <div class="timeline-item atual">
-                <div class="timeline-marker">✕</div>
+        timeline.innerHTML = (historico.length ? historico : [{status:"Cancelado", em:null}]).map(item => `
+            <div class="timeline-item concluido">
+                <div class="timeline-marker">${item.status === "Cancelado" ? "✕" : "✓"}</div>
                 <div class="timeline-content">
-                    <strong>Pedido cancelado</strong>
-                    <p>Este pedido foi cancelado e não seguirá para as próximas etapas.</p>
+                    <strong>${escaparHTML(item.status)}</strong>
+                    <p>${item.em ? escaparHTML(new Date(item.em).toLocaleString("pt-BR")) : ""}</p>
                 </div>
             </div>
-        `;
+        `).join("");
         return;
     }
 
-    let indiceAtual = etapasPedido.findIndex(item => item.status === status);
-    if (indiceAtual < 0) indiceAtual = 0;
+    const base = [
+        { status:"Aguardando pagamento", icone:"💳" },
+        { status:"Pagamento aprovado", icone:"✅" },
+        { status:"Preparando pedido", icone:"📦" },
+        { status:"Enviado", icone:"🏷️" },
+        { status:"Em transporte", icone:"🚚" },
+        { status:"Entregue", icone:"🏠" }
+    ];
 
-    timeline.innerHTML = etapasPedido.map((item,index) => {
-        const classe = index < indiceAtual ? "concluido" : index === indiceAtual ? "atual" : "";
+    const mapa = new Map((historico || []).map(item => [item.status, item]));
+    const indiceAtual = Math.max(0, base.findIndex(item => item.status === status));
+
+    timeline.innerHTML = base.map((item, index) => {
+        const registro = mapa.get(item.status);
+        const classe = registro ? (index < indiceAtual ? "concluido" : "atual") : "futuro";
+        const hora = registro?.em ? new Date(registro.em).toLocaleString("pt-BR") : "Aguardando";
         return `
             <div class="timeline-item ${classe}">
-                <div class="timeline-marker">${item.icone}</div>
+                <div class="timeline-marker">${registro ? item.icone : "○"}</div>
                 <div class="timeline-content">
                     <strong>${escaparHTML(item.status)}</strong>
-                    <p>${escaparHTML(item.descricao)}</p>
+                    <p>${registro ? escaparHTML(hora) : "Ainda não realizado"}</p>
                 </div>
             </div>
         `;
@@ -2050,14 +2097,22 @@ async function consultarPedido() {
         pedidoTrackingTimer = null;
     }
 
+    let ultimoStatus = null;
+    let ultimaAtualizacao = null;
+    let consultaEmAndamento = false;
+
     resultado.innerHTML = `<div class="tracking-result-card"><p style="color:#888;font-size:12px">Consultando pedido <strong style="color:#fff">#${escaparHTML(numero)}</strong>...</p></div>`;
     if (timeline) timeline.innerHTML = "";
 
-    const consultar = async (silencioso=false) => {
+    const consultar = async (silencioso = false) => {
+        if (consultaEmAndamento) return false;
+        consultaEmAndamento = true;
+
         try {
-            const resposta = await fetch("/api/pedido/" + encodeURIComponent(numero) + "/status", {
-                credentials:"include",
-                cache:"no-store"
+            const resposta = await fetch("/api/pedido/" + encodeURIComponent(numero) + "/status?_=" + Date.now(), {
+                credentials: "include",
+                cache: "no-store",
+                headers: { "Cache-Control": "no-cache" }
             });
             const dados = await resposta.json().catch(() => ({}));
 
@@ -2073,9 +2128,10 @@ async function consultarPedido() {
             const status = dados.status || "Aguardando pagamento";
             const criado = dados.criadoEm ? new Date(dados.criadoEm).toLocaleString("pt-BR") : "Não informado";
             const atualizadoEm = dados.atualizadoEm ? new Date(dados.atualizadoEm).toLocaleString("pt-BR") : criado;
+            const mudou = ultimoStatus !== null && (ultimoStatus !== status || ultimaAtualizacao !== dados.atualizadoEm);
 
             resultado.innerHTML = `
-                <div class="tracking-result-card">
+                <div class="tracking-result-card ${mudou ? "tracking-pulse" : ""}">
                     <div class="tracking-result-top">
                         <div>
                             <h3>Pedido #${escaparHTML(dados.numero || numero)}</h3>
@@ -2087,12 +2143,22 @@ async function consultarPedido() {
                         <div class="tracking-meta-box"><span>Pedido criado</span><strong>${escaparHTML(criado)}</strong></div>
                         <div class="tracking-meta-box"><span>Última atualização</span><strong>${escaparHTML(atualizadoEm)}</strong></div>
                     </div>
-                    <div class="tracking-last">🔄 Atualizado automaticamente a cada 15 segundos.</div>
+                    <div class="tracking-last">🟢 Atualização automática ativa • verificando a cada 3 segundos</div>
                 </div>
             `;
 
-            renderizarTimelinePedido(status);
-            if (atualizado) atualizado.textContent = `🟢 Acompanhamento ativo • última consulta ${new Date().toLocaleTimeString("pt-BR")}`;
+            renderizarTimelinePedido(status, Array.isArray(dados.historicoStatus) ? dados.historicoStatus : []);
+
+            if (mudou) {
+                resultado.querySelector(".tracking-result-card")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+
+            if (atualizado) {
+                atualizado.textContent = `🟢 Ao vivo • última verificação ${new Date().toLocaleTimeString("pt-BR")}`;
+            }
+
+            ultimoStatus = status;
+            ultimaAtualizacao = dados.atualizadoEm || null;
             return true;
         } catch (erro) {
             if (!silencioso) {
@@ -2100,11 +2166,13 @@ async function consultarPedido() {
                 if (timeline) timeline.innerHTML = "";
             }
             return false;
+        } finally {
+            consultaEmAndamento = false;
         }
     };
 
     const ok = await consultar(false);
-    if (ok) pedidoTrackingTimer = setInterval(() => consultar(true), 15000);
+    if (ok) pedidoTrackingTimer = setInterval(() => consultar(true), 3000);
 }
 
 /* =========================================================
