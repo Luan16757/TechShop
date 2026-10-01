@@ -299,6 +299,12 @@
 
         #siteContent.active {
             display: block;
+            padding-top: 70px;
+        }
+
+        #siteContent main section,
+        #siteContent main > div {
+            scroll-margin-top: 90px;
         }
 
 
@@ -307,16 +313,21 @@
         ================================================= */
 
         header {
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
 
-            z-index: 1000;
+            z-index: 9999;
 
             background: rgba(8,8,8,.94);
 
             backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
 
             border-bottom: 1px solid #202020;
+            box-shadow: 0 8px 26px rgba(0,0,0,.24);
         }
 
         .header-inner {
@@ -2590,8 +2601,10 @@
             }
 
             header {
-                position: sticky;
+                position: fixed;
                 top: 0;
+                left: 0;
+                right: 0;
             }
 
             .header-inner {
