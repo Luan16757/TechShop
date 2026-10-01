@@ -8,7 +8,11 @@ const crypto = require("crypto");
 dotenv.config();
 
 // Netlify executa o Express como Function. Localmente, `node server.js` continua funcionando.
-const IS_NETLIFY = Boolean(process.env.NETLIFY);
+const IS_NETLIFY = Boolean(
+    process.env.TECHSHOP_NETLIFY_FUNCTION ||
+    process.env.NETLIFY ||
+    process.env.AWS_LAMBDA_FUNCTION_NAME
+);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -745,7 +749,8 @@ app.get(
             porta: IS_NETLIFY ? "serverless" : PORT,
             produtos: produtos.length,
             armazenamento: IS_NETLIFY ? "netlify-blobs" : "arquivo-local",
-            sessaoConfigurada: Boolean(SESSION_SECRET)
+            sessaoConfigurada: Boolean(SESSION_SECRET),
+            netlifyDetectado: IS_NETLIFY
         });
 
     }
