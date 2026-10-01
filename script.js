@@ -1,3 +1,18 @@
+
+/* =========================================================
+   MOSTRAR / OCULTAR SENHA
+========================================================= */
+function alternarSenha(id, botao) {
+    const campo = document.getElementById(id);
+    if (!campo) return;
+    const visivel = campo.type === "text";
+    campo.type = visivel ? "password" : "text";
+    if (botao) {
+        botao.textContent = visivel ? "👁" : "🙈";
+        botao.setAttribute("aria-label", visivel ? "Mostrar senha" : "Ocultar senha");
+    }
+}
+
 /* =========================================================
    TECHSHOP - SCRIPT PRINCIPAL
 ========================================================= */
@@ -360,6 +375,10 @@ async function verificarCliente() {
 ========================================================= */
 
 function mostrarLogin() {
+    const authTitle = document.getElementById("authTitle");
+    const authSubtitle = document.getElementById("authSubtitle");
+    if (authTitle) authTitle.textContent = "Bem-vindo de volta 👋";
+    if (authSubtitle) authSubtitle.textContent = "Entre na sua conta para continuar.";
     const login = document.getElementById("loginForm");
     const cadastro = document.getElementById("cadastroForm");
     const tabLogin = document.getElementById("tabLogin");
@@ -372,6 +391,10 @@ function mostrarLogin() {
 }
 
 function mostrarCadastro() {
+    const authTitle = document.getElementById("authTitle");
+    const authSubtitle = document.getElementById("authSubtitle");
+    if (authTitle) authTitle.textContent = "Crie sua conta 🚀";
+    if (authSubtitle) authSubtitle.textContent = "Cadastre-se para comprar e acompanhar seus pedidos.";
     const login = document.getElementById("loginForm");
     const cadastro = document.getElementById("cadastroForm");
     const tabLogin = document.getElementById("tabLogin");
@@ -2325,36 +2348,6 @@ function configurarPesquisa() {
 }
 
 
-
-
-/* =========================================================
-   MOSTRAR / OCULTAR SENHA
-========================================================= */
-
-function alternarVisibilidadeSenha(botao) {
-    const alvo = botao?.dataset?.target;
-    const campo = alvo ? document.getElementById(alvo) : null;
-    if (!campo) return;
-
-    const mostrando = campo.type === "text";
-    campo.type = mostrando ? "password" : "text";
-    botao.classList.toggle("is-visible", !mostrando);
-    botao.textContent = mostrando ? "👁" : "🙈";
-    botao.setAttribute("aria-label", mostrando ? "Mostrar senha" : "Ocultar senha");
-    botao.title = mostrando ? "Mostrar senha" : "Ocultar senha";
-}
-
-function configurarBotoesSenha() {
-    document.querySelectorAll(".password-toggle").forEach((botao) => {
-        if (botao.dataset.bound === "1") return;
-        botao.dataset.bound = "1";
-        botao.addEventListener("click", () => alternarVisibilidadeSenha(botao));
-    });
-}
-
-window.alternarVisibilidadeSenha = alternarVisibilidadeSenha;
-
-
 /* =========================================================
    INICIALIZAÇÃO
 ========================================================= */
@@ -2369,7 +2362,6 @@ document.addEventListener(
 
         carregarCarrinho();
 
-        configurarBotoesSenha();
         atualizarCarrinhoInterface();
 
         configurarFiltrosCategoria();
