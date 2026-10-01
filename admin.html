@@ -504,6 +504,56 @@
                 3px;
         }
 
+        .delivery-box {
+
+            background:
+                linear-gradient(145deg, rgba(59,130,246,.08), rgba(255,255,255,.02));
+
+            border:
+                1px solid rgba(59,130,246,.18);
+
+            border-radius:
+                14px;
+
+            padding:
+                15px;
+
+            margin-bottom:
+                18px;
+        }
+
+        .delivery-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-weight: 900;
+        }
+
+        .delivery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px 18px;
+        }
+
+        .delivery-item {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.45;
+        }
+
+        .delivery-item strong {
+            color: #eef2f7;
+            font-weight: 700;
+        }
+
+        @media (max-width: 650px) {
+            .delivery-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .products {
 
             margin-bottom:
@@ -1289,6 +1339,10 @@ function criarPedidoCard(
         pedido.cliente ||
         {};
 
+    const entrega =
+        pedido.entrega ||
+        {};
+
     const produtos =
         Array.isArray(
             pedido.produtos
@@ -1393,6 +1447,58 @@ function criarPedidoCard(
                         "-"
                     )}
                 </span>
+
+                <span>
+                    🪪 CPF:
+                    ${escapeHtml(
+                        cliente.cpf ||
+                        "-"
+                    )}
+                </span>
+
+            </div>
+
+
+            <div class="delivery-box">
+
+                <div class="delivery-title">
+                    <span>📍 Dados da entrega</span>
+                    <small style="color:var(--muted);font-weight:600">Informações enviadas no checkout</small>
+                </div>
+
+                <div class="delivery-grid">
+
+                    <div class="delivery-item">
+                        📱 Telefone: 
+                        <strong>${escapeHtml(entrega.telefone || cliente.telefone || "-")}</strong>
+                    </div>
+
+                    <div class="delivery-item">
+                        📮 CEP: 
+                        <strong>${escapeHtml(entrega.cep || "-")}</strong>
+                    </div>
+
+                    <div class="delivery-item">
+                        🏠 Endereço: 
+                        <strong>${escapeHtml(entrega.endereco || "-")}</strong>
+                    </div>
+
+                    <div class="delivery-item">
+                        🔢 Número: 
+                        <strong>${escapeHtml(entrega.numero || "-")}</strong>
+                    </div>
+
+                    <div class="delivery-item">
+                        🏙️ Cidade: 
+                        <strong>${escapeHtml(entrega.cidade || "-")}</strong>
+                    </div>
+
+                    <div class="delivery-item">
+                        🗺️ Estado: 
+                        <strong>${escapeHtml(entrega.estado || "-")}</strong>
+                    </div>
+
+                </div>
 
             </div>
 
