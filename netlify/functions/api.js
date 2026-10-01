@@ -1,16 +1,33 @@
-const { connectLambda } = require("@netlify/blobs");
 const serverless = require("serverless-http");
-
-// Marca explicitamente o processo como Netlify antes de carregar o Express.
-// Isso impede qualquer tentativa de escrita em /var/task, que é somente leitura.
-process.env.TECHSHOP_NETLIFY_FUNCTION = "1";
-process.env.NETLIFY = process.env.NETLIFY || "true";
+const { connectLambda } = require("@netlify/blobs");
 
 const app = require("../../server.js");
-
-const proxy = serverless(app);
+const handler = serverless(app);
 
 exports.handler = async (event, context) => {
-    connectLambda(event);
-    return proxy(event, context);
+    try {
+        // serverless-http roda em modo Lambda compatível (Functions v1).
+        // Nesse modo, o Netlify Blobs precisa receber o contexto da função
+        // antes que getStore() seja chamado pelo Express.
+        if (event && event.blobs) {
+            connectLambda(event);
+        }
+
+        return await handler(event, context);
+    } catch (error) {
+        console.error("Erro na função API:", error);
+
+        return {
+            statusCode: 500,
+            headers: {
+                "Content-Type": "application/json; charset=utf-8"
+            },
+            body: JSON.stringify({
+                erro: "Erro interno da API.",
+                detalhe: process.env.NODE_ENV === "development"
+                    ? error.message
+                    : undefined
+            })
+        };
+    }
 };
