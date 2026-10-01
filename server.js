@@ -1580,250 +1580,146 @@ app.post(
         try {
 
             if (!MP_ACCESS_TOKEN) {
-
                 return res.status(500).json({
-
                     erro:
-                        "Mercado Pago não configurado. Verifique o MP_ACCESS_TOKEN no arquivo .env."
-
+                        "Mercado Pago não configurado. Verifique o MP_ACCESS_TOKEN nas variáveis do Netlify."
                 });
             }
 
-            const {
-                itens,
-                produtos: produtosRecebidos,
-                cliente: clienteCheckout
-            } = req.body || {};
+            const itens =
+                req.body?.itens ||
+                req.body?.produtos ||
+                [];
 
-            const itensRecebidos =
-                Array.isArray(itens)
-                    ? itens
-                    : produtosRecebidos;
+            const carrinho = calcularCarrinho(itens);
+            const clienteRecebido = req.body?.cliente || {};
+            const enderecoRecebido = req.body?.endereco || {};
 
-            const carrinho =
-                calcularCarrinho(
-                    itensRecebidos
-                );
+            const nome = String(clienteRecebido.nome || req.usuario.nome || "").trim();
+            const email = String(clienteRecebido.email || req.usuario.email || "").trim().toLowerCase();
+            const telefone = String(clienteRecebido.telefone || req.usuario.telefone || "").trim();
+            const cpf = String(clienteRecebido.cpf || req.usuario.cpf || "").trim();
 
-            const numero =
-                gerarNumeroPedido();
+            if (!nome || !email || !telefone || !cpf) {
+                return res.status(400).json({
+                    erro: "Nome, e-mail, telefone e CPF são obrigatórios."
+                });
+            }
 
-            const email =
-                req.usuario.email;
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                return res.status(400).json({
+                    erro: "Digite um e-mail válido."
+                });
+            }
 
-            const pagamentoResponse =
-                await fetch(
-                    "https://api.mercadopago.com/v1/payments",
-                    {
+            const numero = gerarNumeroPedido();
+            const payer = { email };
+            const cpfNumeros = cpf.replace(/\D/g, "");
 
-                        method: "POST",
+            if (cpfNumeros.length === 11) {
+                payer.identification = {
+                    type: "CPF",
+                    number: cpfNumeros
+                };
+            }
 
-                        headers: {
+            const pagamentoResponse = await fetch(
+                "https://api.mercadopago.com/v1/payments",
+                {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${MP_ACCESS_TOKEN}`,
+                        "Content-Type": "application/json",
+                        "X-Idempotency-Key": crypto.randomUUID()
+                    },
+                    body: JSON.stringify({
+                        transaction_amount: carrinho.total,
+                        description: `Pedido TECHSHOP ${numero}`,
+                        payment_method_id: "pix",
+                        payer,
+                        external_reference: numero
+                    })
+                }
+            );
 
-                            "Authorization":
-                                `Bearer ${MP_ACCESS_TOKEN}`,
+            const pagamento = await pagamentoResponse.json();
 
-                            "Content-Type":
-                                "application/json",
-
-                            "X-Idempotency-Key":
-                                crypto
-                                    .randomUUID()
-
-                        },
-
-                        body:
-                            JSON.stringify({
-
-                                transaction_amount:
-                                    carrinho.total,
-
-                                description:
-                                    `Pedido TECHSHOP ${numero}`,
-
-                                payment_method_id:
-                                    "pix",
-
-                                payer: {
-                                    email
-                                },
-
-                                external_reference:
-                                    numero
-
-                            })
-
-                    }
-                );
-
-            const pagamento =
-                await pagamentoResponse.json();
-
-            if (
-                !pagamentoResponse.ok
-            ) {
-
-                console.error(
-                    "Erro Mercado Pago:",
-                    pagamento
-                );
-
+            if (!pagamentoResponse.ok) {
+                console.error("Erro Mercado Pago:", pagamento);
                 return res.status(500).json({
-
                     erro:
+                        pagamento?.message ||
+                        pagamento?.error ||
                         "Não foi possível gerar o Pix.",
-
-                    detalhe:
-                        pagamento
-
+                    detalhe: pagamento
                 });
             }
+
+            const transactionData =
+                pagamento?.point_of_interaction?.transaction_data || {};
+
+            const qrCode = transactionData.qr_code || "";
+            const qrCodeBase64 = transactionData.qr_code_base64 || "";
+            const ticketUrl = transactionData.ticket_url || "";
 
             const pedido = {
-
                 numero,
-
-                usuarioId:
-                    req.usuario.id,
-
+                usuarioId: req.usuario.id,
                 cliente: {
-
-                    id:
-                        req.usuario.id,
-
-                    nome:
-                        clienteCheckout?.nome ||
-                        req.usuario.nome,
-
-                    email:
-                        clienteCheckout?.email ||
-                        req.usuario.email,
-
-                    telefone:
-                        clienteCheckout?.telefone ||
-                        req.usuario.telefone,
-
-                    cpf:
-                        req.usuario.cpf,
-
-                    cep:
-                        clienteCheckout?.cep || "",
-
-                    endereco:
-                        clienteCheckout?.endereco || "",
-
-                    numeroEndereco:
-                        clienteCheckout?.numeroEndereco || "",
-
-                    cidade:
-                        clienteCheckout?.cidade || "",
-
-                    estado:
-                        clienteCheckout?.estado || ""
-
+                    id: req.usuario.id,
+                    nome,
+                    email,
+                    telefone,
+                    cpf
                 },
-
-                produtos:
-                    carrinho.produtos,
-
-                valorTotal:
-                    carrinho.total,
-
-                status:
-                    "Aguardando pagamento",
-
+                enderecoEntrega: {
+                    cep: String(enderecoRecebido.cep || "").trim(),
+                    rua: String(enderecoRecebido.rua || enderecoRecebido.endereco || "").trim(),
+                    numero: String(enderecoRecebido.numero || "").trim(),
+                    complemento: String(enderecoRecebido.complemento || "").trim(),
+                    bairro: String(enderecoRecebido.bairro || "").trim(),
+                    cidade: String(enderecoRecebido.cidade || "").trim(),
+                    estado: String(enderecoRecebido.estado || "").trim().toUpperCase()
+                },
+                produtos: carrinho.produtos,
+                valorTotal: carrinho.total,
+                status: "Aguardando pagamento",
                 pagamento: {
-
-                    id:
-                        pagamento.id,
-
-                    status:
-                        pagamento.status,
-
-                    metodo:
-                        "pix",
-
-                    qrCode:
-                        pagamento.point_of_interaction
-                            ?.transaction_data
-                            ?.qr_code || "",
-
-                    qrCodeBase64:
-                        pagamento.point_of_interaction
-                            ?.transaction_data
-                            ?.qr_code_base64 || "",
-
-                    ticketUrl:
-                        pagamento.point_of_interaction
-                            ?.transaction_data
-                            ?.ticket_url || ""
-
+                    id: pagamento.id,
+                    status: pagamento.status,
+                    metodo: "pix",
+                    qrCode,
+                    qrCodeBase64,
+                    ticketUrl
                 },
-
-                criadoEm:
-                    new Date().toISOString(),
-
-                atualizadoEm:
-                    new Date().toISOString()
-
+                criadoEm: new Date().toISOString(),
+                atualizadoEm: new Date().toISOString()
             };
 
-            const pedidos =
-                lerJSON(
-                    pedidosFile,
-                    []
-                );
-
-            pedidos.push(
-                pedido
-            );
-
-            await salvarJSON(
-                pedidosFile,
-                pedidos
-            );
+            const pedidos = lerJSON(pedidosFile, []);
+            pedidos.push(pedido);
+            await salvarJSON(pedidosFile, pedidos);
 
             res.json({
-
                 sucesso: true,
-
                 numero,
-
-                valor:
-                    carrinho.total,
-
+                valor: carrinho.total,
                 pedido,
-
-                paymentId:
-                    pagamento.id,
-
-                qr_code:
-                    pedido.pagamento.qrCode,
-
-                qr_code_base64:
-                    pedido.pagamento.qrCodeBase64,
-
-                ticket_url:
-                    pedido.pagamento.ticketUrl,
-
-                status:
-                    pagamento.status
-
+                paymentId: pagamento.id,
+                qr_code: qrCode,
+                qr_code_base64: qrCodeBase64,
+                ticket_url: ticketUrl,
+                status: pagamento.status
             });
 
         } catch (erro) {
 
-            console.error(
-                "Erro ao gerar Pix:",
-                erro
-            );
+            console.error("Erro ao gerar Pix:", erro);
 
             res.status(500).json({
-
                 erro:
                     erro.message ||
                     "Erro ao gerar pagamento Pix."
-
             });
         }
 

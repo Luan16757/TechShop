@@ -1438,28 +1438,41 @@ function limparCarrinho() {
    CHECKOUT
 ========================================================= */
 
+function preencherDadosCheckout() {
+
+    const dados = {
+        nome: clienteAtual?.nome || "",
+        email: clienteAtual?.email || "",
+        telefone: clienteAtual?.telefone || "",
+        cpf: clienteAtual?.cpf || ""
+    };
+
+    for (const [id, valor] of Object.entries(dados)) {
+        const campo = document.getElementById(id);
+        if (campo && !campo.value) campo.value = valor;
+    }
+}
+
 function abrirCheckout() {
 
     if (!carrinho.length) {
+        alert("Seu carrinho está vazio.");
+        return;
+    }
 
-        alert(
-            "Seu carrinho está vazio."
-        );
-
+    if (!clienteAtual) {
+        alert("Faça login ou crie sua conta antes de finalizar o pedido.");
+        abrirConta();
         return;
     }
 
     fecharCarrinho();
 
-    const modal =
-        document.getElementById(
-            "checkoutModal"
-        );
-
+    const modal = document.getElementById("checkoutModal");
     if (!modal) return;
 
+    preencherDadosCheckout();
     modal.style.display = "flex";
-
     atualizarResumoCheckout();
 }
 
@@ -1550,218 +1563,135 @@ function atualizarResumoCheckout() {
 
 async function finalizarPedido(event) {
 
-    if (event) {
-        event.preventDefault();
-    }
-
-    const form = event?.currentTarget || document.querySelector(
-        '#checkoutModal form.checkout-form'
-    );
-
-    if (form && !form.checkValidity()) {
-        form.reportValidity();
-        return;
-    }
-
-    if (!clienteAtual) {
-        alert('Faça login na sua conta antes de finalizar o pedido.');
-        return;
-    }
-
-    await gerarPix();
-}
-
-
-async function gerarPix() {
+    if (event) event.preventDefault();
 
     if (!carrinho.length) {
-
-        alert(
-            "Seu carrinho está vazio."
-        );
-
+        alert("Seu carrinho está vazio.");
         return;
     }
 
-    const botao =
-        document.getElementById("finalizarBtn") ||
-        document.getElementById("btnGerarPix");
+    const dados = {
+        nome: document.getElementById("nome")?.value.trim() || "",
+        email: document.getElementById("email")?.value.trim().toLowerCase() || "",
+        telefone: document.getElementById("telefone")?.value.trim() || "",
+        cpf: document.getElementById("cpf")?.value.trim() || "",
+        cep: document.getElementById("cep")?.value.trim() || "",
+        endereco: document.getElementById("endereco")?.value.trim() || "",
+        numero: document.getElementById("numero")?.value.trim() || "",
+        complemento: document.getElementById("complemento")?.value.trim() || "",
+        bairro: document.getElementById("bairro")?.value.trim() || "",
+        cidade: document.getElementById("cidade")?.value.trim() || "",
+        estado: document.getElementById("estado")?.value.trim().toUpperCase() || ""
+    };
+
+    if (!dados.nome || !dados.email || !dados.telefone || !dados.cpf || !dados.cep || !dados.endereco || !dados.numero || !dados.bairro || !dados.cidade || !dados.estado) {
+        alert("Preencha todos os campos obrigatórios.");
+        return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(dados.email)) {
+        alert("Digite um e-mail válido.");
+        document.getElementById("email")?.focus();
+        return;
+    }
+
+    await gerarPix(dados);
+}
+
+async function gerarPix(dadosCheckout) {
+
+    const botao = document.getElementById("finalizarBtn") || document.getElementById("btnGerarPix");
 
     if (botao) {
-
         botao.disabled = true;
-
-        botao.textContent =
-            "Gerando Pix...";
+        botao.textContent = "Gerando Pix...";
     }
 
     try {
-
-        const resposta =
-            await fetch(
-                "/api/pix",
-                {
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    credentials: "include",
-
-                    body: JSON.stringify({
-
-                        itens:
-                            carrinho.map(item => ({
-                                id: Number(item.id),
-                                quantidade: Number(item.quantidade)
-                            })),
-
-                        cliente: {
-                            nome:
-                                document.getElementById("nome")?.value?.trim() ||
-                                clienteAtual?.nome || "",
-                            email:
-                                document.getElementById("email")?.value?.trim() ||
-                                clienteAtual?.email || "",
-                            telefone:
-                                document.getElementById("telefone")?.value?.trim() ||
-                                clienteAtual?.telefone || "",
-                            cep:
-                                document.getElementById("cep")?.value?.trim() || "",
-                            endereco:
-                                document.getElementById("endereco")?.value?.trim() || "",
-                            numeroEndereco:
-                                document.getElementById("numero")?.value?.trim() || "",
-                            cidade:
-                                document.getElementById("cidade")?.value?.trim() || "",
-                            estado:
-                                document.getElementById("estado")?.value?.trim().toUpperCase() || ""
-                        }
-
-                    })
+        const resposta = await fetch("/api/pix", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({
+                itens: carrinho.map(item => ({
+                    id: Number(item.id),
+                    quantidade: Number(item.quantidade)
+                })),
+                cliente: {
+                    nome: dadosCheckout.nome,
+                    email: dadosCheckout.email,
+                    telefone: dadosCheckout.telefone,
+                    cpf: dadosCheckout.cpf
+                },
+                endereco: {
+                    cep: dadosCheckout.cep,
+                    rua: dadosCheckout.endereco,
+                    numero: dadosCheckout.numero,
+                    complemento: dadosCheckout.complemento,
+                    bairro: dadosCheckout.bairro,
+                    cidade: dadosCheckout.cidade,
+                    estado: dadosCheckout.estado
                 }
-            );
+            })
+        });
 
-        const dados =
-            await resposta.json();
+        const texto = await resposta.text();
+        let dados;
+        try {
+            dados = texto ? JSON.parse(texto) : {};
+        } catch {
+            throw new Error("O servidor retornou uma resposta inválida ao gerar o Pix.");
+        }
 
         if (!resposta.ok) {
-
-            throw new Error(
-                dados.erro ||
-                dados.mensagem ||
-                "Erro ao gerar Pix."
-            );
+            throw new Error(dados.erro || dados.mensagem || dados.detalhe?.message || "Não foi possível gerar o Pix.");
         }
-
-        const qrBase64 =
-            dados.qr_code_base64 ||
-            dados.pedido?.pagamento?.qrCodeBase64 ||
-            "";
-
-        const qrCode =
-            dados.qr_code ||
-            dados.pedido?.pagamento?.qrCode ||
-            dados.pix_copia_e_cola ||
-            "";
-
-        const ticketUrl =
-            dados.ticket_url ||
-            dados.pedido?.pagamento?.ticketUrl ||
-            "";
-
-        if (!qrBase64 && !qrCode && !ticketUrl) {
-            throw new Error(
-                "O Mercado Pago não retornou os dados do Pix. Verifique o token e a configuração da conta."
-            );
-        }
-
-        fecharCheckout();
-
-        const modal =
-            document.getElementById("pixModal");
-
-        const resultado =
-            document.getElementById("pixResultado");
-
-        if (!modal || !resultado) {
-            throw new Error(
-                "A tela de pagamento Pix não foi encontrada."
-            );
-        }
-
-        resultado.innerHTML = `
-            <div class="pix-success">
-                <div class="pix-value" id="pixValor">${dinheiro(
-                    dados.valor || calcularTotalCarrinho()
-                )}</div>
-                <div class="pix-qr">
-                    <img id="pixQrCode" alt="QR Code Pix" ${
-                        qrBase64 ? '' : 'style="display:none"'
-                    }>
-                </div>
-                <p><strong>Pedido:</strong> <span id="pixNumeroPedido">${
-                    escaparHTML(
-                        dados.numero ||
-                        dados.pedido?.numero ||
-                        ""
-                    )
-                }</span></p>
-                <div class="pix-copy">
-                    <input id="pixCopiaCola" readonly value="">
-                    <button type="button" onclick="copiarPix()">Copiar Pix</button>
-                </div>
-                ${
-                    ticketUrl
-                        ? `<p><a class="checkout-button full" href="${escaparHTML(ticketUrl)}" target="_blank" rel="noopener">Abrir pagamento Mercado Pago</a></p>`
-                        : ""
-                }
-                <p class="pix-help">Abra o aplicativo do seu banco, escolha Pix e escaneie o QR Code ou use o Pix Copia e Cola.</p>
-            </div>
-        `;
 
         const qr = document.getElementById("pixQrCode");
+        const qrError = document.getElementById("pixQrError");
+        const qrBase64 = dados.qr_code_base64 || dados.pedido?.pagamento?.qrCodeBase64 || "";
+        const qrCode = dados.qr_code || dados.pedido?.pagamento?.qrCode || "";
+
         if (qr && qrBase64) {
-            qr.src = qrBase64.startsWith("data:")
-                ? qrBase64
-                : `data:image/png;base64,${qrBase64}`;
+            qr.src = qrBase64.startsWith("data:") ? qrBase64 : "data:image/png;base64," + qrBase64;
+            qr.style.display = "block";
+            if (qrError) qrError.style.display = "none";
+        } else if (qrError) {
+            if (qr) qr.style.display = "none";
+            qrError.style.display = "block";
         }
 
         const copia = document.getElementById("pixCopiaCola");
-        if (copia) {
-            copia.value = qrCode;
+        if (copia) copia.value = qrCode;
+
+        const valor = document.getElementById("pixValor");
+        if (valor) valor.textContent = dinheiro(dados.valor || dados.pedido?.valorTotal || calcularTotalCarrinho());
+
+        const numero = document.getElementById("pixNumeroPedido");
+        if (numero) numero.textContent = dados.numero || dados.pedido?.numero || "—";
+
+        const ticket = document.getElementById("pixTicketUrl");
+        const ticketUrl = dados.ticket_url || dados.pedido?.pagamento?.ticketUrl || "";
+        if (ticket) {
+            ticket.href = ticketUrl || "#";
+            ticket.style.display = ticketUrl ? "block" : "none";
         }
 
-        modal.style.display = "flex";
+        fecharCheckout();
+        const modal = document.getElementById("pixModal");
+        if (modal) modal.style.display = "flex";
 
-        /*
-         * Limpa carrinho depois de gerar
-         */
         carrinho = [];
-
         salvarCarrinho();
-
         atualizarCarrinhoInterface();
 
     } catch (erro) {
-
-        console.error(erro);
-
-        alert(
-            erro.message ||
-            "Não foi possível gerar o Pix."
-        );
-
+        console.error("Erro ao gerar Pix:", erro);
+        alert(erro.message || "Não foi possível gerar o Pix.");
     } finally {
-
         if (botao) {
-
             botao.disabled = false;
-
-            botao.textContent =
-                "Gerar Pix";
+            botao.textContent = "Gerar pagamento Pix";
         }
     }
 }
