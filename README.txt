@@ -1,6 +1,15 @@
-TECHSHOP V2
+TECHSHOP - PAINEL PEDIDOS V4
 
-Atualização apenas da loja: novo layout responsivo PC/celular, abas Sobre a loja e Suporte, e link direto para WhatsApp (19) 97154-4914.
+Arquivos:
+- admin.html
+- server.js
 
-Substituir: techshop.html e script.js.
-Não substituir server.js, .env ou netlify/functions.
+Correções:
+- pedidos exibem cliente e dados de entrega (telefone, CEP, endereço, número, cidade e estado)
+- status do pedido funciona sem erro de JavaScript
+- botão para excluir pedido aparece somente quando status = Cancelado
+- servidor bloqueia exclusão de pedidos que não estejam Cancelado
+- painel atualiza automaticamente a cada 5 segundos
+
+Instalação:
+Substitua admin.html e server.js no projeto atual. Não altere .env, Pix ou netlify/functions.

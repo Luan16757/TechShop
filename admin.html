@@ -641,6 +641,28 @@
                 var(--orange2);
         }
 
+        .cancelled-actions {
+
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 12px;
+        }
+
+        .delete-order-button {
+
+            border: 1px solid rgba(239,68,68,.30);
+            background: rgba(239,68,68,.10);
+            color: #fecaca;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .delete-order-button:hover {
+            background: rgba(239,68,68,.18);
+        }
+
         .updated {
 
             margin-top:
@@ -1623,6 +1645,21 @@ function criarPedidoCard(
             </div>
 
 
+            ${status === "Cancelado" ? `
+
+            <div class="cancelled-actions">
+
+                <button
+                    class="delete-order-button"
+                    onclick="excluirPedidoCancelado('${escapeJs(numero)}')"
+                >
+                    🗑️ Excluir pedido cancelado
+                </button>
+
+            </div>
+
+            ` : ""}
+
             <div class="updated">
 
                 Última atualização:
@@ -1703,14 +1740,6 @@ async function atualizarStatus(
                 }
             );
 
-        if (!resposta.ok) {
-
-            throw new Error(
-                dados.erro ||
-                "Não foi possível atualizar."
-            );
-        }
-
         mostrarToast(
             `Pedido #${numero} atualizado para "${status}".`,
             "success"
@@ -1722,6 +1751,56 @@ async function atualizarStatus(
 
         mostrarToast(
             erro.message,
+            "error"
+        );
+    }
+}
+
+
+/* =========================================================
+   EXCLUIR PEDIDO CANCELADO
+========================================================= */
+
+async function excluirPedidoCancelado(numero) {
+
+    const pedido = pedidos.find(
+        item => String(item.numero) === String(numero)
+    );
+
+    if (!pedido || pedido.status !== "Cancelado") {
+        mostrarToast(
+            "Somente pedidos cancelados podem ser excluídos.",
+            "error"
+        );
+        return;
+    }
+
+    const confirmar = window.confirm(
+        `Excluir definitivamente o pedido #${numero}?\n\nEssa ação não pode ser desfeita.`
+    );
+
+    if (!confirmar) return;
+
+    try {
+
+        await fetchAdmin(
+            `/api/pedidos/${encodeURIComponent(numero)}`,
+            {
+                method: "DELETE"
+            }
+        );
+
+        mostrarToast(
+            `Pedido #${numero} excluído.`,
+            "success"
+        );
+
+        await carregarPedidos();
+
+    } catch (erro) {
+
+        mostrarToast(
+            erro.message || "Não foi possível excluir o pedido.",
             "error"
         );
     }
@@ -1860,6 +1939,14 @@ function mostrarToast(
 ========================================================= */
 
 verificarAdmin();
+
+// Atualiza os pedidos automaticamente sem precisar apertar F5.
+setInterval(() => {
+    const app = document.getElementById("adminApp");
+    if (app && app.style.display !== "none" && tokenAdmin()) {
+        carregarPedidos();
+    }
+}, 5000);
 
 </script>
 

@@ -1362,26 +1362,32 @@ app.delete(
                 []
             );
 
-        const novosPedidos =
-            pedidos.filter(
+        const indice =
+            pedidos.findIndex(
                 p =>
-                    p.numero !==
+                    p.numero ===
                     req.params.numero
             );
 
-        if (
-            novosPedidos.length ===
-            pedidos.length
-        ) {
+        if (indice === -1) {
 
             return res.status(404).json({
                 erro: "Pedido não encontrado."
             });
         }
 
+        if (pedidos[indice].status !== "Cancelado") {
+
+            return res.status(400).json({
+                erro: "Somente pedidos com status Cancelado podem ser excluídos."
+            });
+        }
+
+        pedidos.splice(indice, 1);
+
         await salvarJSON(
             pedidosFile,
-            novosPedidos
+            pedidos
         );
 
         res.json({
