@@ -132,8 +132,21 @@ async function obterNetlifyStore() {
     const { getStore } =
         await import("@netlify/blobs");
 
-    // connectLambda(event) é executado antes de qualquer chamada a getStore.
-    // Criamos o store após essa inicialização para usar o contexto atual.
+    // Em Netlify Functions com serverless-http (Lambda compatibility),
+    // o contexto é inicializado em netlify/functions/api.js com connectLambda(event).
+    // Mantemos suporte opcional a credenciais explícitas via variáveis de ambiente.
+    const siteID = String(process.env.NETLIFY_SITE_ID || "").trim();
+    const token = String(process.env.NETLIFY_AUTH_TOKEN || "").trim();
+
+    if (siteID && token) {
+        return getStore({
+            name: "techshop-data",
+            consistency: "strong",
+            siteID,
+            token
+        });
+    }
+
     return getStore({
         name: "techshop-data",
         consistency: "strong"
@@ -268,7 +281,7 @@ app.use(
         }
 
         try {
-            await carregarDadosNetlify(true);
+            await carregarDadosNetlify(false);
             next();
         } catch (erro) {
             console.error(
