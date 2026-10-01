@@ -382,22 +382,49 @@ async function fazerLogin(event) {
     try {
         const resposta = await fetch("/api/cliente/login", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
             credentials: "include",
-            body: JSON.stringify({ email, senha })
+            body: JSON.stringify({
+                email,
+                senha
+            })
         });
 
-        const dados = await resposta.json().catch(() => ({}));
+        const texto = await resposta.text();
+
+        console.log("STATUS LOGIN:", resposta.status);
+        console.log("RESPOSTA LOGIN:", texto);
+
+        let dados = {};
+
+        try {
+            dados = texto ? JSON.parse(texto) : {};
+        } catch {
+            console.error("A API não retornou JSON.");
+        }
 
         if (!resposta.ok) {
             mostrarMensagem(
                 loginMessage,
-                dados.erro || dados.mensagem || "E-mail ou senha incorretos."
+                dados.erro ||
+                dados.mensagem ||
+                `Erro no servidor (${resposta.status}).`
             );
             return;
         }
 
         clienteAtual = dados.usuario || dados.cliente || null;
+
+        if (!clienteAtual) {
+            mostrarMensagem(
+                loginMessage,
+                "Login respondeu, mas não retornou os dados do usuário."
+            );
+            return;
+        }
 
         mostrarMensagem(
             loginMessage,
@@ -408,20 +435,22 @@ async function fazerLogin(event) {
         liberarLoja();
         atualizarInterfaceCliente();
         await carregarProdutos();
+
     } catch (erro) {
-        console.error(erro);
+        console.error("ERRO LOGIN:", erro);
+
         mostrarMensagem(
             loginMessage,
-            "Erro ao conectar com o servidor."
+            "Não foi possível conectar à API de login."
         );
+
     } finally {
         if (botao) {
             botao.disabled = false;
-            botao.textContent = "Entrar";
+            botao.textContent = "Entrar na TECHSHOP →";
         }
     }
 }
-
 /* =========================================================
    CADASTRO
    ========================================================= */
