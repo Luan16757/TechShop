@@ -11,12 +11,11 @@ const FRETE_RECOMPRA = 5;
 const FRETE_RAPIDO_EXTRA = 10;
 
 let checkoutFrete = {
-    primeiraCompra: true,
+    primeiraCompra: false,
+    verificado: false,
     tipo: "normal",
     valor: 0
 };
-
-let ultimoTotalCheckout = 0;
 
 /* =========================================================
    ELEMENTOS
@@ -36,7 +35,6 @@ const cadastroMessage = document.getElementById("cadastroMessage");
 
 function dinheiro(valor) {
     const numero = Number(valor) || 0;
-
     return numero.toLocaleString("pt-BR", {
         style: "currency",
         currency: "BRL"
@@ -70,9 +68,7 @@ function normalizarTexto(valor) {
 }
 
 function formatarCPF(valor = "") {
-    const numeros = String(valor)
-        .replace(/\D/g, "")
-        .slice(0, 11);
+    const numeros = String(valor).replace(/\D/g, "").slice(0, 11);
 
     return numeros
         .replace(/(\d{3})(\d)/, "$1.$2")
@@ -85,74 +81,29 @@ function formatarCPF(valor = "") {
    ========================================================= */
 
 function obterImagemProduto(produto) {
-
     const imagens = {
-
-        "kit 5 cabos iphone usb":
-            "/imagens/kit-5-cabos-iphone-usb.webp",
-
-        "kit 10 peliculas iphone xr ate 14":
-            "/imagens/kit-10-peliculas-iphone-xr-14.webp",
-
-        "suporte de celular para carro":
-            "/imagens/suporte-celular-carro.webp",
-
-        "kit 5 cabos usb tipo-c":
-            "/imagens/kit-5-cabos-usbc.webp",
-
-        "kit 5 cabos usb tipo c":
-            "/imagens/kit-5-cabos-usbc.webp",
-
-        "carregador turbo usb-c":
-            "/imagens/carregador-turbo-usbc.webp",
-
-        "carregador turbo usb c":
-            "/imagens/carregador-turbo-usbc.webp",
-
-        "cabo usb-c 1 metro":
-            "/imagens/cabo-usbc-1m.webp",
-
-        "cabo usb c 1 metro":
-            "/imagens/cabo-usbc-1m.webp",
-
-        "carregador veicular usb":
-            "/imagens/carregador-veicular-usb.webp",
-
-        "kit 5 fones m10 bluetooth":
-            "/imagens/kit-5-fones-m10-bluetooth.webp",
-
-        "fone bluetooth tws":
-            "/imagens/fone-tws.webp",
-
-        "caixa de som bluetooth":
-            "/imagens/caixa-som-bluetooth.webp",
-
-        "extensao filtro de linha 5 tomadas":
-            "/imagens/extensao-filtro-linha-5-tomadas.webp",
-
-        "power bank 20.000mah":
-            "/imagens/powerbank-20000.webp",
-
-        "power bank 20000mah":
-            "/imagens/powerbank-20000.webp",
-
-        "power bank pineng 10.000mah":
-            "/imagens/pineng-10000.webp",
-
-        "power bank pineng 10000mah":
-            "/imagens/pineng-10000.webp",
-
-        "mouse sem fio":
-            "/imagens/mouse-sem-fio.webp",
-
-        "teclado usb":
-            "/imagens/teclado-usb.webp",
-
-        "hub usb 4 portas":
-            "/imagens/hub-usb-4-portas.webp",
-
-        "mousepad gamer grande":
-            "/imagens/mousepad-gamer-grande.webp",
+        "kit 5 cabos iphone usb": "/imagens/kit-5-cabos-iphone-usb.webp",
+        "kit 10 peliculas iphone xr ate 14": "/imagens/kit-10-peliculas-iphone-xr-14.webp",
+        "suporte de celular para carro": "/imagens/suporte-celular-carro.webp",
+        "kit 5 cabos usb tipo-c": "/imagens/kit-5-cabos-usbc.webp",
+        "kit 5 cabos usb tipo c": "/imagens/kit-5-cabos-usbc.webp",
+        "carregador turbo usb-c": "/imagens/carregador-turbo-usbc.webp",
+        "carregador turbo usb c": "/imagens/carregador-turbo-usbc.webp",
+        "cabo usb-c 1 metro": "/imagens/cabo-usbc-1m.webp",
+        "cabo usb c 1 metro": "/imagens/cabo-usbc-1m.webp",
+        "carregador veicular usb": "/imagens/carregador-veicular-usb.webp",
+        "kit 5 fones m10 bluetooth": "/imagens/kit-5-fones-m10-bluetooth.webp",
+        "fone bluetooth tws": "/imagens/fone-tws.webp",
+        "caixa de som bluetooth": "/imagens/caixa-som-bluetooth.webp",
+        "extensao filtro de linha 5 tomadas": "/imagens/extensao-filtro-linha-5-tomadas.webp",
+        "power bank 20.000mah": "/imagens/powerbank-20000.webp",
+        "power bank 20000mah": "/imagens/powerbank-20000.webp",
+        "power bank pineng 10.000mah": "/imagens/pineng-10000.webp",
+        "power bank pineng 10000mah": "/imagens/pineng-10000.webp",
+        "mouse sem fio": "/imagens/mouse-sem-fio.webp",
+        "teclado usb": "/imagens/teclado-usb.webp",
+        "hub usb 4 portas": "/imagens/hub-usb-4-portas.webp",
+        "mousepad gamer grande": "/imagens/mousepad-gamer-grande.webp",
 
         "tela para iphone 11 a2111 a2221 a2223 display touch incell":
             "/imagens/tela-iphone-11-incell.webp",
@@ -181,9 +132,7 @@ function obterImagemProduto(produto) {
         produto?.imageUrl ||
         "";
 
-    if (!imagem) {
-        return "";
-    }
+    if (!imagem) return "";
 
     imagem = String(imagem).trim();
 
@@ -207,57 +156,32 @@ function obterImagemProduto(produto) {
     return "/imagens/" + imagem;
 }
 
-/* =========================================================
-   FALLBACK DE IMAGEM
-   ========================================================= */
-
 function imagemFallback(img) {
-
     if (!img) return;
 
     img.onerror = null;
 
     const svg = `
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="500"
-            height="500"
-            viewBox="0 0 500 500"
-        >
-            <rect
-                width="500"
-                height="500"
-                fill="#111111"
-            />
-
-            <text
-                x="250"
-                y="225"
-                text-anchor="middle"
-                fill="#ff7300"
-                font-size="42"
-                font-family="Arial"
-                font-weight="bold"
-            >
-                TECHSHOP
-            </text>
-
-            <text
-                x="250"
-                y="275"
-                text-anchor="middle"
-                fill="#777777"
-                font-size="20"
-                font-family="Arial"
-            >
-                Imagem indisponível
-            </text>
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width="500"
+             height="500"
+             viewBox="0 0 500 500">
+            <rect width="500" height="500" fill="#111111"/>
+            <text x="250" y="225"
+                  text-anchor="middle"
+                  fill="#ff7300"
+                  font-size="42"
+                  font-family="Arial"
+                  font-weight="bold">TECHSHOP</text>
+            <text x="250" y="275"
+                  text-anchor="middle"
+                  fill="#777777"
+                  font-size="20"
+                  font-family="Arial">Imagem indisponível</text>
         </svg>
     `;
 
-    img.src =
-        "data:image/svg+xml;charset=UTF-8," +
-        encodeURIComponent(svg);
+    img.src = "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
 }
 
 /* =========================================================
@@ -265,298 +189,139 @@ function imagemFallback(img) {
    ========================================================= */
 
 function liberarLoja() {
-
-    if (authScreen) {
-        authScreen.style.display = "none";
-    }
+    if (authScreen) authScreen.style.display = "none";
 
     if (siteContent) {
-
         siteContent.style.display = "block";
-
         siteContent.classList.add("active");
     }
 
-    document.body.classList.remove(
-        "site-bloqueado"
-    );
+    document.body.classList.remove("site-bloqueado");
 }
 
 function bloquearLoja() {
-
-    if (authScreen) {
-        authScreen.style.display = "flex";
-    }
+    if (authScreen) authScreen.style.display = "flex";
 
     if (siteContent) {
-
         siteContent.style.display = "none";
-
         siteContent.classList.remove("active");
     }
 
-    document.body.classList.add(
-        "site-bloqueado"
-    );
+    document.body.classList.add("site-bloqueado");
 }
 
-function mostrarMensagem(
-    elemento,
-    mensagem,
-    sucesso = false
-) {
-
+function mostrarMensagem(elemento, mensagem, sucesso = false) {
     if (!elemento) return;
 
     elemento.textContent = mensagem;
-
     elemento.style.display = "block";
-
-    elemento.style.color =
-        sucesso
-            ? "#22c55e"
-            : "#ff5555";
+    elemento.style.color = sucesso ? "#22c55e" : "#ff5555";
 }
 
-/* =========================================================
-   VERIFICAR CLIENTE
-   ========================================================= */
-
 async function verificarCliente() {
-
     try {
-
-        const resposta = await fetch(
-            "/api/cliente/me",
-            {
-                credentials: "include",
-                cache: "no-store"
-            }
-        );
+        const resposta = await fetch("/api/cliente/me", {
+            credentials: "include",
+            cache: "no-store"
+        });
 
         if (!resposta.ok) {
-
             bloquearLoja();
-
             return;
         }
 
-        const dados =
-            await resposta.json();
+        const dados = await resposta.json();
 
-        if (
-            dados.autenticado ||
-            dados.logado
-        ) {
-
-            clienteAtual =
-                dados.usuario ||
-                dados.cliente ||
-                null;
+        if (dados.autenticado || dados.logado) {
+            clienteAtual = dados.usuario || dados.cliente || null;
 
             liberarLoja();
-
             atualizarInterfaceCliente();
-
             await carregarProdutos();
-
         } else {
-
             clienteAtual = null;
-
             bloquearLoja();
         }
-
     } catch (erro) {
-
-        console.error(
-            "Erro ao verificar cliente:",
-            erro
-        );
-
+        console.error("Erro ao verificar cliente:", erro);
         bloquearLoja();
     }
 }
 
-/* =========================================================
-   ABAS LOGIN
-   ========================================================= */
-
 function mostrarLogin() {
-
-    const login =
-        document.getElementById(
-            "loginForm"
-        );
-
-    const cadastro =
-        document.getElementById(
-            "cadastroForm"
-        );
-
-    const tabLogin =
-        document.getElementById(
-            "tabLogin"
-        );
-
-    const tabCadastro =
-        document.getElementById(
-            "tabCadastro"
-        );
+    const login = document.getElementById("loginForm");
+    const cadastro = document.getElementById("cadastroForm");
+    const tabLogin = document.getElementById("tabLogin");
+    const tabCadastro = document.getElementById("tabCadastro");
 
     login?.classList.add("active");
-
-    cadastro?.classList.remove(
-        "active"
-    );
-
-    tabLogin?.classList.add(
-        "active"
-    );
-
-    tabCadastro?.classList.remove(
-        "active"
-    );
+    cadastro?.classList.remove("active");
+    tabLogin?.classList.add("active");
+    tabCadastro?.classList.remove("active");
 }
 
 function mostrarCadastro() {
+    const login = document.getElementById("loginForm");
+    const cadastro = document.getElementById("cadastroForm");
+    const tabLogin = document.getElementById("tabLogin");
+    const tabCadastro = document.getElementById("tabCadastro");
 
-    const login =
-        document.getElementById(
-            "loginForm"
-        );
+    login?.classList.remove("active");
+    cadastro?.classList.add("active");
+    tabLogin?.classList.remove("active");
+    tabCadastro?.classList.add("active");
 
-    const cadastro =
-        document.getElementById(
-            "cadastroForm"
-        );
-
-    const tabLogin =
-        document.getElementById(
-            "tabLogin"
-        );
-
-    const tabCadastro =
-        document.getElementById(
-            "tabCadastro"
-        );
-
-    login?.classList.remove(
-        "active"
-    );
-
-    cadastro?.classList.add(
-        "active"
-    );
-
-    tabLogin?.classList.remove(
-        "active"
-    );
-
-    tabCadastro?.classList.add(
-        "active"
-    );
-
-    const msg =
-        document.getElementById(
-            "cadastroMessage"
-        );
-
+    const msg = document.getElementById("cadastroMessage");
     if (msg) {
-
         msg.textContent = "";
-
         msg.style.display = "none";
     }
 }
 
-window.criarConta =
-    fazerCadastro;
-
-window.fazerCadastro =
-    fazerCadastro;
+window.criarConta = fazerCadastro;
+window.fazerCadastro = fazerCadastro;
 
 /* =========================================================
    LOGIN
    ========================================================= */
 
 async function fazerLogin(event) {
-
     event?.preventDefault();
 
-    const email =
-        document.getElementById(
-            "loginEmail"
-        )?.value.trim();
-
-    const senha =
-        document.getElementById(
-            "loginSenha"
-        )?.value || "";
+    const email = document.getElementById("loginEmail")?.value.trim();
+    const senha = document.getElementById("loginSenha")?.value || "";
 
     if (!email || !senha) {
-
-        mostrarMensagem(
-            loginMessage,
-            "Preencha e-mail e senha."
-        );
-
+        mostrarMensagem(loginMessage, "Preencha e-mail e senha.");
         return;
     }
 
-    const botao =
-        document.getElementById(
-            "loginButton"
-        );
+    const botao = document.getElementById("loginButton");
 
     if (botao) {
-
         botao.disabled = true;
-
-        botao.textContent =
-            "Entrando...";
+        botao.textContent = "Entrando...";
     }
 
     try {
+        const resposta = await fetch("/api/cliente/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ email, senha })
+        });
 
-        const resposta =
-            await fetch(
-                "/api/cliente/login",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-                    credentials: "include",
-                    body: JSON.stringify({
-                        email,
-                        senha
-                    })
-                }
-            );
-
-        const dados =
-            await resposta
-                .json()
-                .catch(() => ({}));
+        const dados = await resposta.json().catch(() => ({}));
 
         if (!resposta.ok) {
-
             mostrarMensagem(
                 loginMessage,
-                dados.erro ||
-                dados.mensagem ||
-                "E-mail ou senha incorretos."
+                dados.erro || dados.mensagem || "E-mail ou senha incorretos."
             );
-
             return;
         }
 
-        clienteAtual =
-            dados.usuario ||
-            dados.cliente ||
-            null;
+        clienteAtual = dados.usuario || dados.cliente || null;
 
         mostrarMensagem(
             loginMessage,
@@ -565,28 +330,18 @@ async function fazerLogin(event) {
         );
 
         liberarLoja();
-
         atualizarInterfaceCliente();
-
         await carregarProdutos();
-
     } catch (erro) {
-
         console.error(erro);
-
         mostrarMensagem(
             loginMessage,
             "Erro ao conectar com o servidor."
         );
-
     } finally {
-
         if (botao) {
-
             botao.disabled = false;
-
-            botao.textContent =
-                "Entrar";
+            botao.textContent = "Entrar";
         }
     }
 }
@@ -596,116 +351,61 @@ async function fazerLogin(event) {
    ========================================================= */
 
 async function fazerCadastro(event) {
-
     event?.preventDefault();
 
-    const nome =
-        document.getElementById(
-            "cadastroNome"
-        )?.value.trim();
+    const nome = document.getElementById("cadastroNome")?.value.trim();
+    const email = document.getElementById("cadastroEmail")?.value.trim();
+    const telefone = document.getElementById("cadastroTelefone")?.value.trim();
+    const cpf = document.getElementById("cadastroCpf")?.value.trim();
+    const senha = document.getElementById("cadastroSenha")?.value || "";
 
-    const email =
-        document.getElementById(
-            "cadastroEmail"
-        )?.value.trim();
-
-    const telefone =
-        document.getElementById(
-            "cadastroTelefone"
-        )?.value.trim();
-
-    const cpf =
-        document.getElementById(
-            "cadastroCpf"
-        )?.value.trim();
-
-    const senha =
-        document.getElementById(
-            "cadastroSenha"
-        )?.value || "";
-
-    if (
-        !nome ||
-        !email ||
-        !telefone ||
-        !cpf ||
-        !senha
-    ) {
-
-        mostrarMensagem(
-            cadastroMessage,
-            "Preencha todos os campos."
-        );
-
+    if (!nome || !email || !telefone || !cpf || !senha) {
+        mostrarMensagem(cadastroMessage, "Preencha todos os campos.");
         return;
     }
 
     if (senha.length < 6) {
-
         mostrarMensagem(
             cadastroMessage,
             "A senha precisa ter pelo menos 6 caracteres."
         );
-
         return;
     }
 
-    const botao =
-        document.getElementById(
-            "cadastroButton"
-        );
+    const botao = document.getElementById("cadastroButton");
 
     if (botao) {
-
         botao.disabled = true;
-
-        botao.textContent =
-            "Criando conta...";
+        botao.textContent = "Criando conta...";
     }
 
     try {
+        const resposta = await fetch("/api/cliente/cadastro", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({
+                nome,
+                email,
+                telefone,
+                cpf,
+                senha
+            })
+        });
 
-        const resposta =
-            await fetch(
-                "/api/cliente/cadastro",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-                    credentials: "include",
-                    body: JSON.stringify({
-                        nome,
-                        email,
-                        telefone,
-                        cpf,
-                        senha
-                    })
-                }
-            );
-
-        const dados =
-            await resposta
-                .json()
-                .catch(() => ({}));
+        const dados = await resposta.json().catch(() => ({}));
 
         if (!resposta.ok) {
-
             mostrarMensagem(
                 cadastroMessage,
                 dados.erro ||
                 dados.mensagem ||
                 "Não foi possível criar sua conta."
             );
-
             return;
         }
 
-        clienteAtual =
-            dados.usuario ||
-            dados.cliente ||
-            null;
+        clienteAtual = dados.usuario || dados.cliente || null;
 
         mostrarMensagem(
             cadastroMessage,
@@ -714,28 +414,18 @@ async function fazerCadastro(event) {
         );
 
         liberarLoja();
-
         atualizarInterfaceCliente();
-
         await carregarProdutos();
-
     } catch (erro) {
-
         console.error(erro);
-
         mostrarMensagem(
             cadastroMessage,
             "Erro ao conectar com o servidor."
         );
-
     } finally {
-
         if (botao) {
-
             botao.disabled = false;
-
-            botao.textContent =
-                "Criar conta";
+            botao.textContent = "Criar conta";
         }
     }
 }
@@ -745,76 +435,43 @@ async function fazerCadastro(event) {
    ========================================================= */
 
 async function fazerLogout() {
-
     try {
-
-        await fetch(
-            "/api/cliente/logout",
-            {
-                method: "POST",
-                credentials: "include"
-            }
-        );
-
+        await fetch("/api/cliente/logout", {
+            method: "POST",
+            credentials: "include"
+        });
     } catch (erro) {
-
-        console.error(
-            "Erro no logout:",
-            erro
-        );
+        console.error("Erro no logout:", erro);
     }
 
     clienteAtual = null;
-
     carrinho = [];
-
     salvarCarrinho();
-
     bloquearLoja();
-
     atualizarInterfaceCliente();
-
     atualizarCarrinhoInterface();
 }
 
 /* =========================================================
-   INTERFACE CLIENTE
+   INTERFACE DO CLIENTE
    ========================================================= */
 
 function atualizarInterfaceCliente() {
-
-    const botao =
-        document.getElementById(
-            "accountButtonText"
-        );
+    const botao = document.getElementById("accountButtonText");
 
     if (!clienteAtual) {
-
-        if (botao) {
-            botao.textContent =
-                "Conta";
-        }
-
+        if (botao) botao.textContent = "Conta";
         return;
     }
 
-    const nome =
-        clienteAtual.nome ||
-        clienteAtual.name ||
-        "Cliente";
+    const nome = clienteAtual.nome || clienteAtual.name || "Cliente";
 
     if (botao) {
-
         const primeiroNome =
-            String(nome)
-                .trim()
-                .split(/\s+/)[0] ||
-            "Conta";
+            String(nome).trim().split(/\s+/)[0] || "Conta";
 
         botao.textContent =
-            primeiroNome.length > 16
-                ? "Minha conta"
-                : primeiroNome;
+            primeiroNome.length > 16 ? "Minha conta" : primeiroNome;
     }
 }
 
@@ -823,7 +480,6 @@ function atualizarInterfaceCliente() {
    ========================================================= */
 
 async function carregarProdutos() {
-
     if (!productsContainer) return;
 
     productsContainer.innerHTML = `
@@ -833,71 +489,36 @@ async function carregarProdutos() {
     `;
 
     try {
-
-        const resposta =
-            await fetch(
-                "/api/produtos",
-                {
-                    credentials: "include",
-                    cache: "no-store"
-                }
-            );
+        const resposta = await fetch("/api/produtos", {
+            credentials: "include",
+            cache: "no-store"
+        });
 
         if (!resposta.ok) {
-
-            throw new Error(
-                "Erro ao carregar produtos."
-            );
+            throw new Error("Erro ao carregar produtos.");
         }
 
-        const dados =
-            await resposta.json();
+        const dados = await resposta.json();
 
         if (Array.isArray(dados)) {
-
             produtos = dados;
-
-        } else if (
-            Array.isArray(
-                dados.produtos
-            )
-        ) {
-
-            produtos =
-                dados.produtos;
-
-        } else if (
-            Array.isArray(
-                dados.products
-            )
-        ) {
-
-            produtos =
-                dados.products;
-
+        } else if (Array.isArray(dados.produtos)) {
+            produtos = dados.produtos;
+        } else if (Array.isArray(dados.products)) {
+            produtos = dados.products;
         } else {
-
             produtos = [];
         }
 
-        renderizarProdutos(
-            produtos
-        );
-
+        renderizarProdutos(produtos);
     } catch (erro) {
-
         console.error(erro);
 
         productsContainer.innerHTML = `
             <div class="erro-produtos">
                 Não foi possível carregar os produtos.
-
                 <br><br>
-
-                <button
-                    type="button"
-                    onclick="carregarProdutos()"
-                >
+                <button type="button" onclick="carregarProdutos()">
                     Tentar novamente
                 </button>
             </div>
@@ -905,328 +526,179 @@ async function carregarProdutos() {
     }
 }
 
-/* =========================================================
-   RENDERIZAR PRODUTOS
-   ========================================================= */
-
-function renderizarProdutos(
-    lista = produtos
-) {
-
-    const container =
-        document.getElementById(
-            "products"
-        );
-
+function renderizarProdutos(lista = produtos) {
+    const container = document.getElementById("products");
     if (!container) return;
 
-    const contador =
-        document.getElementById(
-            "productCount"
-        );
+    const contador = document.getElementById("productCount");
 
     if (contador) {
-
-        contador.textContent =
-            lista.length;
+        contador.textContent = lista.length;
     }
 
     if (!lista.length) {
-
         container.innerHTML = `
             <div class="produtos-vazio">
                 Nenhum produto encontrado.
             </div>
         `;
-
         return;
     }
 
-    container.innerHTML =
-        lista.map(produto => {
+    container.innerHTML = lista.map(produto => {
+        const id = produto?.id;
+        const nome = produto.nome || produto.name || "Produto";
+        const preco = Number(produto.preco ?? produto.price ?? 0);
+        const categoria =
+            produto.categoria ||
+            produto.category ||
+            "Tecnologia";
+        const imagem = obterImagemProduto(produto);
 
-            const id =
-                Number(produto.id);
+        return `
+            <article class="produto-card product-card">
+                <div class="produto-imagem product-image">
+                    ${
+                        imagem
+                            ? `
+                                <img
+                                    src="${escaparAtributo(imagem)}"
+                                    alt="${escaparAtributo(nome)}"
+                                    loading="lazy"
+                                    decoding="async"
+                                    onerror="imagemFallback(this)"
+                                >
+                            `
+                            : `
+                                <div class="product-no-image">
+                                    TECHSHOP
+                                </div>
+                            `
+                    }
+                </div>
 
-            const nome =
-                produto.nome ||
-                produto.name ||
-                "Produto";
+                <div class="produto-info product-info">
 
-            const preco =
-                Number(
-                    produto.preco ??
-                    produto.price ??
-                    0
-                );
+                    <span class="produto-categoria product-category">
+                        ${escaparHTML(categoria)}
+                    </span>
 
-            const categoria =
-                produto.categoria ||
-                produto.category ||
-                "Tecnologia";
+                    <h3 class="product-name">
+                        ${escaparHTML(nome)}
+                    </h3>
 
-            const imagem =
-                obterImagemProduto(
-                    produto
-                );
-
-            return `
-                <article
-                    class="produto-card product-card"
-                >
-
-                    <div
-                        class="produto-imagem product-image"
-                    >
-
-                        ${
-                            imagem
-                                ? `
-                                    <img
-                                        src="${escaparAtributo(imagem)}"
-                                        alt="${escaparAtributo(nome)}"
-                                        loading="lazy"
-                                        decoding="async"
-                                        onerror="imagemFallback(this)"
-                                    >
-                                `
-                                : `
-                                    <div class="product-no-image">
-                                        TECHSHOP
-                                    </div>
-                                `
-                        }
-
+                    <div class="produto-preco product-price">
+                        ${dinheiro(preco)}
                     </div>
 
-                    <div
-                        class="produto-info product-info"
+                    <button
+                        type="button"
+                        class="btn-comprar buy-btn"
+                        data-produto-id="${escaparAtributo(id)}"
+                        onclick='adicionarCarrinho(${JSON.stringify(id)})'
                     >
+                        🛒 Adicionar ao carrinho
+                    </button>
 
-                        <span
-                            class="produto-categoria product-category"
-                        >
-                            ${escaparHTML(
-                                categoria
-                            )}
-                        </span>
-
-                        <h3
-                            class="product-name"
-                        >
-                            ${escaparHTML(
-                                nome
-                            )}
-                        </h3>
-
-                        <div
-                            class="produto-preco product-price"
-                        >
-                            ${dinheiro(preco)}
-                        </div>
-
-                        <button
-                            type="button"
-                            class="btn-comprar buy-btn"
-                            onclick="adicionarCarrinho(${id})"
-                        >
-                            🛒 Adicionar ao carrinho
-                        </button>
-
-                    </div>
-
-                </article>
-            `;
-
-        }).join("");
+                </div>
+            </article>
+        `;
+    }).join("");
 }
 
 /* =========================================================
-   BUSCA
+   BUSCA / FILTRO
    ========================================================= */
 
 function buscarProdutos() {
-
     const campo =
-        document.getElementById(
-            "searchInput"
-        ) ||
-        document.getElementById(
-            "pesquisaProduto"
-        );
+        document.getElementById("searchInput") ||
+        document.getElementById("pesquisaProduto");
 
     if (!campo) return;
 
-    const termo =
-        normalizarTexto(
-            campo.value
-        );
+    const termo = normalizarTexto(campo.value);
 
     if (!termo) {
-
-        renderizarProdutos(
-            produtos
-        );
-
+        renderizarProdutos(produtos);
         return;
     }
 
-    const resultado =
-        produtos.filter(
-            produto => {
-
-                const nome =
-                    normalizarTexto(
-                        produto.nome ||
-                        produto.name ||
-                        ""
-                    );
-
-                const categoria =
-                    normalizarTexto(
-                        produto.categoria ||
-                        produto.category ||
-                        ""
-                    );
-
-                return (
-                    nome.includes(termo) ||
-                    categoria.includes(termo)
-                );
-            }
+    const resultado = produtos.filter(produto => {
+        const nome = normalizarTexto(
+            produto.nome ||
+            produto.name ||
+            ""
         );
 
-    renderizarProdutos(
-        resultado
-    );
+        const categoria = normalizarTexto(
+            produto.categoria ||
+            produto.category ||
+            ""
+        );
+
+        return (
+            nome.includes(termo) ||
+            categoria.includes(termo)
+        );
+    });
+
+    renderizarProdutos(resultado);
 }
 
-/* =========================================================
-   FILTRO
-   ========================================================= */
-
-function filtrarCategoria(
-    categoria
-) {
-
-    if (
-        !categoria ||
-        normalizarTexto(
-            categoria
-        ) === "todos"
-    ) {
-
-        renderizarProdutos(
-            produtos
-        );
-
+function filtrarCategoria(categoria) {
+    if (!categoria || normalizarTexto(categoria) === "todos") {
+        renderizarProdutos(produtos);
         return;
     }
 
-    const categoriaNormalizada =
-        normalizarTexto(
-            categoria
+    const categoriaNormalizada = normalizarTexto(categoria);
+
+    const resultado = produtos.filter(produto => {
+        const categoriaProduto = normalizarTexto(
+            produto.categoria ||
+            produto.category ||
+            ""
         );
 
-    const resultado =
-        produtos.filter(
-            produto => {
+        return categoriaProduto === categoriaNormalizada;
+    });
 
-                const categoriaProduto =
-                    normalizarTexto(
-                        produto.categoria ||
-                        produto.category ||
-                        ""
-                    );
-
-                return (
-                    categoriaProduto ===
-                    categoriaNormalizada
-                );
-            }
-        );
-
-    renderizarProdutos(
-        resultado
-    );
+    renderizarProdutos(resultado);
 }
 
 function configurarFiltrosCategoria() {
+    const botoes = document.querySelectorAll("[data-categoria]");
 
-    const botoes =
-        document.querySelectorAll(
-            "[data-categoria]"
-        );
+    botoes.forEach(botao => {
+        if (botao.dataset.bound === "1") return;
 
-    botoes.forEach(
-        botao => {
+        botao.dataset.bound = "1";
 
-            if (
-                botao.dataset.bound ===
-                "1"
-            ) {
-                return;
-            }
+        botao.addEventListener("click", function () {
+            botoes.forEach(item => {
+                item.classList.remove("active");
+                item.classList.remove("ativo");
+            });
 
-            botao.dataset.bound = "1";
+            this.classList.add("active");
+            this.classList.add("ativo");
 
-            botao.addEventListener(
-                "click",
-                function () {
-
-                    botoes.forEach(
-                        item => {
-
-                            item.classList.remove(
-                                "active"
-                            );
-
-                            item.classList.remove(
-                                "ativo"
-                            );
-                        }
-                    );
-
-                    this.classList.add(
-                        "active"
-                    );
-
-                    this.classList.add(
-                        "ativo"
-                    );
-
-                    filtrarCategoria(
-                        this.dataset.categoria
-                    );
-                }
-            );
-        }
-    );
+            filtrarCategoria(this.dataset.categoria);
+        });
+    });
 }
 
 function configurarPesquisa() {
-
     const campo =
-        document.getElementById(
-            "searchInput"
-        ) ||
-        document.getElementById(
-            "pesquisaProduto"
-        );
+        document.getElementById("searchInput") ||
+        document.getElementById("pesquisaProduto");
 
-    if (
-        !campo ||
-        campo.dataset.bound === "1"
-    ) {
-        return;
-    }
+    if (!campo || campo.dataset.bound === "1") return;
 
     campo.dataset.bound = "1";
 
-    campo.addEventListener(
-        "input",
-        buscarProdutos
-    );
+    campo.addEventListener("input", buscarProdutos);
 }
 
 /* =========================================================
@@ -1234,55 +706,28 @@ function configurarPesquisa() {
    ========================================================= */
 
 function adicionarCarrinho(id) {
-
-    const produto =
-        produtos.find(
-            item =>
-                Number(item.id) ===
-                Number(id)
-        );
+    const produto = produtos.find(
+        item => String(item.id) === String(id)
+    );
 
     if (!produto) {
-
-        alert(
-            "Produto não encontrado."
-        );
-
+        alert("Produto não encontrado.");
         return;
     }
 
-    const nome =
-        produto.nome ||
-        produto.name ||
-        "Produto";
+    const nome = produto.nome || produto.name || "Produto";
+    const preco = Number(produto.preco ?? produto.price ?? 0);
+    const imagem = obterImagemProduto(produto);
 
-    const preco =
-        Number(
-            produto.preco ??
-            produto.price ??
-            0
-        );
-
-    const imagem =
-        obterImagemProduto(
-            produto
-        );
-
-    const existente =
-        carrinho.find(
-            item =>
-                Number(item.id) ===
-                Number(produto.id)
-        );
+    const existente = carrinho.find(
+        item => String(item.id) === String(produto.id)
+    );
 
     if (existente) {
-
         existente.quantidade += 1;
-
     } else {
-
         carrinho.push({
-            id: Number(produto.id),
+            id: produto.id,
             nome,
             preco,
             imagem,
@@ -1291,1074 +736,599 @@ function adicionarCarrinho(id) {
     }
 
     salvarCarrinho();
-
     atualizarCarrinhoInterface();
 
     mostrarToastCarrinho(
-        nome,
-        existente
-            ? "Quantidade atualizada no carrinho."
-            : "Produto adicionado com sucesso."
+        "✅ " + (existente ? "Quantidade atualizada" : "Produto adicionado"),
+        nome + " foi " + (existente ? "atualizado" : "adicionado") + " ao carrinho."
     );
+
+    const botaoProduto = document.querySelector(`.buy-btn[data-produto-id="${CSS.escape(String(produto.id))}"]`);
+    if (botaoProduto) {
+        botaoProduto.classList.remove("added");
+        void botaoProduto.offsetWidth;
+        botaoProduto.classList.add("added");
+        setTimeout(() => botaoProduto.classList.remove("added"), 500);
+    }
 }
 
-function mostrarToastCarrinho(
-    titulo,
-    texto
-) {
-
-    const toast =
-        document.getElementById(
-            "cartToast"
-        );
-
-    const title =
-        document.getElementById(
-            "cartToastTitle"
-        );
-
-    const message =
-        document.getElementById(
-            "cartToastText"
-        );
+function mostrarToastCarrinho(titulo, texto) {
+    const toast = document.getElementById("cartToast");
+    const title = document.getElementById("cartToastTitle");
+    const message = document.getElementById("cartToastText");
 
     if (!toast) return;
 
-    if (title) {
-        title.textContent =
-            titulo;
-    }
+    if (title) title.textContent = titulo;
+    if (message) message.textContent = texto;
 
-    if (message) {
-        message.textContent =
-            texto;
-    }
+    toast.classList.add("show");
 
-    toast.classList.add(
-        "show"
-    );
+    clearTimeout(cartToastTimer);
 
-    clearTimeout(
-        cartToastTimer
-    );
-
-    cartToastTimer =
-        setTimeout(
-            () => {
-
-                toast.classList.remove(
-                    "show"
-                );
-
-            },
-            2200
-        );
+    cartToastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+    }, 2800);
 }
 
 function removerDoCarrinho(id) {
-
-    carrinho =
-        carrinho.filter(
-            item =>
-                Number(item.id) !==
-                Number(id)
-        );
+    carrinho = carrinho.filter(
+        item => String(item.id) !== String(id)
+    );
 
     salvarCarrinho();
-
     atualizarCarrinhoInterface();
 }
 
-function alterarQuantidade(
-    id,
-    quantidade
-) {
-
-    const item =
-        carrinho.find(
-            produto =>
-                Number(produto.id) ===
-                Number(id)
-        );
+function alterarQuantidade(id, quantidade) {
+    const item = carrinho.find(
+        produto => String(produto.id) === String(id)
+    );
 
     if (!item) return;
 
-    quantidade =
-        Number(quantidade);
+    quantidade = Number(quantidade);
 
     if (quantidade <= 0) {
-
-        removerDoCarrinho(
-            id
-        );
-
+        removerDoCarrinho(id);
         return;
     }
 
-    item.quantidade =
-        quantidade;
+    item.quantidade = quantidade;
 
     salvarCarrinho();
-
     atualizarCarrinhoInterface();
 }
 
 function aumentarQuantidade(id) {
-
-    const item =
-        carrinho.find(
-            produto =>
-                Number(produto.id) ===
-                Number(id)
-        );
+    const item = carrinho.find(
+        produto => String(produto.id) === String(id)
+    );
 
     if (!item) return;
 
     item.quantidade++;
 
     salvarCarrinho();
-
     atualizarCarrinhoInterface();
 }
 
 function diminuirQuantidade(id) {
-
-    const item =
-        carrinho.find(
-            produto =>
-                Number(produto.id) ===
-                Number(id)
-        );
+    const item = carrinho.find(
+        produto => String(produto.id) === String(id)
+    );
 
     if (!item) return;
 
     item.quantidade--;
 
-    if (
-        item.quantidade <= 0
-    ) {
-
-        removerDoCarrinho(
-            id
-        );
-
+    if (item.quantidade <= 0) {
+        removerDoCarrinho(id);
         return;
     }
 
     salvarCarrinho();
-
     atualizarCarrinhoInterface();
 }
 
 function calcularTotalCarrinho() {
-
-    return carrinho.reduce(
-        (
-            total,
-            item
-        ) => {
-
-            return total +
-                Number(
-                    item.preco
-                ) *
-                Number(
-                    item.quantidade
-                );
-
-        },
-        0
-    );
+    return carrinho.reduce((total, item) => {
+        return total +
+            Number(item.preco) *
+            Number(item.quantidade);
+    }, 0);
 }
 
 function calcularQuantidadeCarrinho() {
-
-    return carrinho.reduce(
-        (
-            total,
-            item
-        ) => {
-
-            return total +
-                Number(
-                    item.quantidade
-                );
-
-        },
-        0
-    );
+    return carrinho.reduce((total, item) => {
+        return total + Number(item.quantidade);
+    }, 0);
 }
 
 function salvarCarrinho() {
-
     try {
-
         localStorage.setItem(
             "techshop_carrinho",
-            JSON.stringify(
-                carrinho
-            )
+            JSON.stringify(carrinho)
         );
-
     } catch (erro) {
-
-        console.error(
-            "Erro ao salvar carrinho:",
-            erro
-        );
+        console.error("Erro ao salvar carrinho:", erro);
     }
 }
 
 function carregarCarrinho() {
-
     try {
-
-        const salvo =
-            localStorage.getItem(
-                "techshop_carrinho"
-            );
+        const salvo = localStorage.getItem("techshop_carrinho");
 
         if (!salvo) {
-
             carrinho = [];
-
             return;
         }
 
-        const dados =
-            JSON.parse(
-                salvo
-            );
+        const dados = JSON.parse(salvo);
 
-        carrinho =
-            Array.isArray(dados)
-                ? dados
-                : [];
-
+        carrinho = Array.isArray(dados)
+            ? dados
+            : [];
     } catch (erro) {
-
-        console.error(
-            "Erro ao carregar carrinho:",
-            erro
-        );
-
+        console.error("Erro ao carregar carrinho:", erro);
         carrinho = [];
     }
 }
 
 function atualizarCarrinhoInterface() {
+    const quantidade = calcularQuantidadeCarrinho();
+    const total = calcularTotalCarrinho();
 
-    const quantidade =
-        calcularQuantidadeCarrinho();
-
-    const total =
-        calcularTotalCarrinho();
-
-    const contador =
-        document.getElementById(
-            "cartCount"
-        );
+    const contador = document.getElementById("cartCount");
 
     if (contador) {
-
-        contador.textContent =
-            quantidade;
-
-        contador.style.display =
-            quantidade > 0
-                ? "flex"
-                : "none";
+        contador.textContent = quantidade;
+        contador.style.display = quantidade > 0 ? "flex" : "none";
     }
 
-    const totalElement =
-        document.getElementById(
-            "cartTotal"
-        );
-
+    const totalElement = document.getElementById("cartTotal");
     if (totalElement) {
-
-        totalElement.textContent =
-            dinheiro(total);
+        totalElement.textContent = dinheiro(total);
     }
 
-    const resumoItens =
-        document.getElementById(
-            "cartItemsSummary"
-        );
-
+    const resumoItens = document.getElementById("cartItemsSummary");
     if (resumoItens) {
-
-        resumoItens.textContent =
-            quantidade;
+        resumoItens.textContent = quantidade;
     }
 
-    const summaryBox =
-        document.getElementById(
-            "cartSummaryBox"
-        );
-
+    const summaryBox = document.getElementById("cartSummaryBox");
     if (summaryBox) {
-
-        summaryBox.style.display =
-            carrinho.length
-                ? "block"
-                : "none";
+        summaryBox.style.display = carrinho.length ? "block" : "none";
     }
 
     const checkoutButton =
-        document.getElementById(
-            "cartCheckoutButton"
-        );
+        document.getElementById("cartCheckoutButton");
 
     if (checkoutButton) {
-
-        checkoutButton.disabled =
-            !carrinho.length;
+        checkoutButton.disabled = !carrinho.length;
     }
 
-    const lista =
-        document.getElementById(
-            "cartItems"
-        );
-
+    const lista = document.getElementById("cartItems");
     if (!lista) return;
 
     if (!carrinho.length) {
-
         lista.innerHTML = `
-
-            <div
-                class="cart-empty-modern"
-            >
-
-                <div
-                    class="empty-cart-icon"
-                >
-                    🛒
-                </div>
-
-                <h3>
-                    Seu carrinho está vazio
-                </h3>
-
+            <div class="cart-empty-modern">
+                <div class="empty-cart-icon">🛒</div>
+                <h3>Seu carrinho está vazio</h3>
                 <p>
                     Adicione produtos da loja e eles aparecerão aqui.
                 </p>
-
             </div>
-
         `;
-
         return;
     }
 
-    lista.innerHTML =
-        carrinho.map(
-            item => {
+    lista.innerHTML = carrinho.map(item => {
+        const subtotal =
+            Number(item.preco) *
+            Number(item.quantidade);
 
-                const subtotal =
-                    Number(
-                        item.preco
-                    ) *
-                    Number(
-                        item.quantidade
-                    );
+        return `
+            <div class="cart-item">
 
-                return `
-
-                    <div
-                        class="cart-item"
+                <div class="cart-item-image">
+                    <img
+                        src="${escaparAtributo(item.imagem || "")}"
+                        alt="${escaparAtributo(item.nome)}"
+                        onerror="imagemFallback(this)"
                     >
+                </div>
 
-                        <div
-                            class="cart-item-image"
+                <div class="cart-item-info">
+
+                    <h4>
+                        ${escaparHTML(item.nome)}
+                    </h4>
+
+                    <strong>
+                        ${dinheiro(subtotal)}
+                    </strong>
+
+                    <div class="cart-item-actions">
+
+                        <button
+                            type="button"
+                            aria-label="Diminuir"
+                            onclick="diminuirQuantidade(${Number(item.id)})"
                         >
+                            −
+                        </button>
 
-                            <img
-                                src="${escaparAtributo(
-                                    item.imagem || ""
-                                )}"
-                                alt="${escaparAtributo(
-                                    item.nome
-                                )}"
-                                onerror="imagemFallback(this)"
-                            >
+                        <span>
+                            ${Number(item.quantidade)}
+                        </span>
 
-                        </div>
-
-                        <div
-                            class="cart-item-info"
+                        <button
+                            type="button"
+                            aria-label="Aumentar"
+                            onclick="aumentarQuantidade(${Number(item.id)})"
                         >
+                            +
+                        </button>
 
-                            <h4>
-                                ${escaparHTML(
-                                    item.nome
-                                )}
-                            </h4>
-
-                            <strong>
-                                ${dinheiro(
-                                    subtotal
-                                )}
-                            </strong>
-
-                            <div
-                                class="cart-item-actions"
-                            >
-
-                                <button
-                                    type="button"
-                                    aria-label="Diminuir"
-                                    onclick="diminuirQuantidade(${Number(
-                                        item.id
-                                    )})"
-                                >
-                                    −
-                                </button>
-
-                                <span>
-                                    ${Number(
-                                        item.quantidade
-                                    )}
-                                </span>
-
-                                <button
-                                    type="button"
-                                    aria-label="Aumentar"
-                                    onclick="aumentarQuantidade(${Number(
-                                        item.id
-                                    )})"
-                                >
-                                    +
-                                </button>
-
-                                <button
-                                    type="button"
-                                    class="cart-remove"
-                                    aria-label="Remover"
-                                    onclick="removerDoCarrinho(${Number(
-                                        item.id
-                                    )})"
-                                >
-                                    🗑
-                                </button>
-
-                            </div>
-
-                        </div>
+                        <button
+                            type="button"
+                            class="cart-remove"
+                            aria-label="Remover"
+                            onclick="removerDoCarrinho(${Number(item.id)})"
+                        >
+                            🗑
+                        </button>
 
                     </div>
-
-                `;
-
-            }
-        ).join("");
+                </div>
+            </div>
+        `;
+    }).join("");
 }
 
-/* =========================================================
-   ABRIR / FECHAR CARRINHO
-   ========================================================= */
-
 function abrirCarrinho() {
-
-    const modal =
-        document.getElementById(
-            "cartModal"
-        );
+    const modal = document.getElementById("cartModal");
 
     if (!modal) return;
 
-    modal.classList.add(
-        "active"
-    );
-
-    modal.style.display =
-        "flex";
-
-    modal.setAttribute(
-        "aria-hidden",
-        "false"
-    );
+    modal.classList.add("active");
+    modal.style.display = "flex";
+    modal.setAttribute("aria-hidden", "false");
 
     atualizarCarrinhoInterface();
 }
 
 function fecharCarrinho() {
-
-    const modal =
-        document.getElementById(
-            "cartModal"
-        );
+    const modal = document.getElementById("cartModal");
 
     if (!modal) return;
 
-    modal.classList.remove(
-        "active"
-    );
-
-    modal.style.display =
-        "none";
-
-    modal.setAttribute(
-        "aria-hidden",
-        "true"
-    );
+    modal.classList.remove("active");
+    modal.style.display = "none";
+    modal.setAttribute("aria-hidden", "true");
 }
 
 function limparCarrinho() {
-
     carrinho = [];
-
     salvarCarrinho();
-
     atualizarCarrinhoInterface();
 }
 
 /* =========================================================
-   ENTREGA / CHECKOUT
+   FRETE / CHECKOUT
    ========================================================= */
 
 function obterTipoEntregaSelecionado() {
+    const radio = document.querySelector(
+        'input[name="tipoEntrega"]:checked'
+    );
 
-    const radio =
-        document.querySelector(
-            'input[name="tipoEntrega"]:checked'
-        );
-
-    return radio?.value ===
-        "rapida"
+    return radio?.value === "rapida"
         ? "rapida"
         : "normal";
 }
 
-/* =========================================================
-   PRIMEIRA COMPRA
-   ========================================================= */
+function calcularFreteCheckout() {
+    const tipo = obterTipoEntregaSelecionado();
+
+    const freteNormal = checkoutFrete.primeiraCompra
+        ? 0
+        : FRETE_RECOMPRA;
+
+    const freteFinal =
+        tipo === "rapida"
+            ? freteNormal + FRETE_RAPIDO_EXTRA
+            : freteNormal;
+
+    checkoutFrete.tipo = tipo;
+    checkoutFrete.valor = freteFinal;
+
+    return freteFinal;
+}
 
 async function verificarPrimeiraCompra() {
-
-    checkoutFrete.primeiraCompra =
-        true;
+    checkoutFrete = {
+        primeiraCompra: false,
+        verificado: false,
+        tipo: "normal",
+        valor: FRETE_RECOMPRA
+    };
 
     try {
+        const resposta = await fetch(
+            "/api/cliente/pedidos",
+            {
+                credentials: "include",
+                cache: "no-store"
+            }
+        );
 
-        const resposta =
-            await fetch(
-                "/api/cliente/pedidos",
-                {
-                    credentials:
-                        "include",
-                    cache:
-                        "no-store"
-                }
-            );
-
-        const dados =
-            await resposta
-                .json()
-                .catch(
-                    () => []
-                );
+        const dados = await resposta.json().catch(() => []);
 
         if (!resposta.ok) {
-
-            throw new Error(
-                "Não foi possível consultar os pedidos."
-            );
+            throw new Error("Não foi possível verificar o histórico.");
         }
 
         const pedidos =
-            Array.isArray(
-                dados
-            )
+            Array.isArray(dados)
                 ? dados
-                : Array.isArray(
-                    dados.pedidos
-                )
+                : Array.isArray(dados.pedidos)
                     ? dados.pedidos
                     : [];
 
         checkoutFrete.primeiraCompra =
             pedidos.length === 0;
 
-    } catch (erro) {
+        checkoutFrete.verificado = true;
 
-        console.warn(
+        atualizarTextosEntrega();
+    } catch (erro) {
+        console.error(
             "Erro ao verificar primeira compra:",
             erro
         );
 
         /*
-         * Não bloqueia o checkout.
-         * A validação definitiva deve ser feita pelo backend.
+         * Se o histórico não puder ser confirmado,
+         * evita liberar frete grátis incorretamente.
          */
-        checkoutFrete.primeiraCompra =
-            true;
+        checkoutFrete.primeiraCompra = false;
+        checkoutFrete.verificado = false;
+
+        atualizarTextosEntrega();
     }
 
-    atualizarTextosEntrega();
-
-    atualizarResumoCheckout();
+    calcularFreteCheckout();
 }
 
-/* =========================================================
-   CALCULAR VALOR FIXO DA ENTREGA
-   ========================================================= */
-
-function obterValorEntrega() {
-
-    const tipo =
-        obterTipoEntregaSelecionado();
+function atualizarTextosEntrega() {
+    const normal = document.getElementById("textoFreteNormal");
+    const rapida = document.getElementById("textoFreteRapida");
 
     const freteNormal =
         checkoutFrete.primeiraCompra
             ? 0
             : FRETE_RECOMPRA;
 
-    const freteFinal =
-        tipo === "rapida"
-            ? freteNormal +
-              FRETE_RAPIDO_EXTRA
-            : freteNormal;
-
-    checkoutFrete.tipo =
-        tipo;
-
-    checkoutFrete.valor =
-        freteFinal;
-
-    return freteFinal;
-}
-
-/* =========================================================
-   TEXTOS DA ENTREGA
-   ========================================================= */
-
-function atualizarTextosEntrega() {
-
-    const normal =
-        document.getElementById(
-            "textoFreteNormal"
-        );
-
-    const rapida =
-        document.getElementById(
-            "textoFreteRapida"
-        );
-
-    const primeiraCompra =
-        checkoutFrete.primeiraCompra;
-
-
     if (normal) {
-
         normal.textContent =
-            primeiraCompra
-                ? "🎁 Frete grátis na primeira compra"
-                : "R$ 5,00 de frete";
+            checkoutFrete.primeiraCompra
+                ? "🎁 Frete grátis na sua primeira compra"
+                : `R$ ${freteNormal.toFixed(2).replace(".", ",")} de frete`;
     }
-
 
     if (rapida) {
-
         rapida.textContent =
-            primeiraCompra
-                ? "+ R$ 10,00 • total R$ 10,00"
-                : "+ R$ 10,00 • total R$ 15,00";
+            checkoutFrete.primeiraCompra
+                ? "+ R$ 10,00 • primeira compra com frete normal grátis"
+                : "+ R$ 10,00 • total do frete: R$ 15,00";
     }
 }
 
-/* =========================================================
-   EVENTOS DAS OPÇÕES
-   ========================================================= */
-
 function configurarEntregaCheckout() {
+    document
+        .querySelectorAll('input[name="tipoEntrega"]')
+        .forEach(radio => {
 
-    const radios =
-        document.querySelectorAll(
-            'input[name="tipoEntrega"]'
-        );
-
-    radios.forEach(
-        radio => {
-
-            if (
-                radio.dataset.bound ===
-                "1"
-            ) {
+            if (radio.dataset.bound === "1") {
                 return;
             }
 
-            radio.dataset.bound =
-                "1";
+            radio.dataset.bound = "1";
 
             radio.addEventListener(
                 "change",
                 () => {
-
-                    checkoutFrete.tipo =
-                        obterTipoEntregaSelecionado();
-
-                    atualizarTextosEntrega();
-
+                    calcularFreteCheckout();
                     atualizarResumoCheckout();
                 }
             );
-        }
-    );
+        });
 }
 
-/* =========================================================
-   ABRIR CHECKOUT
-   ========================================================= */
-
 async function abrirCheckout() {
-
     if (!carrinho.length) {
-
-        alert(
-            "Seu carrinho está vazio."
-        );
-
+        alert("Seu carrinho está vazio.");
         return;
     }
 
     fecharCarrinho();
 
-    const modal =
-        document.getElementById(
-            "checkoutModal"
-        );
+    const modal = document.getElementById("checkoutModal");
 
     if (!modal) return;
 
-    modal.style.display =
-        "flex";
+    modal.style.display = "flex";
 
-    const nome =
-        document.getElementById(
-            "nome"
-        );
-
-    const email =
-        document.getElementById(
-            "email"
-        );
-
-    const telefone =
-        document.getElementById(
-            "telefone"
-        );
-
-    const cpf =
-        document.getElementById(
-            "cpf"
-        );
+    const nome = document.getElementById("nome");
+    const email = document.getElementById("email");
+    const telefone = document.getElementById("telefone");
+    const cpf = document.getElementById("cpf");
 
     if (nome) {
-
-        nome.value =
-            clienteAtual?.nome ||
-            "";
+        nome.value = clienteAtual?.nome || "";
     }
 
     if (email) {
-
-        email.value =
-            clienteAtual?.email ||
-            "";
+        email.value = clienteAtual?.email || "";
     }
 
-    if (
-        telefone &&
-        !telefone.value
-    ) {
-
-        telefone.value =
-            clienteAtual?.telefone ||
-            "";
+    if (telefone && !telefone.value) {
+        telefone.value = clienteAtual?.telefone || "";
     }
 
-    if (
-        cpf &&
-        !cpf.value
-    ) {
-
-        cpf.value =
-            formatarCPF(
-                clienteAtual?.cpf ||
-                ""
-            );
-    }
-
-    checkoutFrete.tipo =
-        "normal";
-
-    const normal =
-        document.querySelector(
-            'input[name="tipoEntrega"][value="normal"]'
+    if (cpf && !cpf.value) {
+        cpf.value = formatarCPF(
+            clienteAtual?.cpf || ""
         );
+    }
+
+    const normal = document.getElementById("entregaNormal");
 
     if (normal) {
-
-        normal.checked =
-            true;
+        normal.checked = true;
     }
 
     configurarEntregaCheckout();
 
-    /*
-     * Mostra imediatamente a mensagem correta.
-     */
-    atualizarTextosEntrega();
+    const resumo = document.getElementById("checkoutResumo");
 
-    atualizarResumoCheckout();
+    if (resumo) {
+        resumo.innerHTML = `
+            <div class="resumo-checkout">
+                <h3>Verificando condição de frete...</h3>
+            </div>
+        `;
+    }
 
-    /*
-     * Verifica se o cliente já comprou.
-     */
     await verificarPrimeiraCompra();
+    atualizarResumoCheckout();
 }
 
-/* =========================================================
-   FECHAR CHECKOUT
-   ========================================================= */
-
 function fecharCheckout() {
-
-    const modal =
-        document.getElementById(
-            "checkoutModal"
-        );
+    const modal = document.getElementById("checkoutModal");
 
     if (!modal) return;
 
-    modal.style.display =
-        "none";
+    modal.style.display = "none";
 }
 
-/* =========================================================
-   RESUMO DO CHECKOUT
-   ========================================================= */
-
 function atualizarResumoCheckout() {
-
     const resumo =
-        document.getElementById(
-            "checkoutResumo"
-        );
+        document.getElementById("checkoutResumo");
 
     if (!resumo) return;
 
-    const subtotal =
-        calcularTotalCarrinho();
-
-    const frete =
-        obterValorEntrega();
-
-    const total =
-        subtotal + frete;
-
-    ultimoTotalCheckout =
-        total;
+    const subtotal = calcularTotalCarrinho();
+    const frete = calcularFreteCheckout();
+    const total = subtotal + frete;
 
     const tipoEntrega =
-        checkoutFrete.tipo ===
-            "rapida"
+        checkoutFrete.tipo === "rapida"
             ? "⚡ Entrega rápida"
             : "📦 Entrega normal";
 
-    resumo.innerHTML = `
+    const textoFrete =
+        frete === 0
+            ? "GRÁTIS"
+            : dinheiro(frete);
 
-        <div
-            class="resumo-checkout"
-        >
+    resumo.innerHTML = `
+        <div class="resumo-checkout">
 
             <h3>
                 Resumo do pedido
             </h3>
 
-            ${carrinho.map(
-                item => `
+            ${carrinho.map(item => `
+                <div class="resumo-item">
 
-                    <div
-                        class="resumo-item"
-                    >
+                    <span>
+                        ${escaparHTML(item.nome)}
+                        × ${item.quantidade}
+                    </span>
 
-                        <span>
+                    <strong>
+                        ${dinheiro(
+                            Number(item.preco) *
+                            Number(item.quantidade)
+                        )}
+                    </strong>
 
-                            ${escaparHTML(
-                                item.nome
-                            )}
+                </div>
+            `).join("")}
 
-                            ×
-                            ${item.quantidade}
-
-                        </span>
-
-                        <strong>
-
-                            ${dinheiro(
-                                Number(
-                                    item.preco
-                                ) *
-                                Number(
-                                    item.quantidade
-                                )
-                            )}
-
-                        </strong>
-
-                    </div>
-
-                `
-            ).join("")}
-
-            <div
-                class="resumo-item"
-            >
-
-                <span>
-                    🛍️ Subtotal
-                </span>
-
-                <strong>
-                    ${dinheiro(
-                        subtotal
-                    )}
-                </strong>
-
+            <div class="resumo-item">
+                <span>🛍️ Subtotal</span>
+                <strong>${dinheiro(subtotal)}</strong>
             </div>
 
-            <div
-                class="resumo-item"
-            >
-
-                <span>
-                    ${tipoEntrega}
-                </span>
-
-                <strong
-                    style="
-                        color:${
-                            frete === 0
-                                ? "#65d98a"
-                                : "#fff"
-                        };
-                    "
-                >
-
-                    ${
-                        frete === 0
-                            ? "GRÁTIS"
-                            : dinheiro(
-                                frete
-                            )
-                    }
-
+            <div class="resumo-item">
+                <span>${tipoEntrega}</span>
+                <strong style="color:${frete === 0 ? "#65d98a" : "#fff"};">
+                    ${textoFrete}
                 </strong>
-
             </div>
 
-            <div
-                class="resumo-total"
-            >
+            <div class="resumo-total">
 
                 <span>
                     Total
                 </span>
 
                 <strong>
-
-                    ${dinheiro(
-                        total
-                    )}
-
+                    ${dinheiro(total)}
                 </strong>
 
             </div>
 
         </div>
-
     `;
 }
 
 /* =========================================================
-   FINALIZAR PEDIDO / PAGAMENTO
+   FINALIZAR PEDIDO / PIX
    ========================================================= */
 
 async function finalizarPedido(event) {
-
-    if (event) {
-        event.preventDefault();
-    }
+    event?.preventDefault();
 
     if (!carrinho.length) {
-
-        alert(
-            "Seu carrinho está vazio."
-        );
-
+        alert("Seu carrinho está vazio.");
         fecharCheckout();
-
         return;
     }
 
     const telefone =
-        document.getElementById(
-            "telefone"
-        )?.value.trim() ||
-        "";
+        document.getElementById("telefone")?.value.trim() || "";
 
     const cpf =
-        document.getElementById(
-            "cpf"
-        )?.value.trim() ||
-        "";
+        document.getElementById("cpf")?.value.trim() || "";
 
     const cep =
-        document.getElementById(
-            "cep"
-        )?.value.trim() ||
-        "";
+        document.getElementById("cep")?.value.trim() || "";
 
     const bairro =
-        document.getElementById(
-            "bairro"
-        )?.value.trim() ||
-        "";
+        document.getElementById("bairro")?.value.trim() || "";
 
     const endereco =
-        document.getElementById(
-            "endereco"
-        )?.value.trim() ||
-        "";
+        document.getElementById("endereco")?.value.trim() || "";
 
     const numero =
-        document.getElementById(
-            "numero"
-        )?.value.trim() ||
-        "";
+        document.getElementById("numero")?.value.trim() || "";
 
     const cidade =
-        document.getElementById(
-            "cidade"
-        )?.value.trim() ||
-        "";
+        document.getElementById("cidade")?.value.trim() || "";
 
     const estado =
-        document.getElementById(
-            "estado"
-        )?.value
-        .trim()
-        .toUpperCase() ||
-        "";
+        document.getElementById("estado")?.value
+            .trim()
+            .toUpperCase() || "";
 
-    const cpfNumeros =
-        cpf.replace(
-            /\D/g,
-            ""
-        );
+    const cpfNumeros = cpf.replace(/\D/g, "");
 
     if (
         !telefone ||
@@ -2370,123 +1340,66 @@ async function finalizarPedido(event) {
         !cidade ||
         !estado
     ) {
-
         alert(
             "Preencha todos os dados do pedido, incluindo o CPF."
         );
-
         return;
     }
 
-    if (
-        cpfNumeros.length !== 11
-    ) {
-
+    if (cpfNumeros.length !== 11) {
         alert(
             "Digite um CPF válido com 11 números."
         );
-
         return;
     }
 
-    const tipoEntrega =
-        obterTipoEntregaSelecionado();
+    if (!checkoutFrete.verificado) {
+        await verificarPrimeiraCompra();
+    }
 
-    const frete =
-        obterValorEntrega();
-
-    const subtotal =
-        calcularTotalCarrinho();
-
-    const totalFinal =
-        subtotal + frete;
-
-    ultimoTotalCheckout =
-        totalFinal;
+    const tipoEntrega = obterTipoEntregaSelecionado();
+    const frete = calcularFreteCheckout();
 
     const botao =
-        document.getElementById(
-            "finalizarBtn"
-        );
+        document.getElementById("finalizarBtn");
 
     if (botao) {
-
         botao.disabled = true;
-
-        botao.textContent =
-            "Gerando Pix...";
+        botao.textContent = "Gerando Pix...";
     }
 
     try {
+        const resposta = await fetch("/api/pix", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify({
+                itens: carrinho.map(item => ({
+                    id: /^\d+$/.test(String(item.id)) ? Number(item.id) : item.id,
+                    quantidade: Number(item.quantidade)
+                })),
 
-        const resposta =
-            await fetch(
-                "/api/pix",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-                    credentials: "include",
-
-                    body: JSON.stringify({
-
-                        itens:
-                            carrinho.map(
-                                item => ({
-
-                                    id:
-                                        Number(
-                                            item.id
-                                        ),
-
-                                    quantidade:
-                                        Number(
-                                            item.quantidade
-                                        )
-                                })
-                            ),
-
-                        entrega: {
-
-                            telefone,
-
-                            cpf:
-                                cpfNumeros,
-
-                            cep,
-
-                            bairro,
-
-                            endereco,
-
-                            numero,
-
-                            cidade,
-
-                            estado,
-
-                            tipoEntrega,
-
-                            freteInformado:
-                                frete
-                        }
-                    })
+                entrega: {
+                    telefone,
+                    cpf: cpfNumeros,
+                    cep,
+                    bairro,
+                    endereco,
+                    numero,
+                    cidade,
+                    estado,
+                    tipoEntrega,
+                    freteInformado: frete
                 }
-            );
+            })
+        });
 
-        const dados =
-            await resposta
-                .json()
-                .catch(
-                    () => ({})
-                );
+        const dados = await resposta.json().catch(() => ({}));
 
         if (!resposta.ok) {
-
             throw new Error(
-
                 dados.erro ||
                 dados.mensagem ||
                 "Não foi possível gerar o Pix."
@@ -2494,19 +1407,12 @@ async function finalizarPedido(event) {
         }
 
         fecharCheckout();
-
-        renderizarPix(
-            dados
-        );
+        renderizarPix(dados);
 
         carrinho = [];
-
         salvarCarrinho();
-
         atualizarCarrinhoInterface();
-
     } catch (erro) {
-
         console.error(
             "Erro ao finalizar pedido:",
             erro
@@ -2516,120 +1422,56 @@ async function finalizarPedido(event) {
             erro.message ||
             "Não foi possível finalizar o pedido."
         );
-
     } finally {
-
         if (botao) {
-
-            botao.disabled =
-                false;
-
+            botao.disabled = false;
             botao.textContent =
                 "Gerar pagamento Pix →";
         }
     }
 }
 
-/* =========================================================
-   GERAR PIX
-   ========================================================= */
-
 async function gerarPix() {
-
     if (!carrinho.length) {
-
-        alert(
-            "Seu carrinho está vazio."
-        );
-
+        alert("Seu carrinho está vazio.");
         return;
     }
 
     const botao =
-        document.getElementById(
-            "btnGerarPix"
-        );
+        document.getElementById("btnGerarPix");
 
     if (botao) {
-
         botao.disabled = true;
-
-        botao.textContent =
-            "Gerando Pix...";
+        botao.textContent = "Gerando Pix...";
     }
 
     try {
+        const frete = calcularFreteCheckout();
+        const tipoEntrega = obterTipoEntregaSelecionado();
 
-        const tipoEntrega =
-            obterTipoEntregaSelecionado();
-
-        const frete =
-            obterValorEntrega();
-
-        const subtotal =
-            calcularTotalCarrinho();
-
-        const totalFinal =
-            subtotal + frete;
-
-        ultimoTotalCheckout =
-            totalFinal;
-
-        const resposta =
-            await fetch(
-                "/api/pix",
-                {
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    credentials:
-                        "include",
-
-                    body:
-                        JSON.stringify({
-
-                            itens:
-                                carrinho.map(
-                                    item => ({
-
-                                        id:
-                                            Number(
-                                                item.id
-                                            ),
-
-                                        quantidade:
-                                            Number(
-                                                item.quantidade
-                                            )
-                                    })
-                                ),
-
-                            entrega: {
-
-                                tipoEntrega,
-
-                                freteInformado:
-                                    frete
-                            }
-                        })
+        const resposta = await fetch("/api/pix", {
+            method: "POST",
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify({
+                itens: carrinho.map(item => ({
+                    id: /^\d+$/.test(String(item.id)) ? Number(item.id) : item.id,
+                    quantidade: Number(item.quantidade)
+                })),
+                entrega: {
+                    tipoEntrega,
+                    freteInformado: frete
                 }
-            );
+            })
+        });
 
-        const dados =
-            await resposta
-                .json()
-                .catch(
-                    () => ({})
-                );
+        const dados = await resposta.json().catch(() => ({}));
 
         if (!resposta.ok) {
-
             throw new Error(
-
                 dados.erro ||
                 dados.mensagem ||
                 "Erro ao gerar Pix."
@@ -2637,99 +1479,57 @@ async function gerarPix() {
         }
 
         fecharCheckout();
-
-        renderizarPix(
-            dados
-        );
+        renderizarPix(dados);
 
         carrinho = [];
-
         salvarCarrinho();
-
         atualizarCarrinhoInterface();
-
     } catch (erro) {
-
-        console.error(
-            erro
-        );
+        console.error(erro);
 
         alert(
             erro.message ||
             "Não foi possível gerar o Pix."
         );
-
     } finally {
-
         if (botao) {
-
-            botao.disabled =
-                false;
-
-            botao.textContent =
-                "Gerar Pix";
+            botao.disabled = false;
+            botao.textContent = "Gerar Pix";
         }
     }
 }
 
-/* =========================================================
-   RENDERIZAR PIX
-   ========================================================= */
-
-function renderizarPix(
-    dados = {}
-) {
-
+function renderizarPix(dados = {}) {
     const modal =
-        document.getElementById(
-            "pixModal"
-        );
+        document.getElementById("pixModal");
 
     const resultado =
-        document.getElementById(
-            "pixResultado"
-        );
+        document.getElementById("pixResultado");
 
-    if (
-        !modal ||
-        !resultado
-    ) {
-        return;
-    }
+    if (!modal || !resultado) return;
 
     const qrData =
-        String(
-            dados.qr_code_base64 ||
-            ""
-        ).trim();
+        String(dados.qr_code_base64 || "").trim();
 
-    const qrSrc =
-        qrData
-            ? (
-                qrData.startsWith(
-                    "data:"
-                )
-                    ? qrData
-                    : `data:image/png;base64,${qrData}`
-            )
-            : "";
+    const qrSrc = qrData
+        ? (
+            qrData.startsWith("data:")
+                ? qrData
+                : `data:image/png;base64,${qrData}`
+        )
+        : "";
 
-    const codigo =
-        String(
+    const codigo = String(
+        dados.pix_copia_e_cola ||
+        dados.qr_code ||
+        dados.pedido?.pagamento?.qrCode ||
+        ""
+    ).trim();
 
-            dados.pix_copia_e_cola ||
-            dados.qr_code ||
-            dados.pedido?.pagamento?.qrCode ||
-            ""
-
-        ).trim();
-
-    const valor =
-        dinheiro(
-
-            dados.valor ??
-            ultimoTotalCheckout
-        );
+    const valor = dinheiro(
+        dados.valor ??
+        (calcularTotalCarrinho() + Number(checkoutFrete.valor || 0))
+    );
 
     const numero =
         dados.pedido?.numero ||
@@ -2737,93 +1537,53 @@ function renderizarPix(
         "";
 
     resultado.innerHTML = `
+        <div class="pix-panel">
 
-        <div
-            class="pix-panel"
-        >
-
-            <div
-                class="pix-success"
-            >
+            <div class="pix-success">
                 ✓
             </div>
 
             <div>
-
-                <h3
-                    class="pix-title"
-                >
+                <h3 class="pix-title">
                     Pix gerado com sucesso
                 </h3>
 
-                <p
-                    class="pix-subtitle"
-                >
+                <p class="pix-subtitle">
                     Escaneie o QR Code ou use o código Pix copia e cola para concluir o pagamento.
                 </p>
-
             </div>
 
-            <div
-                class="pix-value"
-            >
+            <div class="pix-value">
 
                 <span>
                     VALOR DO PEDIDO
                 </span>
 
-                <strong
-                    id="pixValor"
-                >
+                <strong id="pixValor">
                     ${valor}
                 </strong>
 
             </div>
 
-            <div
-                class="pix-layout"
-            >
+            <div class="pix-layout">
 
-                <div
-                    class="pix-qr-box"
-                >
+                <div class="pix-qr-box">
 
-                    <div
-                        class="pix-qr"
-                    >
+                    <div class="pix-qr">
 
                         ${
                             qrSrc
-
                                 ? `
-
                                     <img
                                         id="pixQrCode"
-                                        src="${escaparAtributo(
-                                            qrSrc
-                                        )}"
+                                        src="${escaparAtributo(qrSrc)}"
                                         alt="QR Code Pix"
                                     >
-
                                 `
-
                                 : `
-
-                                    <div
-                                        style="
-                                            height:100%;
-                                            display:grid;
-                                            place-items:center;
-                                            color:#555;
-                                            font-weight:700;
-                                            font-size:13px;
-                                            padding:20px;
-                                        "
-                                    >
-                                        QR Code indisponível.
-                                        Use o código Pix copia e cola.
+                                    <div style="height:100%;display:grid;place-items:center;color:#555;font-weight:700;font-size:13px;padding:20px;">
+                                        QR Code indisponível. Use o código Pix copia e cola.
                                     </div>
-
                                 `
                         }
 
@@ -2831,31 +1591,21 @@ function renderizarPix(
 
                 </div>
 
-                <div
-                    class="pix-side"
-                >
+                <div class="pix-side">
 
-                    <div
-                        class="pix-copy-card"
-                    >
+                    <div class="pix-copy-card">
 
-                        <span
-                            class="pix-copy-label"
-                        >
+                        <span class="pix-copy-label">
                             Código Pix copia e cola
                         </span>
 
-                        <div
-                            class="pix-copy"
-                        >
+                        <div class="pix-copy">
 
                             <input
                                 id="pixCopiaCola"
                                 type="text"
                                 readonly
-                                value="${escaparAtributo(
-                                    codigo
-                                )}"
+                                value="${escaparAtributo(codigo)}"
                                 aria-label="Código Pix copia e cola"
                             >
 
@@ -2867,29 +1617,17 @@ function renderizarPix(
                             </button>
 
                         </div>
-
                     </div>
 
-                    <div
-                        class="pix-help"
-                    >
+                    <div class="pix-help">
                         Abra o app do seu banco, escolha Pix e escaneie o QR Code. Também pode copiar o código acima.
                     </div>
 
-                    <div
-                        class="pix-order"
-                    >
-
+                    <div class="pix-order">
                         Pedido:
-
-                        <strong
-                            id="pixNumeroPedido"
-                        >
-                            ${escaparHTML(
-                                numero
-                            )}
+                        <strong id="pixNumeroPedido">
+                            ${escaparHTML(numero)}
                         </strong>
-
                     </div>
 
                     <button
@@ -2905,40 +1643,22 @@ function renderizarPix(
             </div>
 
         </div>
-
     `;
 
-    modal.style.display =
-        "flex";
+    modal.style.display = "flex";
 }
 
-/* =========================================================
-   FECHAR PIX
-   ========================================================= */
-
 function fecharPix() {
-
-    const modal =
-        document.getElementById(
-            "pixModal"
-        );
+    const modal = document.getElementById("pixModal");
 
     if (!modal) return;
 
-    modal.style.display =
-        "none";
+    modal.style.display = "none";
 }
 
-/* =========================================================
-   COPIAR PIX
-   ========================================================= */
-
 async function copiarPix() {
-
     const campo =
-        document.getElementById(
-            "pixCopiaCola"
-        );
+        document.getElementById("pixCopiaCola");
 
     if (!campo) return;
 
@@ -2946,80 +1666,33 @@ async function copiarPix() {
         campo.value.trim();
 
     if (!codigo) {
-
-        alert(
-            "Código Pix não disponível."
-        );
-
+        alert("Código Pix não disponível.");
         return;
     }
 
     try {
-
-        if (
-            navigator.clipboard?.writeText
-        ) {
-
-            await navigator.clipboard.writeText(
-                codigo
-            );
-
+        if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(codigo);
         } else {
-
-            campo.removeAttribute(
-                "readonly"
-            );
-
+            campo.removeAttribute("readonly");
             campo.focus();
-
             campo.select();
-
-            document.execCommand(
-                "copy"
-            );
-
-            campo.setAttribute(
-                "readonly",
-                "readonly"
-            );
+            document.execCommand("copy");
+            campo.setAttribute("readonly", "readonly");
         }
 
-        alert(
-            "Código Pix copiado!"
-        );
-
+        alert("Código Pix copiado!");
     } catch (erro) {
-
         try {
-
-            campo.removeAttribute(
-                "readonly"
-            );
-
+            campo.removeAttribute("readonly");
             campo.focus();
-
             campo.select();
+            campo.setSelectionRange(0, campo.value.length);
+            document.execCommand("copy");
+            campo.setAttribute("readonly", "readonly");
 
-            campo.setSelectionRange(
-                0,
-                campo.value.length
-            );
-
-            document.execCommand(
-                "copy"
-            );
-
-            campo.setAttribute(
-                "readonly",
-                "readonly"
-            );
-
-            alert(
-                "Código Pix copiado!"
-            );
-
+            alert("Código Pix copiado!");
         } catch {
-
             alert(
                 "Não foi possível copiar automaticamente. Selecione o código e copie manualmente."
             );
@@ -3032,129 +1705,64 @@ async function copiarPix() {
    ========================================================= */
 
 async function abrirConta() {
-
     const modal =
-        document.getElementById(
-            "accountModal"
-        );
+        document.getElementById("accountModal");
 
     if (!modal) return;
 
-    modal.classList.add(
-        "active"
-    );
-
-    modal.style.display =
-        "flex";
-
-    modal.setAttribute(
-        "aria-hidden",
-        "false"
-    );
+    modal.classList.add("active");
+    modal.style.display = "flex";
+    modal.setAttribute("aria-hidden", "false");
 
     const content =
-        document.getElementById(
-            "accountContent"
-        );
+        document.getElementById("accountContent");
 
     if (!content) return;
 
     if (!clienteAtual) {
-
         content.innerHTML = `
-
-            <div
-                class="account-error"
-            >
-
+            <div class="account-error">
                 <div>
-
-                    <strong>
-                        Faça login para acessar sua conta.
-                    </strong>
-
+                    <strong>Faça login para acessar sua conta.</strong>
                     <span>
                         Entre com seus dados para visualizar seu perfil e pedidos.
                     </span>
-
                 </div>
-
             </div>
-
         `;
-
         return;
     }
 
     content.innerHTML = `
-
-        <div
-            class="account-loading"
-        >
-
+        <div class="account-loading">
             <div>
-
-                <div
-                    class="account-loading-spinner"
-                ></div>
-
-                <p>
-                    Carregando seus dados e pedidos...
-                </p>
-
+                <div class="account-loading-spinner"></div>
+                <p>Carregando seus dados e pedidos...</p>
             </div>
-
         </div>
-
     `;
 
     try {
-
-        const [
-            perfilResponse,
-            pedidosResponse
-        ] = await Promise.all([
-
-            fetch(
-                "/api/cliente/perfil",
-                {
-                    credentials:
-                        "include",
-                    cache:
-                        "no-store"
-                }
-            ),
-
-            fetch(
-                "/api/cliente/pedidos",
-                {
-                    credentials:
-                        "include",
-                    cache:
-                        "no-store"
-                }
-            )
-
-        ]);
+        const [perfilResponse, pedidosResponse] =
+            await Promise.all([
+                fetch("/api/cliente/perfil", {
+                    credentials: "include",
+                    cache: "no-store"
+                }),
+                fetch("/api/cliente/pedidos", {
+                    credentials: "include",
+                    cache: "no-store"
+                })
+            ]);
 
         const perfil =
-            await perfilResponse
-                .json()
-                .catch(
-                    () => ({})
-                );
+            await perfilResponse.json().catch(() => ({}));
 
         const pedidos =
-            await pedidosResponse
-                .json()
-                .catch(
-                    () => []
-                );
+            await pedidosResponse.json().catch(() => []);
 
         if (!perfilResponse.ok) {
-
             throw new Error(
-
                 perfil.erro ||
                 "Sua sessão expirou. Faça login novamente."
             );
@@ -3167,79 +1775,43 @@ async function abrirConta() {
         atualizarInterfaceCliente();
 
         renderizarConta(
-
             pedidosResponse.ok
                 ? (
-
-                    Array.isArray(
-                        pedidos
-                    )
-
+                    Array.isArray(pedidos)
                         ? pedidos
-
-                        : Array.isArray(
-                            pedidos.pedidos
-                        )
-
+                        : Array.isArray(pedidos.pedidos)
                             ? pedidos.pedidos
-
                             : []
-
                 )
-
                 : []
-
         );
-
     } catch (erro) {
-
         console.error(
             "Erro ao carregar conta:",
             erro
         );
 
         content.innerHTML = `
-
-            <div
-                class="account-error"
-            >
-
+            <div class="account-error">
                 <div>
-
-                    <strong>
-                        Não foi possível carregar sua conta.
-                    </strong>
-
+                    <strong>Não foi possível carregar sua conta.</strong>
                     <span>
                         ${escaparHTML(
                             erro.message ||
                             "Tente novamente."
                         )}
                     </span>
-
                 </div>
-
             </div>
-
         `;
     }
 }
 
-function renderizarConta(
-    pedidos = []
-) {
-
+function renderizarConta(pedidos = []) {
     const content =
-        document.getElementById(
-            "accountContent"
-        );
+        document.getElementById("accountContent");
 
-    if (
-        !content ||
-        !clienteAtual
-    ) {
-        return;
-    }
+    if (!content || !clienteAtual) return;
 
     const nome =
         clienteAtual.nome ||
@@ -3247,77 +1819,41 @@ function renderizarConta(
 
     const inicial =
         escaparHTML(
-
             String(nome)
                 .trim()
                 .charAt(0)
-                .toUpperCase() ||
-            "C"
-
+                .toUpperCase() || "C"
         );
 
-    const lista =
-        [...pedidos].sort(
+    const lista = [...pedidos].sort(
+        (a, b) =>
+            new Date(b.criadoEm || 0) -
+            new Date(a.criadoEm || 0)
+    );
 
-            (a, b) =>
-                new Date(
-                    b.criadoEm || 0
-                ) -
-                new Date(
-                    a.criadoEm || 0
-                )
-
-        );
-
-    const pedidosHTML =
-        lista.length
-
-            ? lista
-                .map(
-                    renderizarPedidoConta
-                )
-                .join("")
-
-            : `
-
-                <div
-                    class="account-empty-orders"
-                >
-
-                    <div>
-
-                        <strong>
-                            Você ainda não tem pedidos.
-                        </strong>
-
-                        <span>
-                            Quando fizer uma compra, ela aparecerá aqui.
-                        </span>
-
-                    </div>
-
+    const pedidosHTML = lista.length
+        ? lista.map(renderizarPedidoConta).join("")
+        : `
+            <div class="account-empty-orders">
+                <div>
+                    <strong>Você ainda não tem pedidos.</strong>
+                    <span>
+                        Quando fizer uma compra, ela aparecerá aqui.
+                    </span>
                 </div>
-
-            `;
+            </div>
+        `;
 
     content.innerHTML = `
+        <div class="account-profile-hero">
 
-        <div
-            class="account-profile-hero"
-        >
-
-            <div
-                class="account-avatar-large"
-            >
+            <div class="account-avatar-large">
                 ${inicial}
             </div>
 
             <div>
-
                 <h3>
-                    ${escaparHTML(
-                        nome
-                    )}
+                    ${escaparHTML(nome)}
                 </h3>
 
                 <p>
@@ -3326,140 +1862,80 @@ function renderizarConta(
                         "E-mail não informado"
                     )}
                 </p>
-
             </div>
 
         </div>
 
-        <div
-            class="account-info-grid"
-        >
+        <div class="account-info-grid">
 
-            <div
-                class="account-info-box"
-            >
-
-                <span>
-                    Nome
-                </span>
-
+            <div class="account-info-box">
+                <span>Nome</span>
                 <strong>
-                    ${escaparHTML(
-                        nome
-                    )}
+                    ${escaparHTML(nome)}
                 </strong>
-
             </div>
 
-            <div
-                class="account-info-box"
-            >
-
-                <span>
-                    E-mail
-                </span>
-
+            <div class="account-info-box">
+                <span>E-mail</span>
                 <strong>
                     ${escaparHTML(
                         clienteAtual.email ||
                         "Não informado"
                     )}
                 </strong>
-
             </div>
 
-            <div
-                class="account-info-box"
-            >
-
-                <span>
-                    Telefone
-                </span>
-
+            <div class="account-info-box">
+                <span>Telefone</span>
                 <strong>
                     ${escaparHTML(
                         clienteAtual.telefone ||
                         "Não informado"
                     )}
                 </strong>
-
             </div>
 
-            <div
-                class="account-info-box"
-            >
-
-                <span>
-                    CPF
-                </span>
-
+            <div class="account-info-box">
+                <span>CPF</span>
                 <strong>
                     ${escaparHTML(
                         clienteAtual.cpf ||
                         "Não informado"
                     )}
                 </strong>
-
             </div>
 
         </div>
 
-        <div
-            class="account-orders-head"
-        >
+        <div class="account-orders-head">
 
             <div>
-
-                <h3>
-                    Meus pedidos
-                </h3>
+                <h3>Meus pedidos</h3>
 
                 <p>
-
                     ${lista.length}
-
-                    pedido${
-                        lista.length === 1
-                            ? ""
-                            : "s"
-                    }
-
-                    encontrado${
-                        lista.length === 1
-                            ? ""
-                            : "s"
-                    }
-
+                    pedido${lista.length === 1 ? "" : "s"}
+                    encontrado${lista.length === 1 ? "" : "s"}
                 </p>
-
             </div>
 
             <button
                 type="button"
                 class="account-logout-btn"
-                onclick="
-                    fazerLogout();
-                    fecharModal('accountModal')
-                "
+                onclick="fazerLogout(); fecharModal('accountModal')"
             >
                 Sair da conta
             </button>
 
         </div>
 
-        <div
-            class="account-orders-list"
-        >
+        <div class="account-orders-list">
             ${pedidosHTML}
         </div>
-
     `;
 }
 
-function renderizarPedidoConta(
-    pedido
-) {
-
+function renderizarPedidoConta(pedido) {
     const numero =
         String(
             pedido.numero ||
@@ -3472,31 +1948,15 @@ function renderizarPedidoConta(
         "Aguardando pagamento";
 
     const produtos =
-        Array.isArray(
-            pedido.produtos
-        )
+        Array.isArray(pedido.produtos)
             ? pedido.produtos
             : [];
 
-    const produtosTexto =
-        produtos.length
-
-            ? produtos
-                .map(
-                    item =>
-                        `${Number(
-                            item.quantidade ||
-                            1
-                        )}x ${escaparHTML(
-                            item.nome ||
-                            "Produto"
-                        )}`
-                )
-                .join(
-                    " • "
-                )
-
-            : "Itens do pedido";
+    const produtosTexto = produtos.length
+        ? produtos.map(item =>
+            `${Number(item.quantidade || 1)}x ${escaparHTML(item.nome || "Produto")}`
+        ).join(" • ")
+        : "Itens do pedido";
 
     const total =
         Number(
@@ -3507,103 +1967,58 @@ function renderizarPedidoConta(
 
     const data =
         pedido.criadoEm
-
             ? new Date(
                 pedido.criadoEm
             ).toLocaleString(
                 "pt-BR",
                 {
-                    dateStyle:
-                        "short",
-                    timeStyle:
-                        "short"
+                    dateStyle: "short",
+                    timeStyle: "short"
                 }
             )
-
             : "Data não informada";
 
     const podeCancelar =
-        status ===
-        "Aguardando pagamento";
+        status === "Aguardando pagamento";
 
     return `
+        <article class="account-order-card">
 
-        <article
-            class="account-order-card"
-        >
-
-            <div
-                class="account-order-top"
-            >
+            <div class="account-order-top">
 
                 <div>
-
-                    <div
-                        class="account-order-number"
-                    >
-                        #${escaparHTML(
-                            numero
-                        )}
+                    <div class="account-order-number">
+                        #${escaparHTML(numero)}
                     </div>
 
-                    <div
-                        class="account-order-date"
-                    >
-                        ${escaparHTML(
-                            data
-                        )}
+                    <div class="account-order-date">
+                        ${escaparHTML(data)}
                     </div>
-
                 </div>
 
-                <span
-                    class="account-status"
-                >
-                    ${escaparHTML(
-                        status
-                    )}
+                <span class="account-status">
+                    ${escaparHTML(status)}
                 </span>
 
             </div>
 
-            <div
-                class="account-order-products"
-            >
+            <div class="account-order-products">
                 ${produtosTexto}
             </div>
 
-            <div
-                class="account-order-bottom"
-            >
+            <div class="account-order-bottom">
 
-                <div
-                    class="account-order-total"
-                >
-
-                    <span>
-                        Total
-                    </span>
-
-                    ${dinheiro(
-                        total
-                    )}
-
+                <div class="account-order-total">
+                    <span>Total</span>
+                    ${dinheiro(total)}
                 </div>
 
-                <div
-                    class="account-order-actions"
-                >
+                <div class="account-order-actions">
 
                     <button
                         type="button"
                         class="account-order-btn primary"
-                        onclick="
-                            acompanharDoPedido(
-                                '${escaparAtributo(
-                                    numero
-                                )}'
-                            )
-                        "
+                        onclick="acompanharDoPedido('${escaparAtributo(numero)}')"
                     >
                         Acompanhar
                     </button>
@@ -3611,21 +2026,13 @@ function renderizarPedidoConta(
                     ${
                         podeCancelar
                             ? `
-
                                 <button
                                     type="button"
                                     class="account-order-btn danger"
-                                    onclick="
-                                        cancelarPedido(
-                                            '${escaparAtributo(
-                                                numero
-                                            )}'
-                                        )
-                                    "
+                                    onclick="cancelarPedido('${escaparAtributo(numero)}')"
                                 >
                                     Cancelar
                                 </button>
-
                             `
                             : ""
                     }
@@ -3633,19 +2040,12 @@ function renderizarPedidoConta(
                 </div>
 
             </div>
-
         </article>
-
     `;
 }
 
-function acompanharDoPedido(
-    numero
-) {
-
-    fecharModal(
-        "accountModal"
-    );
+function acompanharDoPedido(numero) {
+    fecharModal("accountModal");
 
     const campo =
         document.getElementById(
@@ -3653,21 +2053,15 @@ function acompanharDoPedido(
         );
 
     if (campo) {
-
-        campo.value =
-            numero;
+        campo.value = numero;
     }
 
-    document
-        .getElementById(
-            "acompanharPedido"
-        )
-        ?.scrollIntoView({
-            behavior:
-                "smooth",
-            block:
-                "start"
-        });
+    document.getElementById(
+        "acompanharPedido"
+    )?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
 
     setTimeout(
         consultarPedido,
@@ -3676,116 +2070,60 @@ function acompanharDoPedido(
 }
 
 function fecharConta() {
-
-    fecharModal(
-        "accountModal"
-    );
+    fecharModal("accountModal");
 }
 
 function fecharModal(id) {
-
     const modal =
-        document.getElementById(
-            id
-        );
+        document.getElementById(id);
 
     if (!modal) return;
 
-    modal.classList.remove(
-        "active"
-    );
-
-    modal.style.display =
-        "none";
-
-    modal.setAttribute(
-        "aria-hidden",
-        "true"
-    );
+    modal.classList.remove("active");
+    modal.style.display = "none";
+    modal.setAttribute("aria-hidden", "true");
 }
 
 /* =========================================================
    ACOMPANHAR PEDIDO
    ========================================================= */
 
-let pedidoTrackingTimer =
-    null;
+let pedidoTrackingTimer = null;
 
 const etapasPedido = [
-
     {
-        status:
-            "Aguardando pagamento",
-
-        icone:
-            "💳",
-
-        descricao:
-            "Estamos aguardando a confirmação do pagamento."
+        status: "Aguardando pagamento",
+        icone: "💳",
+        descricao: "Estamos aguardando a confirmação do pagamento."
     },
-
     {
-        status:
-            "Pagamento aprovado",
-
-        icone:
-            "✅",
-
-        descricao:
-            "Pagamento confirmado com sucesso."
+        status: "Pagamento aprovado",
+        icone: "✅",
+        descricao: "Pagamento confirmado com sucesso."
     },
-
     {
-        status:
-            "Preparando pedido",
-
-        icone:
-            "📦",
-
-        descricao:
-            "Seu pedido está sendo separado e preparado."
+        status: "Preparando pedido",
+        icone: "📦",
+        descricao: "Seu pedido está sendo separado e preparado."
     },
-
     {
-        status:
-            "Enviado",
-
-        icone:
-            "🏷️",
-
-        descricao:
-            "Seu pedido já foi enviado."
+        status: "Enviado",
+        icone: "🏷️",
+        descricao: "Seu pedido já foi enviado."
     },
-
     {
-        status:
-            "Em transporte",
-
-        icone:
-            "🚚",
-
-        descricao:
-            "Seu pedido está a caminho."
+        status: "Em transporte",
+        icone: "🚚",
+        descricao: "Seu pedido está a caminho."
     },
-
     {
-        status:
-            "Entregue",
-
-        icone:
-            "🏠",
-
-        descricao:
-            "Pedido entregue. Obrigado pela compra!"
+        status: "Entregue",
+        icone: "🏠",
+        descricao: "Pedido entregue. Obrigado pela compra!"
     }
-
 ];
 
-function renderizarTimelinePedido(
-    status,
-    historico = []
-) {
-
+function renderizarTimelinePedido(status, historico = []) {
     const timeline =
         document.getElementById(
             "timelinePedido"
@@ -3793,151 +2131,64 @@ function renderizarTimelinePedido(
 
     if (!timeline) return;
 
-    if (
-        status ===
-        "Cancelado"
-    ) {
-
+    if (status === "Cancelado") {
         const lista =
             historico.length
-
                 ? historico
-
-                : [
-                    {
-                        status:
-                            "Cancelado",
-                        em:
-                            null
-                    }
-                ];
+                : [{ status: "Cancelado", em: null }];
 
         timeline.innerHTML =
-            lista
-                .map(
-                    item => `
+            lista.map(item => `
+                <div class="timeline-item concluido">
 
-                        <div
-                            class="timeline-item concluido"
-                        >
+                    <div class="timeline-marker">
+                        ${item.status === "Cancelado" ? "✕" : "✓"}
+                    </div>
 
-                            <div
-                                class="timeline-marker"
-                            >
-                                ${
-                                    item.status ===
-                                    "Cancelado"
-                                        ? "✕"
-                                        : "✓"
-                                }
-                            </div>
+                    <div class="timeline-content">
 
-                            <div
-                                class="timeline-content"
-                            >
+                        <strong>
+                            ${escaparHTML(item.status)}
+                        </strong>
 
-                                <strong>
+                        <p>
+                            ${
+                                item.em
+                                    ? escaparHTML(
+                                        new Date(
+                                            item.em
+                                        ).toLocaleString("pt-BR")
+                                    )
+                                    : ""
+                            }
+                        </p>
 
-                                    ${escaparHTML(
-                                        item.status
-                                    )}
-
-                                </strong>
-
-                                <p>
-
-                                    ${
-                                        item.em
-
-                                            ? escaparHTML(
-
-                                                new Date(
-                                                    item.em
-                                                ).toLocaleString(
-                                                    "pt-BR"
-                                                )
-
-                                            )
-
-                                            : ""
-                                    }
-
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    `
-                )
-                .join("");
+                    </div>
+                </div>
+            `).join("");
 
         return;
     }
 
     const base = [
-
-        {
-            status:
-                "Aguardando pagamento",
-            icone:
-                "💳"
-        },
-
-        {
-            status:
-                "Pagamento aprovado",
-            icone:
-                "✅"
-        },
-
-        {
-            status:
-                "Preparando pedido",
-            icone:
-                "📦"
-        },
-
-        {
-            status:
-                "Enviado",
-            icone:
-                "🏷️"
-        },
-
-        {
-            status:
-                "Em transporte",
-            icone:
-                "🚚"
-        },
-
-        {
-            status:
-                "Entregue",
-            icone:
-                "🏠"
-        }
-
+        { status: "Aguardando pagamento", icone: "💳" },
+        { status: "Pagamento aprovado", icone: "✅" },
+        { status: "Preparando pedido", icone: "📦" },
+        { status: "Enviado", icone: "🏷️" },
+        { status: "Em transporte", icone: "🚚" },
+        { status: "Entregue", icone: "🏠" }
     ];
 
     const mapa =
         new Map(
-            (historico || [])
-                .map(
-                    item =>
-                        [
-                            item.status,
-                            item
-                        ]
-                )
+            (historico || []).map(
+                item => [item.status, item]
+            )
         );
 
     const indiceEncontrado =
         base.findIndex(
-            item =>
-                item.status ===
-                status
+            item => item.status === status
         );
 
     const indiceAtual =
@@ -3947,93 +2198,56 @@ function renderizarTimelinePedido(
         );
 
     timeline.innerHTML =
-        base
-            .map(
-                (
-                    item,
-                    index
-                ) => {
+        base.map((item, index) => {
 
-                    const registro =
-                        mapa.get(
-                            item.status
-                        );
+            const registro =
+                mapa.get(item.status);
 
-                    const classe =
-                        registro
+            const classe =
+                registro
+                    ? (
+                        index < indiceAtual
+                            ? "concluido"
+                            : "atual"
+                    )
+                    : "futuro";
 
-                            ? (
-                                index <
-                                indiceAtual
+            const hora =
+                registro?.em
+                    ? new Date(
+                        registro.em
+                    ).toLocaleString("pt-BR")
+                    : "Aguardando";
 
-                                    ? "concluido"
+            return `
+                <div class="timeline-item ${classe}">
 
-                                    : "atual"
-                            )
+                    <div class="timeline-marker">
+                        ${registro ? item.icone : "○"}
+                    </div>
 
-                            : "futuro";
+                    <div class="timeline-content">
 
-                    const hora =
-                        registro?.em
+                        <strong>
+                            ${escaparHTML(item.status)}
+                        </strong>
 
-                            ? new Date(
-                                registro.em
-                            ).toLocaleString(
-                                "pt-BR"
-                            )
+                        <p>
+                            ${
+                                registro
+                                    ? escaparHTML(hora)
+                                    : "Ainda não realizado"
+                            }
+                        </p>
 
-                            : "Aguardando";
+                    </div>
 
-                    return `
-
-                        <div
-                            class="timeline-item ${classe}"
-                        >
-
-                            <div
-                                class="timeline-marker"
-                            >
-                                ${
-                                    registro
-                                        ? item.icone
-                                        : "○"
-                                }
-                            </div>
-
-                            <div
-                                class="timeline-content"
-                            >
-
-                                <strong>
-                                    ${escaparHTML(
-                                        item.status
-                                    )}
-                                </strong>
-
-                                <p>
-                                    ${
-                                        registro
-
-                                            ? escaparHTML(
-                                                hora
-                                            )
-
-                                            : "Ainda não realizado"
-                                    }
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    `;
-                }
-            )
-            .join("");
+                </div>
+            `;
+        }).join("");
 }
 
 async function consultarPedido() {
-
     const campo =
         document.getElementById(
             "numeroPedidoConsulta"
@@ -4054,407 +2268,218 @@ async function consultarPedido() {
             "timelinePedido"
         );
 
-    if (
-        !campo ||
-        !resultado
-    ) {
-        return;
-    }
+    if (!campo || !resultado) return;
 
     const numero =
         campo.value.trim();
 
     if (!numero) {
-
         resultado.innerHTML = `
-
-            <div
-                class="tracking-result-card"
-            >
-
-                <p
-                    class="erro"
-                >
+            <div class="tracking-result-card">
+                <p class="erro">
                     Digite o número do pedido.
                 </p>
-
             </div>
-
         `;
 
-        if (timeline) {
-            timeline.innerHTML = "";
-        }
-
-        if (atualizado) {
-            atualizado.textContent =
-                "";
-        }
+        if (timeline) timeline.innerHTML = "";
+        if (atualizado) atualizado.textContent = "";
 
         return;
     }
 
     if (pedidoTrackingTimer) {
-
-        clearInterval(
-            pedidoTrackingTimer
-        );
-
-        pedidoTrackingTimer =
-            null;
+        clearInterval(pedidoTrackingTimer);
+        pedidoTrackingTimer = null;
     }
 
-    let ultimoStatus =
-        null;
-
-    let ultimaAtualizacao =
-        null;
-
-    let consultaEmAndamento =
-        false;
+    let ultimoStatus = null;
+    let ultimaAtualizacao = null;
+    let consultaEmAndamento = false;
 
     resultado.innerHTML = `
-
-        <div
-            class="tracking-result-card"
-        >
-
-            <p
-                style="
-                    color:#888;
-                    font-size:12px
-                "
-            >
-
+        <div class="tracking-result-card">
+            <p style="color:#888;font-size:12px">
                 Consultando pedido
-
-                <strong
-                    style="color:#fff"
-                >
-                    #${escaparHTML(
-                        numero
-                    )}
-                </strong>
-
-                ...
-
+                <strong style="color:#fff">
+                    #${escaparHTML(numero)}
+                </strong>...
             </p>
-
         </div>
-
     `;
 
-    if (timeline) {
-        timeline.innerHTML =
-            "";
-    }
+    if (timeline) timeline.innerHTML = "";
 
-    const consultar =
-        async (
-            silencioso = false
-        ) => {
+    const consultar = async (silencioso = false) => {
+        if (consultaEmAndamento) return false;
 
-            if (
-                consultaEmAndamento
-            ) {
+        consultaEmAndamento = true;
+
+        try {
+            const resposta = await fetch(
+                "/api/pedido/" +
+                encodeURIComponent(numero) +
+                "/status?_=" +
+                Date.now(),
+                {
+                    credentials: "include",
+                    cache: "no-store",
+                    headers: {
+                        "Cache-Control": "no-cache"
+                    }
+                }
+            );
+
+            const dados =
+                await resposta.json().catch(() => ({}));
+
+            if (!resposta.ok) {
+                if (!silencioso) {
+                    resultado.innerHTML = `
+                        <div class="tracking-result-card">
+                            <p class="erro">
+                                ${escaparHTML(
+                                    dados.erro ||
+                                    "Pedido não encontrado."
+                                )}
+                            </p>
+                        </div>
+                    `;
+
+                    if (timeline) timeline.innerHTML = "";
+                    if (atualizado) atualizado.textContent = "";
+                }
+
                 return false;
             }
 
-            consultaEmAndamento =
-                true;
+            const status =
+                dados.status ||
+                "Aguardando pagamento";
 
-            try {
+            const criado =
+                dados.criadoEm
+                    ? new Date(
+                        dados.criadoEm
+                    ).toLocaleString("pt-BR")
+                    : "Não informado";
 
-                const resposta =
-                    await fetch(
+            const atualizadoEm =
+                dados.atualizadoEm
+                    ? new Date(
+                        dados.atualizadoEm
+                    ).toLocaleString("pt-BR")
+                    : criado;
 
-                        "/api/pedido/" +
-                        encodeURIComponent(
-                            numero
-                        ) +
-                        "/status?_=" +
-                        Date.now(),
-
-                        {
-                            credentials:
-                                "include",
-
-                            cache:
-                                "no-store",
-
-                            headers: {
-                                "Cache-Control":
-                                    "no-cache"
-                            }
-                        }
-                    );
-
-                const dados =
-                    await resposta
-                        .json()
-                        .catch(
-                            () => ({})
-                        );
-
-                if (!resposta.ok) {
-
-                    if (!silencioso) {
-
-                        resultado.innerHTML = `
-
-                            <div
-                                class="tracking-result-card"
-                            >
-
-                                <p
-                                    class="erro"
-                                >
-                                    ${escaparHTML(
-                                        dados.erro ||
-                                        "Pedido não encontrado."
-                                    )}
-                                </p>
-
-                            </div>
-
-                        `;
-
-                        if (timeline) {
-                            timeline.innerHTML =
-                                "";
-                        }
-
-                        if (atualizado) {
-                            atualizado.textContent =
-                                "";
-                        }
-                    }
-
-                    return false;
-                }
-
-                const status =
-                    dados.status ||
-                    "Aguardando pagamento";
-
-                const criado =
-                    dados.criadoEm
-
-                        ? new Date(
-                            dados.criadoEm
-                        ).toLocaleString(
-                            "pt-BR"
-                        )
-
-                        : "Não informado";
-
-                const atualizadoEm =
-                    dados.atualizadoEm
-
-                        ? new Date(
-                            dados.atualizadoEm
-                        ).toLocaleString(
-                            "pt-BR"
-                        )
-
-                        : criado;
-
-                const mudou =
-                    ultimoStatus !==
-                    null &&
-                    (
-                        ultimoStatus !==
-                            status ||
-
-                        ultimaAtualizacao !==
-                            dados.atualizadoEm
-                    );
-
-                resultado.innerHTML = `
-
-                    <div
-                        class="tracking-result-card ${
-                            mudou
-                                ? "tracking-pulse"
-                                : ""
-                        }"
-                    >
-
-                        <div
-                            class="tracking-result-top"
-                        >
-
-                            <div>
-
-                                <h3>
-
-                                    Pedido #
-                                    ${escaparHTML(
-                                        dados.numero ||
-                                        numero
-                                    )}
-
-                                </h3>
-
-                                <p
-                                    style="
-                                        color:#777;
-                                        font-size:11px;
-                                        margin-top:4px
-                                    "
-                                >
-                                    Status atual do seu pedido
-                                </p>
-
-                            </div>
-
-                            <span
-                                class="tracking-status-badge"
-                            >
-                                ${escaparHTML(
-                                    status
-                                )}
-                            </span>
-
-                        </div>
-
-                        <div
-                            class="tracking-meta-grid"
-                        >
-
-                            <div
-                                class="tracking-meta-box"
-                            >
-
-                                <span>
-                                    Pedido criado
-                                </span>
-
-                                <strong>
-                                    ${escaparHTML(
-                                        criado
-                                    )}
-                                </strong>
-
-                            </div>
-
-                            <div
-                                class="tracking-meta-box"
-                            >
-
-                                <span>
-                                    Última atualização
-                                </span>
-
-                                <strong>
-                                    ${escaparHTML(
-                                        atualizadoEm
-                                    )}
-                                </strong>
-
-                            </div>
-
-                        </div>
-
-                        <div
-                            class="tracking-last"
-                        >
-                            🟢 Atualização automática ativa • verificando a cada 3 segundos
-                        </div>
-
-                    </div>
-
-                `;
-
-                renderizarTimelinePedido(
-
-                    status,
-
-                    Array.isArray(
-                        dados.historicoStatus
-                    )
-                        ? dados.historicoStatus
-                        : []
-
+            const mudou =
+                ultimoStatus !== null &&
+                (
+                    ultimoStatus !== status ||
+                    ultimaAtualizacao !== dados.atualizadoEm
                 );
 
-                if (mudou) {
+            resultado.innerHTML = `
+                <div class="tracking-result-card ${mudou ? "tracking-pulse" : ""}">
 
-                    resultado
-                        .querySelector(
-                            ".tracking-result-card"
-                        )
-                        ?.scrollIntoView({
-                            behavior:
-                                "smooth",
-                            block:
-                                "nearest"
-                        });
-                }
+                    <div class="tracking-result-top">
 
-                if (atualizado) {
+                        <div>
 
-                    atualizado.textContent =
-                        `🟢 Ao vivo • última verificação ${new Date().toLocaleTimeString("pt-BR")}`;
-                }
+                            <h3>
+                                Pedido #${escaparHTML(
+                                    dados.numero ||
+                                    numero
+                                )}
+                            </h3>
 
-                ultimoStatus =
-                    status;
-
-                ultimaAtualizacao =
-                    dados.atualizadoEm ||
-                    null;
-
-                return true;
-
-            } catch (erro) {
-
-                if (!silencioso) {
-
-                    resultado.innerHTML = `
-
-                        <div
-                            class="tracking-result-card"
-                        >
-
-                            <p
-                                class="erro"
-                            >
-                                Erro ao consultar o pedido. Tente novamente.
+                            <p style="color:#777;font-size:11px;margin-top:4px">
+                                Status atual do seu pedido
                             </p>
 
                         </div>
 
-                    `;
+                        <span class="tracking-status-badge">
+                            ${escaparHTML(status)}
+                        </span>
 
-                    if (timeline) {
-                        timeline.innerHTML =
-                            "";
-                    }
-                }
+                    </div>
 
-                return false;
+                    <div class="tracking-meta-grid">
 
-            } finally {
+                        <div class="tracking-meta-box">
+                            <span>Pedido criado</span>
+                            <strong>
+                                ${escaparHTML(criado)}
+                            </strong>
+                        </div>
 
-                consultaEmAndamento =
-                    false;
+                        <div class="tracking-meta-box">
+                            <span>Última atualização</span>
+                            <strong>
+                                ${escaparHTML(atualizadoEm)}
+                            </strong>
+                        </div>
+
+                    </div>
+
+                    <div class="tracking-last">
+                        🟢 Atualização automática ativa • verificando a cada 3 segundos
+                    </div>
+
+                </div>
+            `;
+
+            renderizarTimelinePedido(
+                status,
+                Array.isArray(dados.historicoStatus)
+                    ? dados.historicoStatus
+                    : []
+            );
+
+            if (mudou) {
+                resultado
+                    .querySelector(".tracking-result-card")
+                    ?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "nearest"
+                    });
             }
-        };
 
-    const ok =
-        await consultar(
-            false
-        );
+            if (atualizado) {
+                atualizado.textContent =
+                    `🟢 Ao vivo • última verificação ${new Date().toLocaleTimeString("pt-BR")}`;
+            }
+
+            ultimoStatus = status;
+            ultimaAtualizacao =
+                dados.atualizadoEm || null;
+
+            return true;
+        } catch (erro) {
+            if (!silencioso) {
+                resultado.innerHTML = `
+                    <div class="tracking-result-card">
+                        <p class="erro">
+                            Erro ao consultar o pedido. Tente novamente.
+                        </p>
+                    </div>
+                `;
+
+                if (timeline) timeline.innerHTML = "";
+            }
+
+            return false;
+        } finally {
+            consultaEmAndamento = false;
+        }
+    };
+
+    const ok = await consultar(false);
 
     if (ok) {
-
         pedidoTrackingTimer =
             setInterval(
-                () =>
-                    consultar(
-                        true
-                    ),
+                () => consultar(true),
                 3000
             );
     }
@@ -4464,12 +2489,8 @@ async function consultarPedido() {
    CANCELAR PEDIDO
    ========================================================= */
 
-async function cancelarPedido(
-    numero
-) {
-
+async function cancelarPedido(numero) {
     if (!numero) {
-
         const campo =
             document.getElementById(
                 "numeroPedidoConsulta"
@@ -4480,11 +2501,9 @@ async function cancelarPedido(
     }
 
     if (!numero) {
-
         alert(
             "Informe o número do pedido."
         );
-
         return;
     }
 
@@ -4493,142 +2512,75 @@ async function cancelarPedido(
             "Tem certeza que deseja cancelar este pedido?"
         );
 
-    if (!confirmar) {
-        return;
-    }
+    if (!confirmar) return;
 
     try {
-
         const resposta =
             await fetch(
-
                 "/api/cliente/pedidos/" +
-                encodeURIComponent(
-                    numero
-                ) +
+                encodeURIComponent(numero) +
                 "/cancelar",
-
                 {
-                    method:
-                        "POST",
-
-                    credentials:
-                        "include"
+                    method: "POST",
+                    credentials: "include"
                 }
             );
 
         const dados =
-            await resposta
-                .json()
-                .catch(
-                    () => ({})
-                );
+            await resposta.json().catch(() => ({}));
 
         if (!resposta.ok) {
-
             alert(
-
                 dados.erro ||
                 dados.mensagem ||
                 "Não foi possível cancelar o pedido."
-
             );
-
             return;
         }
 
-        alert(
-            "Pedido cancelado com sucesso!"
-        );
-
+        alert("Pedido cancelado com sucesso!");
         consultarPedido();
-
     } catch (erro) {
-
-        console.error(
-            erro
-        );
-
-        alert(
-            "Erro ao cancelar pedido."
-        );
+        console.error(erro);
+        alert("Erro ao cancelar pedido.");
     }
 }
 
 /* =========================================================
-   MODAIS
+   MODAIS / TECLADO
    ========================================================= */
 
-function fecharModalAoClicarFora(
-    event
-) {
-
+function fecharModalAoClicarFora(event) {
     if (
-        event.target.classList.contains(
-            "modal"
-        )
+        event.target.classList.contains("modal")
     ) {
-
-        fecharModal(
-            event.target.id
-        );
+        fecharModal(event.target.id);
     }
 }
 
-/* =========================================================
-   TECLADO
-   ========================================================= */
+document.addEventListener("keydown", event => {
+    if (event.key !== "Escape") return;
 
-document.addEventListener(
-    "keydown",
-    event => {
-
-        if (
-            event.key !==
-            "Escape"
-        ) {
-            return;
-        }
-
-        document
-            .querySelectorAll(
-                ".modal"
-            )
-            .forEach(
-                modal => {
-
-                    modal.style.display =
-                        "none";
-
-                    modal.classList.remove(
-                        "active"
-                    );
-                }
-            );
-    }
-);
+    document
+        .querySelectorAll(".modal")
+        .forEach(modal => {
+            modal.style.display = "none";
+            modal.classList.remove("active");
+        });
+});
 
 /* =========================================================
-   MOSTRAR / OCULTAR SENHA
+   SENHA
    ========================================================= */
 
-function alternarVisibilidadeSenha(
-    botao
-) {
-
-    const alvo =
-        botao?.dataset?.target;
-
+function alternarVisibilidadeSenha(botao) {
+    const alvo = botao?.dataset?.target;
     const campo =
         alvo
-            ? document.getElementById(
-                alvo
-            )
+            ? document.getElementById(alvo)
             : null;
 
-    if (!campo) {
-        return;
-    }
+    if (!campo) return;
 
     const mostrando =
         campo.type === "text";
@@ -4662,37 +2614,35 @@ function alternarVisibilidadeSenha(
 }
 
 function configurarBotoesSenha() {
-
     document
-        .querySelectorAll(
-            ".password-toggle"
-        )
-        .forEach(
-            botao => {
+        .querySelectorAll(".password-toggle")
+        .forEach(botao => {
 
-                if (
-                    botao.dataset.bound ===
-                    "1"
-                ) {
-                    return;
-                }
-
-                botao.dataset.bound =
-                    "1";
-
-                botao.addEventListener(
-                    "click",
-                    () =>
-                        alternarVisibilidadeSenha(
-                            botao
-                        )
-                );
+            if (botao.dataset.bound === "1") {
+                return;
             }
-        );
+
+            botao.dataset.bound = "1";
+
+            botao.addEventListener(
+                "click",
+                () => alternarVisibilidadeSenha(botao)
+            );
+        });
 }
 
 window.alternarVisibilidadeSenha =
     alternarVisibilidadeSenha;
+
+/* GARANTIA DOS HANDLERS USADOS PELOS BOTÕES DA LOJA */
+window.adicionarCarrinho = adicionarCarrinho;
+window.removerDoCarrinho = removerDoCarrinho;
+window.aumentarQuantidade = aumentarQuantidade;
+window.diminuirQuantidade = diminuirQuantidade;
+window.alterarQuantidade = alterarQuantidade;
+window.abrirCarrinho = abrirCarrinho;
+window.fecharCarrinho = fecharCarrinho;
+window.mostrarToastCarrinho = mostrarToastCarrinho;
 
 /* =========================================================
    INICIALIZAÇÃO
@@ -4702,22 +2652,15 @@ document.addEventListener(
     "DOMContentLoaded",
     async () => {
 
-        console.log(
-            "TECHSHOP iniciando..."
-        );
+        console.log("TECHSHOP iniciando...");
 
         carregarCarrinho();
-
         configurarBotoesSenha();
-
         atualizarCarrinhoInterface();
-
         configurarFiltrosCategoria();
-
         configurarPesquisa();
 
         if (loginForm) {
-
             loginForm.addEventListener(
                 "submit",
                 fazerLogin
@@ -4725,7 +2668,6 @@ document.addEventListener(
         }
 
         if (cadastroForm) {
-
             cadastroForm.addEventListener(
                 "submit",
                 fazerCadastro
@@ -4736,20 +2678,14 @@ document.addEventListener(
     }
 );
 
-/* =========================================================
-   MÁSCARA DE CPF
-   ========================================================= */
-
+/* Máscara de CPF */
 document.addEventListener(
     "input",
     event => {
-
         if (
             event.target &&
-            event.target.id ===
-                "cpf"
+            event.target.id === "cpf"
         ) {
-
             event.target.value =
                 formatarCPF(
                     event.target.value
