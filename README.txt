@@ -1,14 +1,19 @@
-TECHSHOP - LOGIN PROFISSIONAL
+TECHSHOP — LOJA ANIMADA V1
 
-Alteração:
-- Tela de login/cadastro com bloco de segurança.
-- Aviso sobre uso dos dados.
-- Informação de pagamento processado pelo Mercado Pago.
-- Texto de termos de uso e política de privacidade.
-- Contato do suporte.
-- Copyright © 2026 TECHSHOP.
+Substitua somente o arquivo techshop.html pelo deste pacote.
 
-INSTALAÇÃO:
-1. Faça backup do seu techshop.html atual.
-2. Substitua SOMENTE o arquivo techshop.html pelo deste pacote.
-3. NÃO altere server.js, script.js, .env ou configurações do Netlify.
+Adicionado:
+- fundo tecnológico animado
+- linha de brilho no cabeçalho
+- animação de entrada da loja e hero
+- hero com brilho, anéis e efeito flutuante
+- benefícios com hover e reflexo
+- produtos com entrada escalonada
+- imagens dos produtos com movimento no hover
+- botões de compra com brilho
+- filtros e busca com microinterações
+- carrinho com pulso/animação
+- modais com entrada animada
+- suporte a prefers-reduced-motion
+
+Não altere server.js, script.js ou .env.
