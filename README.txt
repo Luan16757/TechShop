@@ -1,12 +1,12 @@
-TECHSHOP - PAINEL DE PEDIDOS COM DADOS DE ENTREGA
+TECHSHOP - FIX CADASTRO / LOGIN / NETLIFY BLOBS
 
-Substitua no projeto:
-- admin.html
+Substitua no projeto atual SOMENTE:
 - server.js
+- netlify/functions/api.js
 
-O painel agora exibe, em cada pedido, os dados de entrega enviados no checkout:
-telefone, CEP, endereço, número, cidade e estado, além dos dados do cliente e CPF.
+Motivo da correção:
+1. Netlify Functions v1 (Lambda compatibility) precisa de connectLambda(event) antes de getStore().
+2. O store techshop-data passou a usar leitura com consistência forte, evitando que um cadastro recém-criado deixe de aparecer no login imediatamente.
 
-O server.js incluído já salva o objeto entrega dentro de cada pedido e mantém a autenticação administrativa por cookie ou Bearer token.
-
-Depois: GitHub Desktop -> Commit -> Push origin -> aguarde o Netlify publicar.
+Não substitua techshop.html, script.js, admin.html, .env ou imagens.
+Depois faça commit e Push origin e aguarde o Netlify publicar.

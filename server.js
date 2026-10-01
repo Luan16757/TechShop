@@ -131,7 +131,10 @@ async function obterNetlifyStore() {
             await import("@netlify/blobs");
 
         netlifyStore =
-            getStore("techshop-data");
+            getStore({
+                name: "techshop-data",
+                consistency: "strong"
+            });
     }
 
     return netlifyStore;
@@ -153,13 +156,13 @@ async function carregarDadosNetlify(forcar = false) {
             let usuarios =
                 await store.get(
                     USUARIOS_KEY,
-                    { type: "json" }
+                    { type: "json", consistency: "strong" }
                 );
 
             let pedidos =
                 await store.get(
                     PEDIDOS_KEY,
-                    { type: "json" }
+                    { type: "json", consistency: "strong" }
                 );
 
             if (!Array.isArray(usuarios)) {
