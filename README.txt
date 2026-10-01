@@ -1,15 +1,14 @@
-TECHSHOP — PIX / QR CODE FIX
+TECHSHOP - CORREÇÃO BAIRRO + CANCELAMENTO
 
-Correções:
-- Modal Pix agora cria e exibe corretamente o QR Code.
-- Código Pix copia e cola sempre aparece no checkout quando retornado pelo Mercado Pago.
-- Botão Copiar funciona em PC e celular com fallback.
-- Layout responsivo do Pix para desktop e celular.
-- Backend retorna também pix_copia_e_cola e usa fallbacks para os campos do Mercado Pago.
-
-Substitua:
+Substitua no projeto:
 - techshop.html
 - script.js
 - server.js
 
-Não substitua o .env.
+Alterações:
+- Campo Bairro obrigatório no checkout.
+- Bairro salvo dentro de pedido.entrega.
+- Bairro incluído na montagem da informação de entrega.
+- Corrigida a rota de cancelamento do cliente para /api/cliente/pedidos/:numero/cancelar.
+
+Não substitua seu .env.

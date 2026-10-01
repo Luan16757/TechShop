@@ -1527,6 +1527,7 @@ async function finalizarPedido(event) {
     const telefone = document.getElementById("telefone")?.value.trim() || "";
     const cpf = document.getElementById("cpf")?.value.trim() || "";
     const cep = document.getElementById("cep")?.value.trim() || "";
+    const bairro = document.getElementById("bairro")?.value.trim() || "";
     const endereco = document.getElementById("endereco")?.value.trim() || "";
     const numero = document.getElementById("numero")?.value.trim() || "";
     const cidade = document.getElementById("cidade")?.value.trim() || "";
@@ -1534,7 +1535,7 @@ async function finalizarPedido(event) {
 
     const cpfNumeros = cpf.replace(/\D/g, "");
 
-    if (!telefone || !cpf || !cep || !endereco || !numero || !cidade || !estado) {
+    if (!telefone || !cpf || !cep || !bairro || !endereco || !numero || !cidade || !estado) {
         alert("Preencha todos os dados do pedido, incluindo o CPF.");
         return;
     }
@@ -1565,6 +1566,7 @@ async function finalizarPedido(event) {
                     telefone,
                     cpf: cpfNumeros,
                     cep,
+                    bairro,
                     endereco,
                     numero,
                     cidade,
@@ -2212,7 +2214,7 @@ async function cancelarPedido(numero) {
 
         const resposta =
             await fetch(
-                "/api/pedidos/" +
+                "/api/cliente/pedidos/" +
                 encodeURIComponent(numero) +
                 "/cancelar",
                 {

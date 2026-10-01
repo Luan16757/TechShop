@@ -1774,6 +1774,7 @@ function formatarPedidoWhatsApp(pedido, tipo = "novo") {
     }).join("\\n");
 
     const endereco = [
+        entrega.bairro,
         entrega.endereco,
         entrega.numero,
         entrega.cidade,
@@ -1975,6 +1976,7 @@ app.post(
                     telefone: String(entrega.telefone || req.usuario.telefone || "").trim(),
                     cpf: cpfPedido,
                     cep: String(entrega.cep || "").trim(),
+                    bairro: String(entrega.bairro || "").trim(),
                     endereco: String(entrega.endereco || "").trim(),
                     numero: String(entrega.numero || "").trim(),
                     cidade: String(entrega.cidade || "").trim(),
