@@ -298,106 +298,6 @@ function mostrarMensagem(elemento, mensagem, sucesso = false) {
 
 
 /* =========================================================
-   TABS LOGIN / CADASTRO
-========================================================= */
-
-function mostrarLogin() {
-
-    const login = document.getElementById("loginForm");
-    const cadastro = document.getElementById("cadastroForm");
-    const tabLogin = document.getElementById("tabLogin");
-    const tabCadastro = document.getElementById("tabCadastro");
-
-    if (login) {
-        login.classList.add("active");
-    }
-
-    if (cadastro) {
-        cadastro.classList.remove("active");
-    }
-
-    if (tabLogin) {
-        tabLogin.classList.add("active");
-    }
-
-    if (tabCadastro) {
-        tabCadastro.classList.remove("active");
-    }
-}
-
-function mostrarCadastro() {
-
-    const login = document.getElementById("loginForm");
-    const cadastro = document.getElementById("cadastroForm");
-    const tabLogin = document.getElementById("tabLogin");
-    const tabCadastro = document.getElementById("tabCadastro");
-
-    if (login) {
-        login.classList.remove("active");
-    }
-
-    if (cadastro) {
-        cadastro.classList.add("active");
-    }
-
-    if (tabLogin) {
-        tabLogin.classList.remove("active");
-    }
-
-    if (tabCadastro) {
-        tabCadastro.classList.add("active");
-    }
-}
-
-/* =========================================================
-   MOSTRAR / OCULTAR SENHA
-========================================================= */
-
-function mostrarSenha(id, botao) {
-
-    const input = document.getElementById(id);
-
-    if (!input) return;
-
-    const mostrando = input.type === "password";
-
-    input.type = mostrando ? "text" : "password";
-
-    if (botao) {
-        botao.textContent = mostrando ? "Ocultar" : "Mostrar";
-        botao.setAttribute(
-            "aria-label",
-            mostrando ? "Ocultar senha" : "Mostrar senha"
-        );
-    }
-}
-
-
-/* =========================================================
-   RESPOSTA JSON SEGURA
-========================================================= */
-
-async function lerRespostaJSON(resposta) {
-
-    const texto = await resposta.text();
-
-    if (!texto) {
-        return {};
-    }
-
-    try {
-        return JSON.parse(texto);
-    } catch (erro) {
-        console.error("Resposta que não é JSON:", texto);
-        return {
-            erro:
-                `O servidor retornou uma resposta inválida (HTTP ${resposta.status}).`
-        };
-    }
-}
-
-
-/* =========================================================
    VERIFICAR CLIENTE
 ========================================================= */
 
@@ -417,7 +317,7 @@ async function verificarCliente() {
             return;
         }
 
-        const dados = await lerRespostaJSON(resposta);
+        const dados = await resposta.json();
 
         if (
             dados.autenticado ||
@@ -509,7 +409,7 @@ async function fazerLogin(event) {
             }
         );
 
-        const dados = await lerRespostaJSON(resposta);
+        const dados = await resposta.json();
 
         if (!resposta.ok) {
 
@@ -1648,6 +1548,30 @@ function atualizarResumoCheckout() {
    PAGAMENTO PIX
 ========================================================= */
 
+async function finalizarPedido(event) {
+
+    if (event) {
+        event.preventDefault();
+    }
+
+    const form = event?.currentTarget || document.querySelector(
+        '#checkoutModal form.checkout-form'
+    );
+
+    if (form && !form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
+    if (!clienteAtual) {
+        alert('Faça login na sua conta antes de finalizar o pedido.');
+        return;
+    }
+
+    await gerarPix();
+}
+
+
 async function gerarPix() {
 
     if (!carrinho.length) {
@@ -1660,9 +1584,8 @@ async function gerarPix() {
     }
 
     const botao =
-        document.getElementById(
-            "btnGerarPix"
-        );
+        document.getElementById("finalizarBtn") ||
+        document.getElementById("btnGerarPix");
 
     if (botao) {
 
@@ -1689,14 +1612,33 @@ async function gerarPix() {
 
                     body: JSON.stringify({
 
-                        produtos:
+                        itens:
                             carrinho.map(item => ({
                                 id: Number(item.id),
-                                quantidade:
-                                    Number(
-                                        item.quantidade
-                                    )
-                            }))
+                                quantidade: Number(item.quantidade)
+                            })),
+
+                        cliente: {
+                            nome:
+                                document.getElementById("nome")?.value?.trim() ||
+                                clienteAtual?.nome || "",
+                            email:
+                                document.getElementById("email")?.value?.trim() ||
+                                clienteAtual?.email || "",
+                            telefone:
+                                document.getElementById("telefone")?.value?.trim() ||
+                                clienteAtual?.telefone || "",
+                            cep:
+                                document.getElementById("cep")?.value?.trim() || "",
+                            endereco:
+                                document.getElementById("endereco")?.value?.trim() || "",
+                            numeroEndereco:
+                                document.getElementById("numero")?.value?.trim() || "",
+                            cidade:
+                                document.getElementById("cidade")?.value?.trim() || "",
+                            estado:
+                                document.getElementById("estado")?.value?.trim().toUpperCase() || ""
+                        }
 
                     })
                 }
@@ -1714,80 +1656,85 @@ async function gerarPix() {
             );
         }
 
+        const qrBase64 =
+            dados.qr_code_base64 ||
+            dados.pedido?.pagamento?.qrCodeBase64 ||
+            "";
+
+        const qrCode =
+            dados.qr_code ||
+            dados.pedido?.pagamento?.qrCode ||
+            dados.pix_copia_e_cola ||
+            "";
+
+        const ticketUrl =
+            dados.ticket_url ||
+            dados.pedido?.pagamento?.ticketUrl ||
+            "";
+
+        if (!qrBase64 && !qrCode && !ticketUrl) {
+            throw new Error(
+                "O Mercado Pago não retornou os dados do Pix. Verifique o token e a configuração da conta."
+            );
+        }
+
         fecharCheckout();
 
         const modal =
-            document.getElementById(
-                "pixModal"
-            );
+            document.getElementById("pixModal");
 
-        if (modal) {
-            modal.style.display = "flex";
+        const resultado =
+            document.getElementById("pixResultado");
+
+        if (!modal || !resultado) {
+            throw new Error(
+                "A tela de pagamento Pix não foi encontrada."
+            );
         }
 
-        const qr =
-            document.getElementById(
-                "pixQrCode"
-            );
+        resultado.innerHTML = `
+            <div class="pix-success">
+                <div class="pix-value" id="pixValor">${dinheiro(
+                    dados.valor || calcularTotalCarrinho()
+                )}</div>
+                <div class="pix-qr">
+                    <img id="pixQrCode" alt="QR Code Pix" ${
+                        qrBase64 ? '' : 'style="display:none"'
+                    }>
+                </div>
+                <p><strong>Pedido:</strong> <span id="pixNumeroPedido">${
+                    escaparHTML(
+                        dados.numero ||
+                        dados.pedido?.numero ||
+                        ""
+                    )
+                }</span></p>
+                <div class="pix-copy">
+                    <input id="pixCopiaCola" readonly value="">
+                    <button type="button" onclick="copiarPix()">Copiar Pix</button>
+                </div>
+                ${
+                    ticketUrl
+                        ? `<p><a class="checkout-button full" href="${escaparHTML(ticketUrl)}" target="_blank" rel="noopener">Abrir pagamento Mercado Pago</a></p>`
+                        : ""
+                }
+                <p class="pix-help">Abra o aplicativo do seu banco, escolha Pix e escaneie o QR Code ou use o Pix Copia e Cola.</p>
+            </div>
+        `;
 
-        if (
-            qr &&
-            dados.qr_code_base64
-        ) {
-
-            qr.src =
-                dados.qr_code_base64
-                    .startsWith("data:")
-                    ? dados.qr_code_base64
-                    : "data:image/png;base64," +
-                      dados.qr_code_base64;
+        const qr = document.getElementById("pixQrCode");
+        if (qr && qrBase64) {
+            qr.src = qrBase64.startsWith("data:")
+                ? qrBase64
+                : `data:image/png;base64,${qrBase64}`;
         }
 
-        const copia =
-            document.getElementById(
-                "pixCopiaCola"
-            );
-
+        const copia = document.getElementById("pixCopiaCola");
         if (copia) {
-
-            copia.value =
-                dados.qr_code ||
-                dados.pix_copia_e_cola ||
-                "";
+            copia.value = qrCode;
         }
 
-        const valor =
-            document.getElementById(
-                "pixValor"
-            );
-
-        if (valor) {
-
-            valor.textContent =
-                dinheiro(
-                    dados.valor ||
-                    calcularTotalCarrinho()
-                );
-        }
-
-        /*
-         * Pedido criado pelo backend
-         */
-        if (dados.pedido) {
-
-            const numero =
-                document.getElementById(
-                    "pixNumeroPedido"
-                );
-
-            if (numero) {
-
-                numero.textContent =
-                    dados.pedido.numero ||
-                    dados.pedido.id ||
-                    "";
-            }
-        }
+        modal.style.display = "flex";
 
         /*
          * Limpa carrinho depois de gerar
@@ -2229,9 +2176,12 @@ document.addEventListener(
 
         configurarPesquisa();
 
-        /* Formulários já são ligados de forma única aqui. */
+        /*
+         * Eventos dos formulários
+         */
 
         if (loginForm) {
+
             loginForm.addEventListener(
                 "submit",
                 fazerLogin
@@ -2239,6 +2189,7 @@ document.addEventListener(
         }
 
         if (cadastroForm) {
+
             cadastroForm.addEventListener(
                 "submit",
                 fazerCadastro

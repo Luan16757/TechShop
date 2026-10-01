@@ -5,14 +5,10 @@ const path = require("path");
 const fs = require("fs");
 const crypto = require("crypto");
 
-dotenv.config();
-
 // Netlify executa o Express como Function. Localmente, `node server.js` continua funcionando.
-const IS_NETLIFY = Boolean(
-    process.env.TECHSHOP_NETLIFY_FUNCTION ||
-    process.env.NETLIFY ||
-    process.env.AWS_LAMBDA_FUNCTION_NAME
-);
+const IS_NETLIFY = Boolean(process.env.NETLIFY);
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -40,15 +36,12 @@ const ADMIN_USER = process.env.ADMIN_USER || "admin";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "123456";
 const MP_ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN || "";
 
-// Em produção, prefira definir SESSION_SECRET no Netlify.
-// Como fallback seguro para este projeto, usamos o MP_ACCESS_TOKEN
-// (que já é secreto e fica somente no ambiente do servidor).
 const SESSION_SECRET =
     process.env.SESSION_SECRET ||
-    (process.env.MP_ACCESS_TOKEN || "techshop-local-session-secret");
+    (IS_NETLIFY ? "" : "techshop-local-session-secret");
 
-const USUARIOS_KEY = "usuarios-v2";
-const PEDIDOS_KEY = "pedidos-v2";
+const USUARIOS_KEY = "usuarios";
+const PEDIDOS_KEY = "pedidos";
 
 let netlifyStore = null;
 let dadosNetlifyPromise = null;
@@ -96,12 +89,7 @@ function garantirArquivo(arquivo, valorInicial) {
 
 function lerJSONLocal(arquivo, valorInicial) {
 
-    // Em Netlify Functions o filesystem do bundle é somente leitura.
-    // Caso o arquivo não tenha sido incluído no bundle, simplesmente
-    // devolvemos o valor inicial em vez de tentar criá-lo.
-    if (!fs.existsSync(arquivo)) {
-        return valorInicial;
-    }
+    garantirArquivo(arquivo, valorInicial);
 
     try {
 
@@ -136,7 +124,7 @@ async function obterNetlifyStore() {
             await import("@netlify/blobs");
 
         netlifyStore =
-            getStore("techshop-data-v2");
+            getStore("techshop-data");
     }
 
     return netlifyStore;
@@ -736,10 +724,7 @@ app.get(
             online: true,
             servidor: "TECHSHOP",
             porta: IS_NETLIFY ? "serverless" : PORT,
-            produtos: produtos.length,
-            armazenamento: IS_NETLIFY ? "netlify-blobs" : "arquivo-local",
-            sessaoConfigurada: Boolean(SESSION_SECRET),
-            netlifyDetectado: IS_NETLIFY
+            produtos: produtos.length
         });
 
     }
@@ -1605,12 +1590,19 @@ app.post(
             }
 
             const {
-                itens
-            } = req.body;
+                itens,
+                produtos: produtosRecebidos,
+                cliente: clienteCheckout
+            } = req.body || {};
+
+            const itensRecebidos =
+                Array.isArray(itens)
+                    ? itens
+                    : produtosRecebidos;
 
             const carrinho =
                 calcularCarrinho(
-                    itens
+                    itensRecebidos
                 );
 
             const numero =
@@ -1700,16 +1692,34 @@ app.post(
                         req.usuario.id,
 
                     nome:
+                        clienteCheckout?.nome ||
                         req.usuario.nome,
 
                     email:
+                        clienteCheckout?.email ||
                         req.usuario.email,
 
                     telefone:
+                        clienteCheckout?.telefone ||
                         req.usuario.telefone,
 
                     cpf:
-                        req.usuario.cpf
+                        req.usuario.cpf,
+
+                    cep:
+                        clienteCheckout?.cep || "",
+
+                    endereco:
+                        clienteCheckout?.endereco || "",
+
+                    numeroEndereco:
+                        clienteCheckout?.numeroEndereco || "",
+
+                    cidade:
+                        clienteCheckout?.cidade || "",
+
+                    estado:
+                        clienteCheckout?.estado || ""
 
                 },
 
