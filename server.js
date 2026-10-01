@@ -45,6 +45,10 @@ const WHATSAPP_PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID || "";
 const WHATSAPP_TO = (process.env.WHATSAPP_TO || "5519971544914").replace(/\D/g, "");
 const WHATSAPP_GRAPH_VERSION = process.env.WHATSAPP_GRAPH_VERSION || "v21.0";
 
+// E-mail transacional via Resend. Deixe vazio para desativar sem quebrar o checkout.
+const RESEND_API_KEY = process.env.RESEND_API_KEY || "";
+const EMAIL_FROM = process.env.EMAIL_FROM || "";
+
 const SESSION_SECRET =
     process.env.SESSION_SECRET ||
     (IS_NETLIFY
@@ -1833,6 +1837,152 @@ async function notificarNovoPedidoWhatsApp(pedido) {
 }
 
 /* =========================================================
+   E-MAIL - NOTIFICAÇÃO DE PAGAMENTO APROVADO
+========================================================= */
+
+function escaparHtml(valor) {
+    return String(valor ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function formatarProdutosEmail(produtos) {
+    if (!Array.isArray(produtos) || !produtos.length) {
+        return "<p style=\"margin:0;color:#8b93a1\">Nenhum item informado.</p>";
+    }
+
+    return produtos.map(item => {
+        const subtotal = Number(
+            item.subtotal ??
+            (Number(item.preco || 0) * Number(item.quantidade || 1))
+        );
+
+        return `
+            <tr>
+                <td style=\"padding:12px 0;border-bottom:1px solid #202633;color:#f5f7fb\">
+                    ${escaparHtml(item.nome)}<br>
+                    <span style=\"color:#8b93a1;font-size:12px\">${Number(item.quantidade || 1)}x</span>
+                </td>
+                <td style=\"padding:12px 0;border-bottom:1px solid #202633;text-align:right;color:#ffffff;font-weight:700\">
+                    ${formatarBRL(subtotal)}
+                </td>
+            </tr>`;
+    }).join("");
+}
+
+function formatarEmailPagamentoAprovado(pedido) {
+    const cliente = pedido.cliente || {};
+    const entrega = pedido.entrega || {};
+    const endereco = [
+        entrega.endereco,
+        entrega.numero,
+        entrega.bairro,
+        entrega.cidade,
+        entrega.estado,
+        entrega.cep
+    ].filter(Boolean).join(", ");
+
+    return `
+<!doctype html>
+<html lang=\"pt-BR\">
+<head><meta charset=\"utf-8\"></head>
+<body style=\"margin:0;background:#080b10;font-family:Arial,Helvetica,sans-serif;color:#f5f7fb\">
+<div style=\"max-width:680px;margin:0 auto;padding:28px 16px\">
+  <div style=\"background:linear-gradient(135deg,#121822,#0b0e14);border:1px solid #222b39;border-radius:20px;overflow:hidden;box-shadow:0 14px 40px rgba(0,0,0,.35)\">
+    <div style=\"padding:24px;background:linear-gradient(135deg,#ff7a00,#ff9d32);color:#111\">
+      <div style=\"font-size:24px;font-weight:900;letter-spacing:.4px\">TECHSHOP</div>
+      <div style=\"margin-top:8px;font-size:15px;font-weight:700\">Pagamento aprovado ✅</div>
+    </div>
+
+    <div style=\"padding:26px\">
+      <h1 style=\"margin:0 0 8px;font-size:24px;color:#fff\">Seu pedido foi confirmado!</h1>
+      <p style=\"margin:0 0 22px;color:#aeb6c3;line-height:1.6\">Olá, ${escaparHtml(cliente.nome || "cliente")}. Recebemos a confirmação do pagamento do seu pedido.</p>
+
+      <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px\">
+        <div style=\"background:#0f141c;border:1px solid #222b39;border-radius:14px;padding:14px\">
+          <div style=\"font-size:11px;color:#7f8998;text-transform:uppercase\">Pedido</div>
+          <div style=\"margin-top:5px;font-size:16px;font-weight:800;color:#fff\">${escaparHtml(pedido.numero)}</div>
+        </div>
+        <div style=\"background:#0f141c;border:1px solid #222b39;border-radius:14px;padding:14px\">
+          <div style=\"font-size:11px;color:#7f8998;text-transform:uppercase\">Total</div>
+          <div style=\"margin-top:5px;font-size:16px;font-weight:800;color:#ff9d32\">${formatarBRL(pedido.valorTotal)}</div>
+        </div>
+      </div>
+
+      <h2 style=\"font-size:16px;margin:0 0 8px;color:#fff\">Itens do pedido</h2>
+      <table style=\"width:100%;border-collapse:collapse;margin-bottom:22px\">
+        ${formatarProdutosEmail(pedido.produtos)}
+      </table>
+
+      <h2 style=\"font-size:16px;margin:0 0 8px;color:#fff\">Dados da entrega</h2>
+      <div style=\"background:#0f141c;border:1px solid #222b39;border-radius:14px;padding:16px;color:#cbd1db;line-height:1.7\">
+        <div><strong style=\"color:#fff\">Nome:</strong> ${escaparHtml(cliente.nome || "-")}</div>
+        <div><strong style=\"color:#fff\">E-mail:</strong> ${escaparHtml(cliente.email || "-")}</div>
+        <div><strong style=\"color:#fff\">Telefone:</strong> ${escaparHtml(entrega.telefone || cliente.telefone || "-")}</div>
+        <div><strong style=\"color:#fff\">Endereço:</strong> ${escaparHtml(endereco || "-")}</div>
+      </div>
+
+      <div style=\"margin-top:22px;padding:14px 16px;border-radius:14px;background:rgba(67,201,132,.09);border:1px solid rgba(67,201,132,.2);color:#bcefd3\">
+        <strong style=\"color:#7ee4a8\">Status:</strong> Pagamento aprovado
+      </div>
+
+      <p style=\"margin:22px 0 0;color:#808a98;font-size:12px;line-height:1.6\">E-mail automático da TECHSHOP. Guarde o número do pedido para acompanhamento.</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>`;
+}
+
+async function enviarEmailPagamentoAprovado(pedido) {
+    const destinatario = String(pedido?.cliente?.email || "").trim();
+
+    if (!RESEND_API_KEY || !EMAIL_FROM || !destinatario) {
+        return {
+            enviado: false,
+            configurado: Boolean(RESEND_API_KEY && EMAIL_FROM),
+            motivo: !destinatario ? "Cliente sem e-mail." : "Resend não configurado."
+        };
+    }
+
+    const resposta = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${RESEND_API_KEY}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            from: EMAIL_FROM,
+            to: [destinatario],
+            subject: `✅ Pagamento aprovado — Pedido ${pedido.numero} | TECHSHOP`,
+            html: formatarEmailPagamentoAprovado(pedido),
+            headers: {
+                "X-Entity-Ref-ID": String(pedido.numero)
+            }
+        })
+    });
+
+    const dados = await resposta.json().catch(() => ({}));
+
+    if (!resposta.ok) {
+        throw new Error(
+            dados?.message ||
+            dados?.error ||
+            "Resend recusou o envio do e-mail."
+        );
+    }
+
+    return {
+        enviado: true,
+        configurado: true,
+        id: dados?.id || ""
+    };
+}
+
+/* =========================================================
    MERCADO PAGO PIX
 ========================================================= */
 
@@ -2224,6 +2374,34 @@ app.post(
                         };
                     } catch (erro) {
                         console.error("Erro ao notificar pagamento aprovado:", erro.message);
+                    }
+                }
+
+                if (
+                    RESEND_API_KEY &&
+                    EMAIL_FROM &&
+                    pedidos[indice].cliente?.email &&
+                    !pedidos[indice].email?.pagamentoAprovadoEnviado
+                ) {
+                    try {
+                        const resultadoEmail =
+                            await enviarEmailPagamentoAprovado(pedidos[indice]);
+
+                        pedidos[indice].email = {
+                            ...(pedidos[indice].email || {}),
+                            pagamentoAprovadoEnviado: Boolean(resultadoEmail.enviado),
+                            pagamentoAprovadoEm: resultadoEmail.enviado
+                                ? new Date().toISOString()
+                                : "",
+                            id: resultadoEmail.id || ""
+                        };
+                    } catch (erro) {
+                        console.error("Erro ao enviar e-mail de pagamento aprovado:", erro.message);
+                        pedidos[indice].email = {
+                            ...(pedidos[indice].email || {}),
+                            pagamentoAprovadoEnviado: false,
+                            erro: erro.message
+                        };
                     }
                 }
 

@@ -1,0 +1,30 @@
+TECHSHOP — E-MAIL AUTOMÁTICO APÓS PAGAMENTO
+
+O server.js deste pacote envia um e-mail automático ao cliente quando o Mercado Pago confirmar o pagamento como APROVADO.
+
+O e-mail inclui:
+- número/ID do pedido
+- valor total
+- produtos e quantidades
+- nome do cliente
+- e-mail
+- telefone
+- endereço de entrega
+- status de pagamento aprovado
+
+CONFIGURAÇÃO NO NETLIFY
+1. Acesse o projeto > Project configuration > Environment variables.
+2. Crie:
+
+RESEND_API_KEY = SUA_CHAVE_DA_RESEND
+EMAIL_FROM = TechShop <onboarding@resend.dev>
+
+3. Faça um novo deploy do site.
+
+PRODUÇÃO
+Para usar um endereço como pedidos@seudominio.com, verifique seu domínio no Resend e depois use esse endereço em EMAIL_FROM.
+
+IMPORTANTE
+- Nunca coloque a RESEND_API_KEY dentro do HTML ou JavaScript do cliente.
+- Nunca envie a chave pelo chat.
+- O envio acontece no webhook do Mercado Pago e só depois do status aprovado.
