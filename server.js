@@ -1362,32 +1362,26 @@ app.delete(
                 []
             );
 
-        const indice =
-            pedidos.findIndex(
+        const novosPedidos =
+            pedidos.filter(
                 p =>
-                    p.numero ===
+                    p.numero !==
                     req.params.numero
             );
 
-        if (indice === -1) {
+        if (
+            novosPedidos.length ===
+            pedidos.length
+        ) {
 
             return res.status(404).json({
                 erro: "Pedido não encontrado."
             });
         }
 
-        if (pedidos[indice].status !== "Cancelado") {
-
-            return res.status(400).json({
-                erro: "Somente pedidos com status Cancelado podem ser excluídos."
-            });
-        }
-
-        pedidos.splice(indice, 1);
-
         await salvarJSON(
             pedidosFile,
-            pedidos
+            novosPedidos
         );
 
         res.json({
@@ -1860,6 +1854,13 @@ app.post(
 
             const itens = req.body?.itens || req.body?.produtos || [];
             const entrega = req.body?.entrega || {};
+            const cpfPedido = String(entrega.cpf || req.usuario.cpf || "").replace(/\D/g, "");
+
+            if (cpfPedido.length !== 11) {
+                return res.status(400).json({
+                    erro: "Informe um CPF válido com 11 números para finalizar o pedido."
+                });
+            }
 
             const carrinho =
                 calcularCarrinho(
@@ -1907,12 +1908,10 @@ app.post(
 
                                 payer: {
                                     email,
-                                    ...(req.usuario.cpf ? {
-                                        identification: {
-                                            type: "CPF",
-                                            number: String(req.usuario.cpf).replace(/\D/g, "")
-                                        }
-                                    } : {})
+                                    identification: {
+                                        type: "CPF",
+                                        number: cpfPedido
+                                    }
                                 },
 
                                 external_reference:
@@ -1968,12 +1967,13 @@ app.post(
                         req.usuario.telefone,
 
                     cpf:
-                        req.usuario.cpf
+                        cpfPedido
 
                 },
 
                 entrega: {
                     telefone: String(entrega.telefone || req.usuario.telefone || "").trim(),
+                    cpf: cpfPedido,
                     cep: String(entrega.cep || "").trim(),
                     endereco: String(entrega.endereco || "").trim(),
                     numero: String(entrega.numero || "").trim(),

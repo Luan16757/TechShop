@@ -1410,10 +1410,12 @@ function abrirCheckout() {
     const nome = document.getElementById("nome");
     const email = document.getElementById("email");
     const telefone = document.getElementById("telefone");
+    const cpf = document.getElementById("cpf");
 
     if (nome) nome.value = clienteAtual?.nome || "";
     if (email) email.value = clienteAtual?.email || "";
     if (telefone && !telefone.value) telefone.value = clienteAtual?.telefone || "";
+    if (cpf && !cpf.value) cpf.value = formatarCPF(clienteAtual?.cpf || "");
 
     atualizarResumoCheckout();
 }
@@ -1500,6 +1502,14 @@ function atualizarResumoCheckout() {
 
 
 
+function formatarCPF(valor = "") {
+    const numeros = String(valor).replace(/\D/g, "").slice(0, 11);
+    return numeros
+        .replace(/(\d{3})(\d)/, "$1.$2")
+        .replace(/(\d{3})(\d)/, "$1.$2")
+        .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+}
+
 /* =========================================================
    FINALIZAR PEDIDO / PAGAMENTO
 ========================================================= */
@@ -1515,14 +1525,22 @@ async function finalizarPedido(event) {
     }
 
     const telefone = document.getElementById("telefone")?.value.trim() || "";
+    const cpf = document.getElementById("cpf")?.value.trim() || "";
     const cep = document.getElementById("cep")?.value.trim() || "";
     const endereco = document.getElementById("endereco")?.value.trim() || "";
     const numero = document.getElementById("numero")?.value.trim() || "";
     const cidade = document.getElementById("cidade")?.value.trim() || "";
     const estado = document.getElementById("estado")?.value.trim().toUpperCase() || "";
 
-    if (!telefone || !cep || !endereco || !numero || !cidade || !estado) {
-        alert("Preencha todos os dados de entrega.");
+    const cpfNumeros = cpf.replace(/\D/g, "");
+
+    if (!telefone || !cpf || !cep || !endereco || !numero || !cidade || !estado) {
+        alert("Preencha todos os dados do pedido, incluindo o CPF.");
+        return;
+    }
+
+    if (cpfNumeros.length !== 11) {
+        alert("Digite um CPF válido com 11 números.");
         return;
     }
 
@@ -1545,6 +1563,7 @@ async function finalizarPedido(event) {
                 })),
                 entrega: {
                     telefone,
+                    cpf: cpfNumeros,
                     cep,
                     endereco,
                     numero,
@@ -2404,3 +2423,11 @@ document.addEventListener(
 
     }
 );
+
+// Máscara de CPF no checkout
+document.addEventListener("input", (event) => {
+    if (event.target && event.target.id === "cpf") {
+        event.target.value = formatarCPF(event.target.value);
+    }
+});
+
