@@ -1,14 +1,14 @@
-TECHSHOP - CORREÇÃO BAIRRO + CANCELAMENTO
+TECHSHOP - LOGIN PROFISSIONAL
 
-Substitua no projeto:
-- techshop.html
-- script.js
-- server.js
+Alteração:
+- Tela de login/cadastro com bloco de segurança.
+- Aviso sobre uso dos dados.
+- Informação de pagamento processado pelo Mercado Pago.
+- Texto de termos de uso e política de privacidade.
+- Contato do suporte.
+- Copyright © 2026 TECHSHOP.
 
-Alterações:
-- Campo Bairro obrigatório no checkout.
-- Bairro salvo dentro de pedido.entrega.
-- Bairro incluído na montagem da informação de entrega.
-- Corrigida a rota de cancelamento do cliente para /api/cliente/pedidos/:numero/cancelar.
-
-Não substitua seu .env.
+INSTALAÇÃO:
+1. Faça backup do seu techshop.html atual.
+2. Substitua SOMENTE o arquivo techshop.html pelo deste pacote.
+3. NÃO altere server.js, script.js, .env ou configurações do Netlify.

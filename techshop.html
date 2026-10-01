@@ -233,6 +233,61 @@
             display: block;
         }
 
+        .auth-trust {
+            margin-top: 20px;
+            padding: 13px 14px;
+            background: rgba(255,115,0,.06);
+            border: 1px solid rgba(255,115,0,.16);
+            border-radius: 12px;
+            text-align: left;
+        }
+
+        .auth-trust-title {
+            color: #f5f5f5;
+            font-size: 12px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .auth-trust-text {
+            color: #858585;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .auth-legal {
+            margin-top: 12px;
+            text-align: center;
+            color: #666;
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        .auth-contact {
+            margin-top: 12px;
+            text-align: center;
+            color: #777;
+            font-size: 11px;
+        }
+
+        .auth-contact strong {
+            color: #aaa;
+        }
+
+        .auth-copyright {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #1e1e1e;
+            text-align: center;
+            color: #555;
+            font-size: 10px;
+            line-height: 1.4;
+        }
+
+        .auth-copyright strong {
+            color: var(--orange);
+        }
+
 
         /* =================================================
            SITE
@@ -1421,192 +1476,127 @@
             text-align: center;
         }
 
-        .pix-panel {
-            display: grid;
-            gap: 18px;
-        }
-
         .pix-success {
-            width: 56px;
-            height: 56px;
-            margin: 0 auto 4px;
+            width: 55px;
+            height: 55px;
+
+            margin: 0 auto 12px;
+
             border-radius: 50%;
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
+
             background: rgba(34,197,94,.15);
+
             color: #62e58c;
+
             font-size: 25px;
+
             font-weight: 900;
         }
 
-        .pix-title {
-            margin: 0;
-            font-size: clamp(20px, 2vw, 26px);
-        }
-
-        .pix-subtitle {
-            margin: 4px auto 0;
-            color: #9a9a9a;
-            font-size: 13px;
-            max-width: 560px;
-            line-height: 1.5;
-        }
-
         .pix-value {
-            margin: 0 auto;
-            padding: 14px 16px;
-            width: min(100%, 320px);
-            border-radius: 12px;
+            margin: 20px auto;
+
+            padding: 15px;
+
+            max-width: 300px;
+
+            border-radius: 11px;
+
             background: #080808;
+
             border: 1px solid #252525;
         }
 
         .pix-value span {
             display: block;
+
             color: #777;
+
             font-size: 11px;
+
             margin-bottom: 5px;
         }
 
         .pix-value strong {
             color: var(--orange);
-            font-size: 26px;
-        }
 
-        .pix-layout {
-            display: grid;
-            grid-template-columns: minmax(240px, 280px) minmax(0, 1fr);
-            gap: 22px;
-            align-items: start;
-        }
-
-        .pix-qr-box {
-            display: grid;
-            place-items: center;
+            font-size: 25px;
         }
 
         .pix-qr {
-            width: min(280px, 72vw);
-            aspect-ratio: 1;
-            margin: 0 auto;
+            width: 230px;
+            height: 230px;
+
+            margin: 20px auto;
+
             background: white;
-            padding: 12px;
-            border-radius: 14px;
-            box-shadow: 0 12px 30px rgba(0,0,0,.25);
+
+            padding: 10px;
+
+            border-radius: 12px;
         }
 
         .pix-qr img {
             width: 100%;
             height: 100%;
+
             object-fit: contain;
-            display: block;
-        }
-
-        .pix-side {
-            display: grid;
-            gap: 14px;
-            text-align: left;
-        }
-
-        .pix-copy-card {
-            padding: 14px;
-            border-radius: 12px;
-            background: #080808;
-            border: 1px solid #252525;
-        }
-
-        .pix-copy-label {
-            display: block;
-            color: #fff;
-            font-size: 12px;
-            font-weight: 800;
-            margin-bottom: 8px;
         }
 
         .pix-copy {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) auto;
-            gap: 8px;
+            display: flex;
+
+            gap: 7px;
         }
 
         .pix-copy input {
-            width: 100%;
-            min-width: 0;
-            height: 44px;
-            background: #050505;
-            border: 1px solid #292929;
-            color: white;
-            border-radius: 8px;
-            padding: 0 10px;
-            font-size: 12px;
-            outline: none;
-        }
+            flex: 1;
 
-        .pix-copy input:focus {
-            border-color: var(--orange);
+            min-width: 0;
+
+            height: 42px;
+
+            background: #080808;
+
+            border: 1px solid #292929;
+
+            color: white;
+
+            border-radius: 8px;
+
+            padding: 0 10px;
+
+            font-size: 11px;
         }
 
         .pix-copy button {
             border: 0;
-            background: var(--orange);
-            color: white;
-            border-radius: 8px;
-            padding: 0 14px;
-            min-height: 44px;
-            font-weight: 800;
-            cursor: pointer;
-            white-space: nowrap;
-        }
 
-        .pix-order {
-            color: #aaa;
-            font-size: 12px;
-            text-align: center;
+            background: var(--orange);
+
+            color: white;
+
+            border-radius: 8px;
+
+            padding: 0 14px;
+
+            font-weight: 800;
         }
 
         .pix-help {
             color: #777;
+
             font-size: 12px;
-            margin-top: 0;
+
+            margin-top: 15px;
+
             line-height: 1.5;
-        }
-
-        .pix-close-action {
-            width: 100%;
-            min-height: 46px;
-            border: 1px solid #2b2b2b;
-            background: #101010;
-            color: #fff;
-            border-radius: 9px;
-            font-weight: 800;
-            cursor: pointer;
-        }
-
-        @media (max-width: 700px) {
-            .pix-layout {
-                grid-template-columns: 1fr;
-            }
-
-            .pix-qr {
-                width: min(260px, 74vw);
-            }
-
-            .pix-side {
-                text-align: center;
-            }
-
-            .pix-copy {
-                grid-template-columns: 1fr;
-            }
-
-            .pix-copy button {
-                width: 100%;
-            }
-
-            .pix-copy-card {
-                text-align: left;
-            }
         }
 
 
@@ -2818,6 +2808,334 @@
 </style>
 
 
+        /* =================================================
+           LOGIN PRO — ANIMAÇÕES + PROTEÇÃO
+        ================================================= */
+        #authScreen {
+            overflow: hidden;
+            isolation: isolate;
+            background:
+                radial-gradient(circle at 50% 100%, rgba(255,115,0,.10), transparent 36%),
+                radial-gradient(circle at 15% 15%, rgba(255,115,0,.12), transparent 28%),
+                #06070a;
+        }
+
+        .auth-bg-grid,
+        .auth-orb,
+        .auth-orb-2,
+        .auth-particles {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .auth-bg-grid {
+            opacity: .32;
+            background-image:
+                linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
+            background-size: 38px 38px;
+            mask-image: radial-gradient(circle at center, black 25%, transparent 85%);
+            animation: techGrid 18s linear infinite;
+        }
+
+        .auth-orb::before,
+        .auth-orb::after,
+        .auth-orb-2::before,
+        .auth-orb-2::after {
+            content: "";
+            position: absolute;
+            border-radius: 999px;
+            filter: blur(2px);
+        }
+
+        .auth-orb::before {
+            width: 260px;
+            height: 260px;
+            left: -80px;
+            top: 8%;
+            background: radial-gradient(circle, rgba(255,115,0,.20), transparent 68%);
+            animation: orbFloat 8s ease-in-out infinite;
+        }
+
+        .auth-orb::after {
+            width: 360px;
+            height: 360px;
+            right: -140px;
+            bottom: -80px;
+            background: radial-gradient(circle, rgba(255,177,66,.14), transparent 70%);
+            animation: orbFloat 11s ease-in-out infinite reverse;
+        }
+
+        .auth-orb-2::before {
+            width: 170px;
+            height: 170px;
+            right: 20%;
+            top: -60px;
+            background: radial-gradient(circle, rgba(255,255,255,.055), transparent 72%);
+            animation: orbPulse 6s ease-in-out infinite;
+        }
+
+        .auth-orb-2::after {
+            width: 130px;
+            height: 130px;
+            left: 18%;
+            bottom: 2%;
+            background: radial-gradient(circle, rgba(255,115,0,.10), transparent 70%);
+            animation: orbPulse 5s ease-in-out infinite reverse;
+        }
+
+        .auth-particles {
+            opacity: .6;
+            background-image:
+                radial-gradient(circle, rgba(255,255,255,.75) 0 1px, transparent 1.5px),
+                radial-gradient(circle, rgba(255,115,0,.85) 0 1px, transparent 1.5px);
+            background-size: 110px 110px, 170px 170px;
+            background-position: 0 0, 60px 40px;
+            animation: particlesDrift 24s linear infinite;
+        }
+
+        .auth-box {
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            background: linear-gradient(145deg, rgba(17,17,17,.94), rgba(9,10,12,.92));
+            border-color: rgba(255,255,255,.08);
+            box-shadow:
+                0 28px 90px rgba(0,0,0,.56),
+                0 0 0 1px rgba(255,115,0,.025),
+                0 0 65px rgba(255,115,0,.06);
+            animation: authCardIn .75s cubic-bezier(.22,.84,.3,1) both;
+        }
+
+        .auth-box::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(120deg, rgba(255,115,0,.42), transparent 30%, transparent 70%, rgba(255,180,76,.18));
+            -webkit-mask:
+                linear-gradient(#000 0 0) content-box,
+                linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: .8;
+        }
+
+        .auth-logo {
+            animation: authLogoIn .9s .12s both;
+        }
+
+        .auth-logo h1 span {
+            text-shadow: 0 0 24px rgba(255,115,0,.38);
+        }
+
+        .auth-tabs {
+            position: relative;
+        }
+
+        .auth-tabs::after {
+            content: "";
+            position: absolute;
+            left: 5px;
+            top: 5px;
+            bottom: 5px;
+            width: calc(50% - 5px);
+            border-radius: 9px;
+            background: rgba(255,115,0,.12);
+            border: 1px solid rgba(255,115,0,.28);
+            pointer-events: none;
+            transition: transform .28s ease;
+        }
+
+        .auth-tabs:has(#tabCadastro.active)::after {
+            transform: translateX(100%);
+        }
+
+        .auth-tabs button {
+            position: relative;
+            z-index: 1;
+            transition: color .2s ease, transform .2s ease;
+        }
+
+        .auth-tabs button:active {
+            transform: scale(.97);
+        }
+
+        .auth-submit {
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(255,115,0,.18);
+            transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+        }
+
+        .auth-submit::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -130%;
+            width: 70%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,.28), transparent);
+            transform: skewX(-20deg);
+            animation: buttonShine 3.4s ease-in-out infinite;
+        }
+
+        .auth-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 36px rgba(255,115,0,.25);
+            filter: brightness(1.04);
+        }
+
+        .auth-submit:active {
+            transform: translateY(0) scale(.99);
+        }
+
+        .auth-trust,
+        .auth-contact,
+        .auth-copyright,
+        .auth-legal {
+            animation: authFadeUp .65s both;
+        }
+
+        .auth-trust { animation-delay: .28s; }
+        .auth-legal { animation-delay: .34s; }
+        .auth-contact { animation-delay: .40s; }
+        .auth-copyright { animation-delay: .46s; }
+
+        .auth-security-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .auth-security-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 42px;
+            padding: 9px 10px;
+            border: 1px solid rgba(255,255,255,.06);
+            background: rgba(255,255,255,.025);
+            border-radius: 12px;
+            color: #bfc4cc;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .auth-security-badge .dot {
+            width: 8px;
+            height: 8px;
+            flex: 0 0 auto;
+            border-radius: 50%;
+            background: #ff8c22;
+            box-shadow: 0 0 12px rgba(255,115,0,.8);
+            animation: statusPulse 1.8s ease-in-out infinite;
+        }
+
+        .auth-security-badge strong {
+            display: block;
+            color: #fff;
+            font-size: 11px;
+            margin-bottom: 2px;
+        }
+
+        .auth-24h {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 7px;
+            align-items: center;
+            color: #aeb4bd;
+            font-size: 11px;
+        }
+
+        .auth-24h strong {
+            color: #fff;
+        }
+
+        @keyframes authCardIn {
+            from { opacity: 0; transform: translateY(24px) scale(.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes authLogoIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes authFadeUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes buttonShine {
+            0%, 60%, 100% { left: -130%; }
+            22% { left: 150%; }
+        }
+
+        @keyframes techGrid {
+            from { transform: translate3d(0,0,0); }
+            to { transform: translate3d(38px,38px,0); }
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate3d(0,0,0) scale(1); }
+            50% { transform: translate3d(18px,-15px,0) scale(1.06); }
+        }
+
+        @keyframes orbPulse {
+            0%, 100% { transform: scale(.92); opacity: .55; }
+            50% { transform: scale(1.08); opacity: .95; }
+        }
+
+        @keyframes particlesDrift {
+            from { background-position: 0 0, 60px 40px; }
+            to { background-position: 0 520px, 360px 620px; }
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { transform: scale(.85); opacity: .65; }
+            50% { transform: scale(1.25); opacity: 1; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .auth-bg-grid,
+            .auth-particles,
+            .auth-orb::before,
+            .auth-orb::after,
+            .auth-orb-2::before,
+            .auth-orb-2::after,
+            .auth-box,
+            .auth-logo,
+            .auth-trust,
+            .auth-legal,
+            .auth-contact,
+            .auth-copyright,
+            .auth-submit::before,
+            .auth-security-badge .dot {
+                animation: none !important;
+            }
+            .auth-tabs::after {
+                transition: none;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .auth-security-row {
+                grid-template-columns: 1fr;
+            }
+            .auth-box {
+                padding: 22px 17px;
+                border-radius: 19px;
+            }
+        }
+
 <style id="techshop-layout-v2">
     /* =====================================================
        TECHSHOP V2 — ORGANIZAÇÃO PC + CELULAR
@@ -3023,6 +3341,11 @@
 
 <section id="authScreen">
 
+    <div class="auth-bg-grid"></div>
+    <div class="auth-orb"></div>
+    <div class="auth-orb-2"></div>
+    <div class="auth-particles"></div>
+
     <div class="auth-box">
 
         <div class="auth-logo">
@@ -3126,6 +3449,53 @@
 
 
         <!-- CADASTRO -->
+
+        <div class="auth-trust">
+
+            <div class="auth-trust-title">
+                🔒 Ambiente seguro
+            </div>
+
+            <div class="auth-trust-text">
+                Seus dados são utilizados apenas para identificação, atendimento e processamento dos pedidos.
+                Os pagamentos são processados com segurança pelo Mercado Pago.
+            </div>
+
+        </div>
+
+        <div class="auth-legal">
+            Ao entrar ou criar uma conta, você concorda com os termos de uso e com a política de privacidade da TECHSHOP.
+        </div>
+
+        <div class="auth-contact">
+            Suporte: <strong>(19) 97154-4914</strong>
+        </div>
+
+        <div class="auth-24h">
+            🕐 <strong>Suporte 24 horas</strong> • atendimento online para sua conta e pedidos
+        </div>
+
+        <div class="auth-security-row">
+            <div class="auth-security-badge">
+                <span class="dot"></span>
+                <div>
+                    <strong>Proteção ativa</strong>
+                    Anti-tamper e validação da sessão
+                </div>
+            </div>
+            <div class="auth-security-badge">
+                <span class="dot"></span>
+                <div>
+                    <strong>Conta protegida</strong>
+                    Autenticação segura da TECHSHOP
+                </div>
+            </div>
+        </div>
+
+        <div class="auth-copyright">
+            © 2026 <strong>TECHSHOP</strong> — Todos os direitos reservados.
+        </div>
+
 
         <form
             id="cadastroForm"
@@ -3753,25 +4123,6 @@
             <div class="field">
 
                 <label>
-                    CPF
-                </label>
-
-                <input
-                    id="cpf"
-                    type="text"
-                    inputmode="numeric"
-                    autocomplete="off"
-                    maxlength="14"
-                    placeholder="000.000.000-00"
-                    required
-                >
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
                     CEP
                 </label>
 
@@ -3779,23 +4130,6 @@
                     id="cep"
                     type="text"
                     placeholder="00000-000"
-                    required
-                >
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    Bairro
-                </label>
-
-                <input
-                    id="bairro"
-                    type="text"
-                    placeholder="Seu bairro"
-                    autocomplete="address-level3"
                     required
                 >
 
@@ -4054,6 +4388,52 @@ function fecharSuporte(){
 }
 function fecharSuporteFora(e){ if(e.target===e.currentTarget) fecharSuporte(); }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ fecharInfoLoja(); fecharSuporte(); } });
+</script>
+
+<script>
+/* =========================================================
+   TECHSHOP — CAMADA BÁSICA ANTI-TAMPER DO FRONT-END
+   Observação: a autenticação real continua sendo validada no servidor.
+========================================================= */
+(function(){
+    const auth = document.getElementById('authScreen');
+    if (!auth) return;
+
+    let protegido = true;
+    let ultimoAviso = 0;
+
+    function sinalizarProtecao(){
+        const agora = Date.now();
+        if (agora - ultimoAviso < 2500) return;
+        ultimoAviso = agora;
+        const box = auth.querySelector('.auth-box');
+        if (!box) return;
+        box.animate(
+            [
+                { transform: 'scale(1)' },
+                { transform: 'scale(1.008)' },
+                { transform: 'scale(1)' }
+            ],
+            { duration: 280, easing: 'ease-out' }
+        );
+    }
+
+    const observer = new MutationObserver(function(mutations){
+        if (!protegido) return;
+        const alteracaoSensivel = mutations.some(m =>
+            m.type === 'childList' ||
+            (m.type === 'attributes' && ['class','style','hidden'].includes(m.attributeName))
+        );
+        if (alteracaoSensivel) sinalizarProtecao();
+    });
+
+    observer.observe(auth, { subtree: true, childList: true, attributes: true });
+
+    window.addEventListener('beforeunload', function(){
+        protegido = false;
+        observer.disconnect();
+    });
+})();
 </script>
 
 <script src="script.js"></script>
