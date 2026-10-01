@@ -298,6 +298,58 @@ function mostrarMensagem(elemento, mensagem, sucesso = false) {
 
 
 /* =========================================================
+   TABS LOGIN / CADASTRO
+========================================================= */
+
+function mostrarLogin() {
+
+    const login = document.getElementById("loginForm");
+    const cadastro = document.getElementById("cadastroForm");
+    const tabLogin = document.getElementById("tabLogin");
+    const tabCadastro = document.getElementById("tabCadastro");
+
+    if (login) {
+        login.classList.add("active");
+    }
+
+    if (cadastro) {
+        cadastro.classList.remove("active");
+    }
+
+    if (tabLogin) {
+        tabLogin.classList.add("active");
+    }
+
+    if (tabCadastro) {
+        tabCadastro.classList.remove("active");
+    }
+}
+
+function mostrarCadastro() {
+
+    const login = document.getElementById("loginForm");
+    const cadastro = document.getElementById("cadastroForm");
+    const tabLogin = document.getElementById("tabLogin");
+    const tabCadastro = document.getElementById("tabCadastro");
+
+    if (login) {
+        login.classList.remove("active");
+    }
+
+    if (cadastro) {
+        cadastro.classList.add("active");
+    }
+
+    if (tabLogin) {
+        tabLogin.classList.remove("active");
+    }
+
+    if (tabCadastro) {
+        tabCadastro.classList.add("active");
+    }
+}
+
+/* =========================================================
    VERIFICAR CLIENTE
 ========================================================= */
 
@@ -353,38 +405,6 @@ async function verificarCliente() {
     }
 }
 
-
-/* =========================================================
-   TROCA LOGIN / CADASTRO
-========================================================= */
-
-function mostrarLogin() {
-
-    if (loginForm) {
-        loginForm.classList.add("active");
-    }
-
-    if (cadastroForm) {
-        cadastroForm.classList.remove("active");
-    }
-
-    document.getElementById("tabLogin")?.classList.add("active");
-    document.getElementById("tabCadastro")?.classList.remove("active");
-}
-
-function mostrarCadastro() {
-
-    if (loginForm) {
-        loginForm.classList.remove("active");
-    }
-
-    if (cadastroForm) {
-        cadastroForm.classList.add("active");
-    }
-
-    document.getElementById("tabLogin")?.classList.remove("active");
-    document.getElementById("tabCadastro")?.classList.add("active");
-}
 
 /* =========================================================
    LOGIN
@@ -624,12 +644,6 @@ async function fazerCadastro(event) {
             botao.textContent = "Criar conta";
         }
     }
-}
-
-
-// Compatibilidade com versões anteriores do HTML.
-function criarConta(event) {
-    return fazerCadastro(event);
 }
 
 

@@ -6,7 +6,7 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
   external_node_modules = ["express"]
-  included_files = ["usuarios.json", "pedidos.json"]
+  included_files = ["usuarios.json", "pedidos.json", "imagens/**"]
 
 [[redirects]]
   from = "/api/*"
