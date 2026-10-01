@@ -2325,6 +2325,36 @@ function configurarPesquisa() {
 }
 
 
+
+
+/* =========================================================
+   MOSTRAR / OCULTAR SENHA
+========================================================= */
+
+function alternarVisibilidadeSenha(botao) {
+    const alvo = botao?.dataset?.target;
+    const campo = alvo ? document.getElementById(alvo) : null;
+    if (!campo) return;
+
+    const mostrando = campo.type === "text";
+    campo.type = mostrando ? "password" : "text";
+    botao.classList.toggle("is-visible", !mostrando);
+    botao.textContent = mostrando ? "👁" : "🙈";
+    botao.setAttribute("aria-label", mostrando ? "Mostrar senha" : "Ocultar senha");
+    botao.title = mostrando ? "Mostrar senha" : "Ocultar senha";
+}
+
+function configurarBotoesSenha() {
+    document.querySelectorAll(".password-toggle").forEach((botao) => {
+        if (botao.dataset.bound === "1") return;
+        botao.dataset.bound = "1";
+        botao.addEventListener("click", () => alternarVisibilidadeSenha(botao));
+    });
+}
+
+window.alternarVisibilidadeSenha = alternarVisibilidadeSenha;
+
+
 /* =========================================================
    INICIALIZAÇÃO
 ========================================================= */
@@ -2339,6 +2369,7 @@ document.addEventListener(
 
         carregarCarrinho();
 
+        configurarBotoesSenha();
         atualizarCarrinhoInterface();
 
         configurarFiltrosCategoria();

@@ -1,12 +1,15 @@
-TECHSHOP - FIX CADASTRO / LOGIN / NETLIFY BLOBS
+TECHSHOP - AUTH FIX V3
 
-Substitua no projeto atual SOMENTE:
+Substituir no projeto:
 - server.js
+- techshop.html
+- script.js
 - netlify/functions/api.js
 
-Motivo da correção:
-1. Netlify Functions v1 (Lambda compatibility) precisa de connectLambda(event) antes de getStore().
-2. O store techshop-data passou a usar leitura com consistência forte, evitando que um cadastro recém-criado deixe de aparecer no login imediatamente.
-
-Não substitua techshop.html, script.js, admin.html, .env ou imagens.
-Depois faça commit e Push origin e aguarde o Netlify publicar.
+Correções:
+- força o modo Netlify antes de carregar o Express na Function;
+- inicializa connectLambda(event) antes de getStore();
+- recria o store a partir do contexto atual da invocação;
+- mantém leitura/escrita do store com consistência forte;
+- botão de mostrar/ocultar senha no login e cadastro;
+- não altera seu .env nem remove usuarios.json/pedidos.json locais.

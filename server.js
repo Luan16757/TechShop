@@ -9,7 +9,11 @@ const crypto = require("crypto");
 dotenv.config();
 
 // Netlify executa o Express como Function. Localmente, `node server.js` continua funcionando.
-const IS_NETLIFY = Boolean(process.env.NETLIFY);
+const IS_NETLIFY =
+    process.env.NETLIFY === "true" ||
+    process.env.NETLIFY === "1" ||
+    Boolean(process.env.NETLIFY_FUNCTIONS_VERSION) ||
+    Boolean(process.env.AWS_LAMBDA_FUNCTION_NAME);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -125,19 +129,15 @@ function lerJSONLocal(arquivo, valorInicial) {
 
 async function obterNetlifyStore() {
 
-    if (!netlifyStore) {
+    const { getStore } =
+        await import("@netlify/blobs");
 
-        const { getStore } =
-            await import("@netlify/blobs");
-
-        netlifyStore =
-            getStore({
-                name: "techshop-data",
-                consistency: "strong"
-            });
-    }
-
-    return netlifyStore;
+    // connectLambda(event) é executado antes de qualquer chamada a getStore.
+    // Criamos o store após essa inicialização para usar o contexto atual.
+    return getStore({
+        name: "techshop-data",
+        consistency: "strong"
+    });
 }
 
 async function carregarDadosNetlify(forcar = false) {
@@ -156,13 +156,13 @@ async function carregarDadosNetlify(forcar = false) {
             let usuarios =
                 await store.get(
                     USUARIOS_KEY,
-                    { type: "json", consistency: "strong" }
+                    { type: "json" }
                 );
 
             let pedidos =
                 await store.get(
                     PEDIDOS_KEY,
-                    { type: "json", consistency: "strong" }
+                    { type: "json" }
                 );
 
             if (!Array.isArray(usuarios)) {

@@ -2390,7 +2390,13 @@
             .tracking-mini-note { white-space:normal; }
         }
 
-    </style>
+    
+        .password-field { position: relative; width: 100%; }
+        .password-field input { width: 100%; padding-right: 52px !important; }
+        .password-toggle { position: absolute; top: 50%; right: 10px; transform: translateY(-50%); width: 38px; height: 38px; border: 0; border-radius: 10px; background: rgba(255,255,255,.06); color: #fff; cursor: pointer; font-size: 17px; }
+        .password-toggle:hover { background: rgba(255,255,255,.12); }
+        .password-toggle.is-visible { background: rgba(80,170,255,.16); }
+</style>
 
 </head>
 
@@ -2475,12 +2481,22 @@
                     Senha
                 </label>
 
-                <input
-                    id="loginSenha"
-                    type="password"
-                    placeholder="Sua senha"
-                    required
-                >
+                <div class="password-field">
+                    <input
+                        id="loginSenha"
+                        type="password"
+                        placeholder="Sua senha"
+                        autocomplete="current-password"
+                        required
+                    >
+                    <button
+                        class="password-toggle"
+                        type="button"
+                        data-target="loginSenha"
+                        aria-label="Mostrar senha"
+                        title="Mostrar senha"
+                    >👁</button>
+                </div>
 
             </div>
 
@@ -2579,13 +2595,23 @@
                     Senha
                 </label>
 
-                <input
-                    id="cadastroSenha"
-                    type="password"
-                    placeholder="Crie uma senha"
-                    minlength="6"
-                    required
-                >
+                <div class="password-field">
+                    <input
+                        id="cadastroSenha"
+                        type="password"
+                        placeholder="Crie uma senha"
+                        minlength="6"
+                        autocomplete="new-password"
+                        required
+                    >
+                    <button
+                        class="password-toggle"
+                        type="button"
+                        data-target="cadastroSenha"
+                        aria-label="Mostrar senha"
+                        title="Mostrar senha"
+                    >👁</button>
+                </div>
 
             </div>
 
