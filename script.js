@@ -355,6 +355,38 @@ async function verificarCliente() {
 
 
 /* =========================================================
+   TROCA LOGIN / CADASTRO
+========================================================= */
+
+function mostrarLogin() {
+
+    if (loginForm) {
+        loginForm.classList.add("active");
+    }
+
+    if (cadastroForm) {
+        cadastroForm.classList.remove("active");
+    }
+
+    document.getElementById("tabLogin")?.classList.add("active");
+    document.getElementById("tabCadastro")?.classList.remove("active");
+}
+
+function mostrarCadastro() {
+
+    if (loginForm) {
+        loginForm.classList.remove("active");
+    }
+
+    if (cadastroForm) {
+        cadastroForm.classList.add("active");
+    }
+
+    document.getElementById("tabLogin")?.classList.remove("active");
+    document.getElementById("tabCadastro")?.classList.add("active");
+}
+
+/* =========================================================
    LOGIN
 ========================================================= */
 
@@ -592,6 +624,12 @@ async function fazerCadastro(event) {
             botao.textContent = "Criar conta";
         }
     }
+}
+
+
+// Compatibilidade com versões anteriores do HTML.
+function criarConta(event) {
+    return fazerCadastro(event);
 }
 
 
