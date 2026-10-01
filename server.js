@@ -5,10 +5,11 @@ const path = require("path");
 const fs = require("fs");
 const crypto = require("crypto");
 
+// Carrega o .env antes de ler as variáveis.
+dotenv.config();
+
 // Netlify executa o Express como Function. Localmente, `node server.js` continua funcionando.
 const IS_NETLIFY = Boolean(process.env.NETLIFY);
-
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -35,10 +36,16 @@ const usuariosFile = path.join(pastaTechshop, "usuarios.json");
 const ADMIN_USER = process.env.ADMIN_USER || "admin";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "123456";
 const MP_ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN || "";
+const WHATSAPP_ACCESS_TOKEN = process.env.WHATSAPP_ACCESS_TOKEN || "";
+const WHATSAPP_PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID || "";
+const WHATSAPP_TO = (process.env.WHATSAPP_TO || "5519971544914").replace(/\D/g, "");
+const WHATSAPP_GRAPH_VERSION = process.env.WHATSAPP_GRAPH_VERSION || "v21.0";
 
 const SESSION_SECRET =
     process.env.SESSION_SECRET ||
-    (IS_NETLIFY ? "" : "techshop-local-session-secret");
+    (IS_NETLIFY
+        ? (process.env.ADMIN_PASSWORD || "techshop-netlify-admin-secret")
+        : "techshop-local-session-secret");
 
 const USUARIOS_KEY = "usuarios";
 const PEDIDOS_KEY = "pedidos";
@@ -130,13 +137,13 @@ async function obterNetlifyStore() {
     return netlifyStore;
 }
 
-async function carregarDadosNetlify() {
+async function carregarDadosNetlify(forcar = false) {
 
     if (!IS_NETLIFY) {
         return;
     }
 
-    if (!dadosNetlifyPromise) {
+    if (!dadosNetlifyPromise || forcar) {
 
         dadosNetlifyPromise = (async () => {
 
@@ -258,7 +265,7 @@ app.use(
         }
 
         try {
-            await carregarDadosNetlify();
+            await carregarDadosNetlify(true);
             next();
         } catch (erro) {
             console.error(
@@ -674,10 +681,13 @@ function exigirCliente(req, res, next) {
 
 function exigirAdmin(req, res, next) {
 
-    const token = obterCookie(
-        req,
-        "techshop_admin"
-    );
+    const cookieToken = obterCookie(req, "techshop_admin");
+    const authHeader = String(req.headers.authorization || "");
+    const bearerToken = authHeader.startsWith("Bearer ")
+        ? authHeader.slice(7).trim()
+        : "";
+
+    const token = bearerToken || cookieToken;
 
     if (!token) {
         return res.status(401).json({
@@ -685,10 +695,7 @@ function exigirAdmin(req, res, next) {
         });
     }
 
-    const sessao = verificarToken(
-        token,
-        "admin"
-    );
+    const sessao = verificarToken(token, "admin");
 
     if (!sessao) {
         return res.status(401).json({
@@ -696,6 +703,7 @@ function exigirAdmin(req, res, next) {
         });
     }
 
+    req.admin = sessao;
     next();
 }
 
@@ -1044,7 +1052,9 @@ app.post(
         );
 
         res.json({
-            sucesso: true
+            sucesso: true,
+            token,
+            usuario: ADMIN_USER
         });
 
     }
@@ -1150,6 +1160,29 @@ app.get(
    STATUS DO PEDIDO ADMIN
 ========================================================= */
 
+function registrarHistoricoStatus(pedido, novoStatus, quando = new Date().toISOString()) {
+
+    if (!pedido || !novoStatus) return;
+
+    if (!Array.isArray(pedido.historicoStatus)) {
+        pedido.historicoStatus = [];
+    }
+
+    const ultimo = pedido.historicoStatus[pedido.historicoStatus.length - 1];
+
+    if (!ultimo || ultimo.status !== novoStatus) {
+        pedido.historicoStatus.push({
+            status: novoStatus,
+            em: quando
+        });
+    } else {
+        ultimo.em = quando;
+    }
+
+    pedido.status = novoStatus;
+    pedido.atualizadoEm = quando;
+}
+
 const statusPermitidos = [
 
     "Aguardando pagamento",
@@ -1202,11 +1235,10 @@ app.put(
             });
         }
 
-        pedidos[indice].status =
-            status;
-
-        pedidos[indice].atualizadoEm =
-            new Date().toISOString();
+        registrarHistoricoStatus(
+            pedidos[indice],
+            status
+        );
 
         await salvarJSON(
             pedidosFile,
@@ -1341,6 +1373,10 @@ app.get(
     "/api/pedido/:numero/status",
     (req, res) => {
 
+        res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+        res.setHeader("Pragma", "no-cache");
+        res.setHeader("Expires", "0");
+
         const pedidos =
             lerJSON(
                 pedidosFile,
@@ -1373,7 +1409,17 @@ app.get(
                 pedido.atualizadoEm,
 
             criadoEm:
-                pedido.criadoEm
+                pedido.criadoEm,
+
+            historicoStatus:
+                Array.isArray(pedido.historicoStatus)
+                    ? pedido.historicoStatus
+                    : [
+                        {
+                            status: pedido.status || "Aguardando pagamento",
+                            em: pedido.atualizadoEm || pedido.criadoEm
+                        }
+                    ]
 
         });
 
@@ -1425,11 +1471,10 @@ app.post(
             });
         }
 
-        pedidos[indice].status =
-            "Cancelado";
-
-        pedidos[indice].atualizadoEm =
-            new Date().toISOString();
+        registrarHistoricoStatus(
+            pedidos[indice],
+            "Cancelado"
+        );
 
         await salvarJSON(
             pedidosFile,
@@ -1569,6 +1614,133 @@ function gerarNumeroPedido() {
 }
 
 /* =========================================================
+   WHATSAPP - NOTIFICAÇÃO DE PEDIDO
+========================================================= */
+
+async function enviarWhatsAppTexto(texto) {
+
+    if (!WHATSAPP_ACCESS_TOKEN || !WHATSAPP_PHONE_NUMBER_ID || !WHATSAPP_TO) {
+        return {
+            enviado: false,
+            configurado: false,
+            motivo: "WhatsApp Cloud API não configurada."
+        };
+    }
+
+    const url =
+        `https://graph.facebook.com/${WHATSAPP_GRAPH_VERSION}/${WHATSAPP_PHONE_NUMBER_ID}/messages`;
+
+    const resposta = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${WHATSAPP_ACCESS_TOKEN}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            messaging_product: "whatsapp",
+            recipient_type: "individual",
+            to: WHATSAPP_TO,
+            type: "text",
+            text: {
+                preview_url: false,
+                body: texto
+            }
+        })
+    });
+
+    const dados = await resposta.json().catch(() => ({}));
+
+    if (!resposta.ok) {
+        const erro =
+            dados?.error?.message ||
+            dados?.erro ||
+            "WhatsApp API recusou o envio.";
+
+        throw new Error(erro);
+    }
+
+    return {
+        enviado: true,
+        configurado: true,
+        id: dados?.messages?.[0]?.id || ""
+    };
+}
+
+function formatarPedidoWhatsApp(pedido, tipo = "novo") {
+
+    const cliente = pedido.cliente || {};
+    const entrega = pedido.entrega || {};
+    const linhas = Array.isArray(pedido.produtos) ? pedido.produtos : [];
+
+    const titulo =
+        tipo === "pago"
+            ? "✅ PAGAMENTO APROVADO - TECHSHOP"
+            : "🛒 NOVO PEDIDO - TECHSHOP";
+
+    const listaProdutos = linhas.map(item => {
+        const subtotal = Number(item.subtotal ?? (Number(item.preco) * Number(item.quantidade))); 
+        return `• ${item.nome} | ${item.quantidade}x | ${formatarBRL(subtotal)}`;
+    }).join("\\n");
+
+    const endereco = [
+        entrega.endereco,
+        entrega.numero,
+        entrega.cidade,
+        entrega.estado,
+        entrega.cep
+    ].filter(Boolean).join(", ");
+
+    return [
+        titulo,
+        "",
+        `📦 Pedido: ${pedido.numero}`,
+        `👤 Cliente: ${cliente.nome || "Não informado"}`,
+        `📧 E-mail: ${cliente.email || "Não informado"}`,
+        `📱 Telefone: ${entrega.telefone || cliente.telefone || "Não informado"}`,
+        endereco ? `📍 Entrega: ${endereco}` : "📍 Entrega: não informada",
+        "",
+        "🧾 Produtos:",
+        listaProdutos || "• Nenhum item",
+        "",
+        `💰 Total: ${formatarBRL(pedido.valorTotal)}`,
+        `💳 Status: ${pedido.status}`
+    ].join("\\n");
+}
+
+function formatarBRL(valor) {
+    return Number(valor || 0).toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+    });
+}
+
+async function notificarNovoPedidoWhatsApp(pedido) {
+
+    if (!WHATSAPP_ACCESS_TOKEN || !WHATSAPP_PHONE_NUMBER_ID || !WHATSAPP_TO) {
+        return;
+    }
+
+    try {
+        const resultado = await enviarWhatsAppTexto(
+            formatarPedidoWhatsApp(pedido, "novo")
+        );
+
+        pedido.whatsapp = {
+            ...(pedido.whatsapp || {}),
+            novoPedidoEnviado: Boolean(resultado.enviado),
+            novoPedidoEm: resultado.enviado ? new Date().toISOString() : ""
+        };
+    } catch (erro) {
+        console.error("Erro ao notificar novo pedido via WhatsApp:", erro.message);
+        pedido.whatsapp = {
+            ...(pedido.whatsapp || {}),
+            novoPedidoEnviado: false,
+            erro: erro.message
+        };
+    }
+}
+
+/* =========================================================
    MERCADO PAGO PIX
 ========================================================= */
 
@@ -1589,9 +1761,8 @@ app.post(
                 });
             }
 
-            const {
-                itens
-            } = req.body;
+            const itens = req.body?.itens || req.body?.produtos || [];
+            const entrega = req.body?.entrega || {};
 
             const carrinho =
                 calcularCarrinho(
@@ -1638,7 +1809,13 @@ app.post(
                                     "pix",
 
                                 payer: {
-                                    email
+                                    email,
+                                    ...(req.usuario.cpf ? {
+                                        identification: {
+                                            type: "CPF",
+                                            number: String(req.usuario.cpf).replace(/\D/g, "")
+                                        }
+                                    } : {})
                                 },
 
                                 external_reference:
@@ -1698,6 +1875,15 @@ app.post(
 
                 },
 
+                entrega: {
+                    telefone: String(entrega.telefone || req.usuario.telefone || "").trim(),
+                    cep: String(entrega.cep || "").trim(),
+                    endereco: String(entrega.endereco || "").trim(),
+                    numero: String(entrega.numero || "").trim(),
+                    cidade: String(entrega.cidade || "").trim(),
+                    estado: String(entrega.estado || "").trim().toUpperCase()
+                },
+
                 produtos:
                     carrinho.produtos,
 
@@ -1739,7 +1925,14 @@ app.post(
                     new Date().toISOString(),
 
                 atualizadoEm:
-                    new Date().toISOString()
+                    new Date().toISOString(),
+
+                historicoStatus: [
+                    {
+                        status: "Aguardando pagamento",
+                        em: new Date().toISOString()
+                    }
+                ]
 
             };
 
@@ -1757,6 +1950,24 @@ app.post(
                 pedidosFile,
                 pedidos
             );
+
+            // A notificação não bloqueia a criação do Pix.
+            if (WHATSAPP_ACCESS_TOKEN && WHATSAPP_PHONE_NUMBER_ID && WHATSAPP_TO) {
+                notificarNovoPedidoWhatsApp(pedido)
+                    .then(async () => {
+                        try {
+                            const atualizados = lerJSON(pedidosFile, []);
+                            const pos = atualizados.findIndex(p => p.numero === pedido.numero);
+                            if (pos !== -1) {
+                                atualizados[pos].whatsapp = pedido.whatsapp || {};
+                                await salvarJSON(pedidosFile, atualizados);
+                            }
+                        } catch (erro) {
+                            console.error("Erro salvando status da notificação WhatsApp:", erro.message);
+                        }
+                    })
+                    .catch(erro => console.error("Erro WhatsApp:", erro.message));
+            }
 
             res.json({
 
@@ -1897,8 +2108,31 @@ app.post(
                 "approved"
             ) {
 
-                pedidos[indice].status =
-                    "Pagamento aprovado";
+                registrarHistoricoStatus(
+                    pedidos[indice],
+                    "Pagamento aprovado"
+                );
+
+                if (
+                    WHATSAPP_ACCESS_TOKEN &&
+                    WHATSAPP_PHONE_NUMBER_ID &&
+                    WHATSAPP_TO &&
+                    !pedidos[indice].whatsapp?.pagamentoAprovadoEnviado
+                ) {
+                    try {
+                        await enviarWhatsAppTexto(
+                            formatarPedidoWhatsApp(pedidos[indice], "pago")
+                        );
+
+                        pedidos[indice].whatsapp = {
+                            ...(pedidos[indice].whatsapp || {}),
+                            pagamentoAprovadoEnviado: true,
+                            pagamentoAprovadoEm: new Date().toISOString()
+                        };
+                    } catch (erro) {
+                        console.error("Erro ao notificar pagamento aprovado:", erro.message);
+                    }
+                }
 
             } else if (
 
@@ -1910,12 +2144,14 @@ app.post(
 
             ) {
 
-                pedidos[indice].status =
-                    "Cancelado";
+                registrarHistoricoStatus(
+                    pedidos[indice],
+                    "Cancelado"
+                );
             }
 
             pedidos[indice].atualizadoEm =
-                new Date().toISOString();
+                pedidos[indice].atualizadoEm || new Date().toISOString();
 
             await salvarJSON(
                 pedidosFile,

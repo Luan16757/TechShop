@@ -10,6 +10,7 @@
 let produtos = [];
 let carrinho = [];
 let clienteAtual = null;
+let cartToastTimer = null;
 
 
 /* =========================================================
@@ -355,6 +356,42 @@ async function verificarCliente() {
 
 
 /* =========================================================
+   ABAS DE AUTENTICAÇÃO
+========================================================= */
+
+function mostrarLogin() {
+    const login = document.getElementById("loginForm");
+    const cadastro = document.getElementById("cadastroForm");
+    const tabLogin = document.getElementById("tabLogin");
+    const tabCadastro = document.getElementById("tabCadastro");
+
+    login?.classList.add("active");
+    cadastro?.classList.remove("active");
+    tabLogin?.classList.add("active");
+    tabCadastro?.classList.remove("active");
+}
+
+function mostrarCadastro() {
+    const login = document.getElementById("loginForm");
+    const cadastro = document.getElementById("cadastroForm");
+    const tabLogin = document.getElementById("tabLogin");
+    const tabCadastro = document.getElementById("tabCadastro");
+
+    login?.classList.remove("active");
+    cadastro?.classList.add("active");
+    tabLogin?.classList.remove("active");
+    tabCadastro?.classList.add("active");
+
+    const msg = document.getElementById("cadastroMessage");
+    if (msg) msg.textContent = "";
+    if (msg) msg.style.display = "none";
+}
+
+// Compatibilidade com o onsubmit antigo do HTML.
+window.criarConta = fazerCadastro;
+window.fazerCadastro = fazerCadastro;
+
+/* =========================================================
    LOGIN
 ========================================================= */
 
@@ -628,6 +665,7 @@ async function fazerLogout() {
 
     bloquearLoja();
 
+    atualizarInterfaceCliente();
     atualizarCarrinhoInterface();
 }
 
@@ -638,50 +676,18 @@ async function fazerLogout() {
 
 function atualizarInterfaceCliente() {
 
-    if (!clienteAtual) return;
+    const botao = document.getElementById("accountButtonText");
 
-    const nome =
-        clienteAtual.nome ||
-        clienteAtual.name ||
-        "Cliente";
-
-    const welcome =
-        document.getElementById("accountWelcome");
-
-    if (welcome) {
-        welcome.textContent =
-            `Olá, ${nome}!`;
+    if (!clienteAtual) {
+        if (botao) botao.textContent = "Conta";
+        return;
     }
 
-    const nomeConta =
-        document.getElementById("accountName");
+    const nome = clienteAtual.nome || clienteAtual.name || "Cliente";
 
-    if (nomeConta) {
-        nomeConta.textContent = nome;
-    }
-
-    const emailConta =
-        document.getElementById("accountEmail");
-
-    if (emailConta) {
-        emailConta.textContent =
-            clienteAtual.email || "";
-    }
-
-    const telefoneConta =
-        document.getElementById("accountTelefone");
-
-    if (telefoneConta) {
-        telefoneConta.textContent =
-            clienteAtual.telefone || "";
-    }
-
-    const cpfConta =
-        document.getElementById("accountCpf");
-
-    if (cpfConta) {
-        cpfConta.textContent =
-            clienteAtual.cpf || "";
+    if (botao) {
+        const primeiroNome = String(nome).trim().split(/\s+/)[0] || "Conta";
+        botao.textContent = primeiroNome.length > 16 ? "Minha conta" : primeiroNome;
     }
 }
 
@@ -989,62 +995,64 @@ function configurarFiltrosCategoria() {
 
 function adicionarCarrinho(id) {
 
-    const produto =
-        produtos.find(
-            item => Number(item.id) === Number(id)
-        );
+    const produto = produtos.find(
+        item => Number(item.id) === Number(id)
+    );
 
     if (!produto) {
-
-        alert(
-            "Produto não encontrado."
-        );
-
+        alert("Produto não encontrado.");
         return;
     }
 
-    const existente =
-        carrinho.find(
-            item =>
-                Number(item.id) ===
-                Number(produto.id)
-        );
+    const nome = produto.nome || produto.name || "Produto";
+    const preco = Number(produto.preco ?? produto.price ?? 0);
+    const imagem = obterImagemProduto(produto);
+
+    const existente = carrinho.find(
+        item => Number(item.id) === Number(produto.id)
+    );
 
     if (existente) {
-
-        existente.quantidade++;
-
+        existente.quantidade += 1;
     } else {
-
         carrinho.push({
-
             id: Number(produto.id),
-
-            nome:
-                produto.nome ||
-                produto.name ||
-                "Produto",
-
-            preco:
-                Number(
-                    produto.preco ??
-                    produto.price ??
-                    0
-                ),
-
-            imagem:
-                obterImagemProduto(produto),
-
+            nome,
+            preco,
+            imagem,
             quantidade: 1
         });
     }
 
     salvarCarrinho();
-
     atualizarCarrinhoInterface();
-
-    abrirCarrinho();
+    mostrarToastCarrinho(
+        `${nome}`,
+        existente ? "Quantidade atualizada no carrinho." : "Produto adicionado com sucesso."
+    );
 }
+
+
+function mostrarToastCarrinho(titulo, texto) {
+
+    const toast = document.getElementById("cartToast");
+    const title = document.getElementById("cartToastTitle");
+    const message = document.getElementById("cartToastText");
+
+    if (!toast) return;
+
+    if (title) title.textContent = titulo;
+    if (message) message.textContent = texto;
+
+    toast.classList.add("show");
+
+    clearTimeout(cartToastTimer);
+
+    cartToastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+    }, 2200);
+}
+
 
 
 /* =========================================================
@@ -1261,127 +1269,70 @@ function carregarCarrinho() {
 
 function atualizarCarrinhoInterface() {
 
-    const quantidade =
-        calcularQuantidadeCarrinho();
+    const quantidade = calcularQuantidadeCarrinho();
+    const total = calcularTotalCarrinho();
 
-    const total =
-        calcularTotalCarrinho();
-
-    const contador =
-        document.getElementById(
-            "cartCount"
-        );
-
+    const contador = document.getElementById("cartCount");
     if (contador) {
-
-        contador.textContent =
-            quantidade;
-
-        contador.style.display =
-            quantidade > 0
-                ? "flex"
-                : "none";
+        contador.textContent = quantidade;
+        contador.style.display = quantidade > 0 ? "flex" : "none";
     }
 
-    const totalElement =
-        document.getElementById(
-            "cartTotal"
-        );
+    const totalElement = document.getElementById("cartTotal");
+    if (totalElement) totalElement.textContent = dinheiro(total);
 
-    if (totalElement) {
+    const resumoItens = document.getElementById("cartItemsSummary");
+    if (resumoItens) resumoItens.textContent = quantidade;
 
-        totalElement.textContent =
-            dinheiro(total);
-    }
+    const summaryBox = document.getElementById("cartSummaryBox");
+    const checkoutButton = document.getElementById("cartCheckoutButton");
 
-    const lista =
-        document.getElementById(
-            "cartItems"
-        );
+    if (summaryBox) summaryBox.style.display = carrinho.length ? "block" : "none";
+    if (checkoutButton) checkoutButton.disabled = !carrinho.length;
 
+    const lista = document.getElementById("cartItems");
     if (!lista) return;
 
     if (!carrinho.length) {
-
         lista.innerHTML = `
-            <div class="carrinho-vazio">
-                Seu carrinho está vazio.
+            <div class="cart-empty-modern">
+                <div class="empty-cart-icon">🛒</div>
+                <h3>Seu carrinho está vazio</h3>
+                <p>Adicione produtos da loja e eles aparecerão aqui.</p>
             </div>
         `;
-
         return;
     }
 
-    lista.innerHTML =
-        carrinho.map(item => {
+    lista.innerHTML = carrinho.map(item => {
+        const subtotal = Number(item.preco) * Number(item.quantidade);
 
-            return `
-                <div class="cart-item">
-
-                    <div class="cart-item-image">
-
-                        <img
-                            src="${escaparHTML(
-                                item.imagem || ""
-                            )}"
-                            alt="${escaparHTML(
-                                item.nome
-                            )}"
-                            onerror="imagemFallback(this)"
-                        >
-
-                    </div>
-
-                    <div class="cart-item-info">
-
-                        <h4>
-                            ${escaparHTML(
-                                item.nome
-                            )}
-                        </h4>
-
-                        <strong>
-                            ${dinheiro(
-                                item.preco
-                            )}
-                        </strong>
-
-                        <div class="cart-item-actions">
-
-                            <button
-                                type="button"
-                                onclick="diminuirQuantidade(${item.id})"
-                            >
-                                −
-                            </button>
-
-                            <span>
-                                ${item.quantidade}
-                            </span>
-
-                            <button
-                                type="button"
-                                onclick="aumentarQuantidade(${item.id})"
-                            >
-                                +
-                            </button>
-
-                            <button
-                                type="button"
-                                onclick="removerDoCarrinho(${item.id})"
-                            >
-                                🗑️
-                            </button>
-
-                        </div>
-
-                    </div>
-
+        return `
+            <div class="cart-item">
+                <div class="cart-item-image">
+                    <img
+                        src="${escaparHTML(item.imagem || "")}"
+                        alt="${escaparHTML(item.nome)}"
+                        onerror="imagemFallback(this)"
+                    >
                 </div>
-            `;
 
-        }).join("");
+                <div class="cart-item-info">
+                    <h4>${escaparHTML(item.nome)}</h4>
+                    <strong>${dinheiro(subtotal)}</strong>
+
+                    <div class="cart-item-actions">
+                        <button type="button" aria-label="Diminuir" onclick="diminuirQuantidade(${Number(item.id)})">−</button>
+                        <span>${Number(item.quantidade)}</span>
+                        <button type="button" aria-label="Aumentar" onclick="aumentarQuantidade(${Number(item.id)})">+</button>
+                        <button type="button" class="cart-remove" aria-label="Remover" onclick="removerDoCarrinho(${Number(item.id)})">🗑</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join("");
 }
+
 
 
 /* =========================================================
@@ -1390,14 +1341,12 @@ function atualizarCarrinhoInterface() {
 
 function abrirCarrinho() {
 
-    const modal =
-        document.getElementById(
-            "cartModal"
-        );
-
+    const modal = document.getElementById("cartModal");
     if (!modal) return;
 
+    modal.classList.add("active");
     modal.style.display = "flex";
+    modal.setAttribute("aria-hidden", "false");
 
     atualizarCarrinhoInterface();
 }
@@ -1409,14 +1358,12 @@ function abrirCarrinho() {
 
 function fecharCarrinho() {
 
-    const modal =
-        document.getElementById(
-            "cartModal"
-        );
-
+    const modal = document.getElementById("cartModal");
     if (!modal) return;
 
+    modal.classList.remove("active");
     modal.style.display = "none";
+    modal.setAttribute("aria-hidden", "true");
 }
 
 
@@ -1459,6 +1406,14 @@ function abrirCheckout() {
     if (!modal) return;
 
     modal.style.display = "flex";
+
+    const nome = document.getElementById("nome");
+    const email = document.getElementById("email");
+    const telefone = document.getElementById("telefone");
+
+    if (nome) nome.value = clienteAtual?.nome || "";
+    if (email) email.value = clienteAtual?.email || "";
+    if (telefone && !telefone.value) telefone.value = clienteAtual?.telefone || "";
 
     atualizarResumoCheckout();
 }
@@ -1544,6 +1499,114 @@ function atualizarResumoCheckout() {
 }
 
 
+
+/* =========================================================
+   FINALIZAR PEDIDO / PAGAMENTO
+========================================================= */
+
+async function finalizarPedido(event) {
+
+    if (event) event.preventDefault();
+
+    if (!carrinho.length) {
+        alert("Seu carrinho está vazio.");
+        fecharCheckout();
+        return;
+    }
+
+    const telefone = document.getElementById("telefone")?.value.trim() || "";
+    const cep = document.getElementById("cep")?.value.trim() || "";
+    const endereco = document.getElementById("endereco")?.value.trim() || "";
+    const numero = document.getElementById("numero")?.value.trim() || "";
+    const cidade = document.getElementById("cidade")?.value.trim() || "";
+    const estado = document.getElementById("estado")?.value.trim().toUpperCase() || "";
+
+    if (!telefone || !cep || !endereco || !numero || !cidade || !estado) {
+        alert("Preencha todos os dados de entrega.");
+        return;
+    }
+
+    const botao = document.getElementById("finalizarBtn");
+    if (botao) {
+        botao.disabled = true;
+        botao.textContent = "Gerando Pix...";
+    }
+
+    try {
+
+        const resposta = await fetch("/api/pix", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({
+                itens: carrinho.map(item => ({
+                    id: Number(item.id),
+                    quantidade: Number(item.quantidade)
+                })),
+                entrega: {
+                    telefone,
+                    cep,
+                    endereco,
+                    numero,
+                    cidade,
+                    estado
+                }
+            })
+        });
+
+        const dados = await resposta.json();
+
+        if (!resposta.ok) {
+            throw new Error(
+                dados.erro || dados.mensagem || "Não foi possível gerar o Pix."
+            );
+        }
+
+        fecharCheckout();
+
+        const modal = document.getElementById("pixModal");
+        if (modal) modal.style.display = "flex";
+
+        const qr = document.getElementById("pixQrCode");
+        if (qr && dados.qr_code_base64) {
+            qr.src = dados.qr_code_base64.startsWith("data:")
+                ? dados.qr_code_base64
+                : "data:image/png;base64," + dados.qr_code_base64;
+        }
+
+        const copia = document.getElementById("pixCopiaCola");
+        if (copia) {
+            copia.value = dados.qr_code || dados.pix_copia_e_cola || "";
+        }
+
+        const valor = document.getElementById("pixValor");
+        if (valor) {
+            valor.textContent = dinheiro(
+                dados.valor || calcularTotalCarrinho()
+            );
+        }
+
+        const numeroPedido = document.getElementById("pixNumeroPedido");
+        if (numeroPedido) {
+            numeroPedido.textContent = dados.pedido?.numero || dados.numero || "";
+        }
+
+        carrinho = [];
+        salvarCarrinho();
+        atualizarCarrinhoInterface();
+
+    } catch (erro) {
+        console.error("Erro ao finalizar pedido:", erro);
+        alert(erro.message || "Não foi possível finalizar o pedido.");
+    } finally {
+        if (botao) {
+            botao.disabled = false;
+            botao.textContent = "Gerar pagamento Pix →";
+        }
+    }
+}
+
+
 /* =========================================================
    PAGAMENTO PIX
 ========================================================= */
@@ -1589,7 +1652,7 @@ async function gerarPix() {
 
                     body: JSON.stringify({
 
-                        produtos:
+                        itens:
                             carrinho.map(item => ({
                                 id: Number(item.id),
                                 quantidade:
@@ -1791,173 +1854,326 @@ async function copiarPix() {
    CONTA
 ========================================================= */
 
-function abrirConta() {
-
-    const modal =
-        document.getElementById(
-            "accountModal"
-        );
-
+async function abrirConta() {
+    const modal = document.getElementById("accountModal");
     if (!modal) return;
 
+    modal.classList.add("active");
     modal.style.display = "flex";
+    modal.setAttribute("aria-hidden", "false");
 
-    atualizarInterfaceCliente();
-}
+    const content = document.getElementById("accountContent");
+    if (!content) return;
 
-
-/* =========================================================
-   FECHAR CONTA
-========================================================= */
-
-function fecharConta() {
-
-    const modal =
-        document.getElementById(
-            "accountModal"
-        );
-
-    if (!modal) return;
-
-    modal.style.display = "none";
-}
-
-
-/* =========================================================
-   CONSULTAR PEDIDO
-========================================================= */
-
-async function consultarPedido() {
-
-    const campo =
-        document.getElementById(
-            "numeroPedidoConsulta"
-        );
-
-    const resultado =
-        document.getElementById(
-            "resultadoPedido"
-        );
-
-    if (!campo || !resultado) return;
-
-    const numero =
-        campo.value.trim();
-
-    if (!numero) {
-
-        resultado.innerHTML = `
-            <p class="erro">
-                Digite o número do pedido.
-            </p>
+    if (!clienteAtual) {
+        content.innerHTML = `
+            <div class="account-error">
+                <div>
+                    <strong>Faça login para acessar sua conta.</strong>
+                    <span>Entre com seus dados para visualizar seu perfil e pedidos.</span>
+                </div>
+            </div>
         `;
-
         return;
     }
 
-    resultado.innerHTML = `
-        <p>
-            Consultando pedido...
-        </p>
+    content.innerHTML = `
+        <div class="account-loading">
+            <div>
+                <div class="account-loading-spinner"></div>
+                <p>Carregando seus dados e pedidos...</p>
+            </div>
+        </div>
     `;
 
     try {
+        const [perfilResponse, pedidosResponse] = await Promise.all([
+            fetch("/api/cliente/perfil", { credentials: "include", cache: "no-store" }),
+            fetch("/api/cliente/pedidos", { credentials: "include", cache: "no-store" })
+        ]);
 
-        const resposta =
-            await fetch(
-                "/api/pedidos/" +
-                encodeURIComponent(numero),
-                {
-                    credentials: "include"
-                }
-            );
+        const perfil = await perfilResponse.json().catch(() => ({}));
+        const pedidos = await pedidosResponse.json().catch(() => []);
 
-        const dados =
-            await resposta.json();
-
-        if (!resposta.ok) {
-
-            resultado.innerHTML = `
-                <p class="erro">
-                    ${
-                        escaparHTML(
-                            dados.erro ||
-                            dados.mensagem ||
-                            "Pedido não encontrado."
-                        )
-                    }
-                </p>
-            `;
-
-            return;
+        if (!perfilResponse.ok) {
+            throw new Error(perfil.erro || "Sua sessão expirou. Faça login novamente.");
         }
 
-        const pedido =
-            dados.pedido ||
-            dados;
-
-        const status =
-            pedido.status ||
-            "Pendente";
-
-        const total =
-            Number(
-                pedido.total ||
-                0
-            );
-
-        resultado.innerHTML = `
-
-            <div class="pedido-resultado">
-
-                <h3>
-                    Pedido #${escaparHTML(
-                        pedido.numero ||
-                        pedido.id ||
-                        numero
-                    )}
-                </h3>
-
-                <p>
-                    <strong>Status:</strong>
-                    ${escaparHTML(status)}
-                </p>
-
-                <p>
-                    <strong>Total:</strong>
-                    ${dinheiro(total)}
-                </p>
-
-                ${
-                    pedido.criadoEm
-                        ? `
-                            <p>
-                                <strong>Data:</strong>
-                                ${new Date(
-                                    pedido.criadoEm
-                                ).toLocaleString(
-                                    "pt-BR"
-                                )}
-                            </p>
-                        `
-                        : ""
-                }
-
-            </div>
-        `;
-
+        clienteAtual = perfil.usuario || clienteAtual;
+        atualizarInterfaceCliente();
+        renderizarConta(pedidosResponse.ok && Array.isArray(pedidos) ? pedidos : []);
     } catch (erro) {
-
-        console.error(erro);
-
-        resultado.innerHTML = `
-            <p class="erro">
-                Erro ao consultar pedido.
-            </p>
+        console.error("Erro ao carregar conta:", erro);
+        content.innerHTML = `
+            <div class="account-error">
+                <div>
+                    <strong>Não foi possível carregar sua conta.</strong>
+                    <span>${escaparHTML(erro.message || "Tente novamente.")}</span>
+                </div>
+            </div>
         `;
     }
 }
 
+function renderizarConta(pedidos = []) {
+    const content = document.getElementById("accountContent");
+    if (!content || !clienteAtual) return;
+
+    const nome = clienteAtual.nome || "Cliente";
+    const inicial = escaparHTML(String(nome).trim().charAt(0).toUpperCase() || "C");
+    const lista = [...pedidos].sort((a,b) => new Date(b.criadoEm || 0) - new Date(a.criadoEm || 0));
+
+    const pedidosHTML = lista.length
+        ? lista.map(renderizarPedidoConta).join("")
+        : `
+            <div class="account-empty-orders">
+                <div>
+                    <strong>Você ainda não tem pedidos.</strong>
+                    <span>Quando fizer uma compra, ela aparecerá aqui.</span>
+                </div>
+            </div>
+        `;
+
+    content.innerHTML = `
+        <div class="account-profile-hero">
+            <div class="account-avatar-large">${inicial}</div>
+            <div>
+                <h3>${escaparHTML(nome)}</h3>
+                <p>${escaparHTML(clienteAtual.email || "E-mail não informado")}</p>
+            </div>
+        </div>
+
+        <div class="account-info-grid">
+            <div class="account-info-box"><span>Nome</span><strong>${escaparHTML(nome)}</strong></div>
+            <div class="account-info-box"><span>E-mail</span><strong>${escaparHTML(clienteAtual.email || "Não informado")}</strong></div>
+            <div class="account-info-box"><span>Telefone</span><strong>${escaparHTML(clienteAtual.telefone || "Não informado")}</strong></div>
+            <div class="account-info-box"><span>CPF</span><strong>${escaparHTML(clienteAtual.cpf || "Não informado")}</strong></div>
+        </div>
+
+        <div class="account-orders-head">
+            <div>
+                <h3>Meus pedidos</h3>
+                <p>${lista.length} pedido${lista.length === 1 ? "" : "s"} encontrado${lista.length === 1 ? "" : "s"}</p>
+            </div>
+            <button type="button" class="account-logout-btn" onclick="fazerLogout(); fecharModal('accountModal')">Sair da conta</button>
+        </div>
+
+        <div class="account-orders-list">${pedidosHTML}</div>
+    `;
+}
+
+function renderizarPedidoConta(pedido) {
+    const numero = String(pedido.numero || pedido.id || "-");
+    const status = pedido.status || "Aguardando pagamento";
+    const produtos = Array.isArray(pedido.produtos) ? pedido.produtos : [];
+    const produtosTexto = produtos.length
+        ? produtos.map(item => `${Number(item.quantidade || 1)}x ${escaparHTML(item.nome || "Produto")}`).join(" • ")
+        : "Itens do pedido";
+    const total = Number(pedido.valorTotal ?? pedido.total ?? 0);
+    const data = pedido.criadoEm
+        ? new Date(pedido.criadoEm).toLocaleString("pt-BR", { dateStyle:"short", timeStyle:"short" })
+        : "Data não informada";
+    const podeCancelar = status === "Aguardando pagamento";
+
+    return `
+        <article class="account-order-card">
+            <div class="account-order-top">
+                <div>
+                    <div class="account-order-number">#${escaparHTML(numero)}</div>
+                    <div class="account-order-date">${escaparHTML(data)}</div>
+                </div>
+                <span class="account-status">${escaparHTML(status)}</span>
+            </div>
+            <div class="account-order-products">${produtosTexto}</div>
+            <div class="account-order-bottom">
+                <div class="account-order-total"><span>Total</span>${dinheiro(total)}</div>
+                <div class="account-order-actions">
+                    <button type="button" class="account-order-btn primary" onclick="acompanharDoPedido('${escaparHTML(numero)}')">Acompanhar</button>
+                    ${podeCancelar ? `<button type="button" class="account-order-btn danger" onclick="cancelarPedido('${escaparHTML(numero)}')">Cancelar</button>` : ""}
+                </div>
+            </div>
+        </article>
+    `;
+}
+
+function acompanharDoPedido(numero) {
+    fecharModal("accountModal");
+    const campo = document.getElementById("numeroPedidoConsulta");
+    if (campo) campo.value = numero;
+    document.getElementById("acompanharPedido")?.scrollIntoView({ behavior:"smooth", block:"start" });
+    setTimeout(consultarPedido, 250);
+}
+
+function fecharConta() {
+    fecharModal("accountModal");
+}
+
+function fecharModal(id) {
+    const modal = document.getElementById(id);
+    if (!modal) return;
+    modal.classList.remove("active");
+    modal.style.display = "none";
+    modal.setAttribute("aria-hidden", "true");
+}
+
+
+/* =========================================================
+   ACOMPANHAR PEDIDO
+========================================================= */
+
+let pedidoTrackingTimer = null;
+
+const etapasPedido = [
+    { status:"Aguardando pagamento", icone:"💳", descricao:"Estamos aguardando a confirmação do pagamento." },
+    { status:"Pagamento aprovado", icone:"✅", descricao:"Pagamento confirmado com sucesso." },
+    { status:"Preparando pedido", icone:"📦", descricao:"Seu pedido está sendo separado e preparado." },
+    { status:"Enviado", icone:"🏷️", descricao:"Seu pedido já foi enviado." },
+    { status:"Em transporte", icone:"🚚", descricao:"Seu pedido está a caminho." },
+    { status:"Entregue", icone:"🏠", descricao:"Pedido entregue. Obrigado pela compra!" }
+];
+
+function renderizarTimelinePedido(status, historico = []) {
+    const timeline = document.getElementById("timelinePedido");
+    if (!timeline) return;
+
+    if (status === "Cancelado") {
+        timeline.innerHTML = (historico.length ? historico : [{status:"Cancelado", em:null}]).map(item => `
+            <div class="timeline-item concluido">
+                <div class="timeline-marker">${item.status === "Cancelado" ? "✕" : "✓"}</div>
+                <div class="timeline-content">
+                    <strong>${escaparHTML(item.status)}</strong>
+                    <p>${item.em ? escaparHTML(new Date(item.em).toLocaleString("pt-BR")) : ""}</p>
+                </div>
+            </div>
+        `).join("");
+        return;
+    }
+
+    const base = [
+        { status:"Aguardando pagamento", icone:"💳" },
+        { status:"Pagamento aprovado", icone:"✅" },
+        { status:"Preparando pedido", icone:"📦" },
+        { status:"Enviado", icone:"🏷️" },
+        { status:"Em transporte", icone:"🚚" },
+        { status:"Entregue", icone:"🏠" }
+    ];
+
+    const mapa = new Map((historico || []).map(item => [item.status, item]));
+    const indiceAtual = Math.max(0, base.findIndex(item => item.status === status));
+
+    timeline.innerHTML = base.map((item, index) => {
+        const registro = mapa.get(item.status);
+        const classe = registro ? (index < indiceAtual ? "concluido" : "atual") : "futuro";
+        const hora = registro?.em ? new Date(registro.em).toLocaleString("pt-BR") : "Aguardando";
+        return `
+            <div class="timeline-item ${classe}">
+                <div class="timeline-marker">${registro ? item.icone : "○"}</div>
+                <div class="timeline-content">
+                    <strong>${escaparHTML(item.status)}</strong>
+                    <p>${registro ? escaparHTML(hora) : "Ainda não realizado"}</p>
+                </div>
+            </div>
+        `;
+    }).join("");
+}
+
+async function consultarPedido() {
+    const campo = document.getElementById("numeroPedidoConsulta");
+    const resultado = document.getElementById("resultadoPedido");
+    const atualizado = document.getElementById("ultimaAtualizacaoPedido");
+    const timeline = document.getElementById("timelinePedido");
+    if (!campo || !resultado) return;
+
+    const numero = campo.value.trim();
+    if (!numero) {
+        resultado.innerHTML = `<div class="tracking-result-card"><p class="erro">Digite o número do pedido.</p></div>`;
+        if (timeline) timeline.innerHTML = "";
+        if (atualizado) atualizado.textContent = "";
+        return;
+    }
+
+    if (pedidoTrackingTimer) {
+        clearInterval(pedidoTrackingTimer);
+        pedidoTrackingTimer = null;
+    }
+
+    let ultimoStatus = null;
+    let ultimaAtualizacao = null;
+    let consultaEmAndamento = false;
+
+    resultado.innerHTML = `<div class="tracking-result-card"><p style="color:#888;font-size:12px">Consultando pedido <strong style="color:#fff">#${escaparHTML(numero)}</strong>...</p></div>`;
+    if (timeline) timeline.innerHTML = "";
+
+    const consultar = async (silencioso = false) => {
+        if (consultaEmAndamento) return false;
+        consultaEmAndamento = true;
+
+        try {
+            const resposta = await fetch("/api/pedido/" + encodeURIComponent(numero) + "/status?_=" + Date.now(), {
+                credentials: "include",
+                cache: "no-store",
+                headers: { "Cache-Control": "no-cache" }
+            });
+            const dados = await resposta.json().catch(() => ({}));
+
+            if (!resposta.ok) {
+                if (!silencioso) {
+                    resultado.innerHTML = `<div class="tracking-result-card"><p class="erro">${escaparHTML(dados.erro || "Pedido não encontrado.")}</p></div>`;
+                    if (timeline) timeline.innerHTML = "";
+                    if (atualizado) atualizado.textContent = "";
+                }
+                return false;
+            }
+
+            const status = dados.status || "Aguardando pagamento";
+            const criado = dados.criadoEm ? new Date(dados.criadoEm).toLocaleString("pt-BR") : "Não informado";
+            const atualizadoEm = dados.atualizadoEm ? new Date(dados.atualizadoEm).toLocaleString("pt-BR") : criado;
+            const mudou = ultimoStatus !== null && (ultimoStatus !== status || ultimaAtualizacao !== dados.atualizadoEm);
+
+            resultado.innerHTML = `
+                <div class="tracking-result-card ${mudou ? "tracking-pulse" : ""}">
+                    <div class="tracking-result-top">
+                        <div>
+                            <h3>Pedido #${escaparHTML(dados.numero || numero)}</h3>
+                            <p style="color:#777;font-size:11px;margin-top:4px">Status atual do seu pedido</p>
+                        </div>
+                        <span class="tracking-status-badge">${escaparHTML(status)}</span>
+                    </div>
+                    <div class="tracking-meta-grid">
+                        <div class="tracking-meta-box"><span>Pedido criado</span><strong>${escaparHTML(criado)}</strong></div>
+                        <div class="tracking-meta-box"><span>Última atualização</span><strong>${escaparHTML(atualizadoEm)}</strong></div>
+                    </div>
+                    <div class="tracking-last">🟢 Atualização automática ativa • verificando a cada 3 segundos</div>
+                </div>
+            `;
+
+            renderizarTimelinePedido(status, Array.isArray(dados.historicoStatus) ? dados.historicoStatus : []);
+
+            if (mudou) {
+                resultado.querySelector(".tracking-result-card")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+
+            if (atualizado) {
+                atualizado.textContent = `🟢 Ao vivo • última verificação ${new Date().toLocaleTimeString("pt-BR")}`;
+            }
+
+            ultimoStatus = status;
+            ultimaAtualizacao = dados.atualizadoEm || null;
+            return true;
+        } catch (erro) {
+            if (!silencioso) {
+                resultado.innerHTML = `<div class="tracking-result-card"><p class="erro">Erro ao consultar o pedido. Tente novamente.</p></div>`;
+                if (timeline) timeline.innerHTML = "";
+            }
+            return false;
+        } finally {
+            consultaEmAndamento = false;
+        }
+    };
+
+    const ok = await consultar(false);
+    if (ok) pedidoTrackingTimer = setInterval(() => consultar(true), 3000);
+}
 
 /* =========================================================
    CANCELAR PEDIDO

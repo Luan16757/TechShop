@@ -1,0 +1,30 @@
+TECHSHOP - CORREÇÃO CHECKOUT + PIX
+
+Substitua estes arquivos na pasta D:\Teste\TECHSHOP:
+- techshop.html
+- script.js
+- server.js
+
+Não substitua .env, imagens/, pedidos.json ou usuarios.json.
+
+Depois:
+1. GitHub Desktop -> Summary: Novo checkout Pix
+2. Commit to main
+3. Push origin
+4. Aguarde o Netlify publicar
+
+O checkout agora pede:
+- Nome completo
+- E-mail
+- Telefone/WhatsApp
+- CPF
+- CEP
+- Rua/Avenida
+- Número
+- Complemento (opcional)
+- Bairro
+- Cidade
+- Estado
+
+Nome e e-mail não são readonly e podem ser editados.
+O modal do Pix possui QR Code, Pix Copia e Cola, número do pedido, valor e link do Mercado Pago quando disponível.

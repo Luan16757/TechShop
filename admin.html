@@ -504,6 +504,56 @@
                 3px;
         }
 
+        .delivery-box {
+
+            background:
+                linear-gradient(145deg, rgba(59,130,246,.08), rgba(255,255,255,.02));
+
+            border:
+                1px solid rgba(59,130,246,.18);
+
+            border-radius:
+                14px;
+
+            padding:
+                15px;
+
+            margin-bottom:
+                18px;
+        }
+
+        .delivery-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-weight: 900;
+        }
+
+        .delivery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px 18px;
+        }
+
+        .delivery-item {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.45;
+        }
+
+        .delivery-item strong {
+            color: #eef2f7;
+            font-weight: 700;
+        }
+
+        @media (max-width: 650px) {
+            .delivery-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .products {
 
             margin-bottom:
@@ -934,6 +984,56 @@
 
 let pedidos = [];
 
+/* =========================================================
+   AUTENTICAÇÃO ADMINISTRATIVA
+========================================================= */
+
+function tokenAdmin() {
+    return localStorage.getItem("techshop_admin_token") || "";
+}
+
+async function fetchAdmin(url, options = {}) {
+
+    const headers = new Headers(options.headers || {});
+    const token = tokenAdmin();
+
+    if (token && !headers.has("Authorization")) {
+        headers.set("Authorization", `Bearer ${token}`);
+    }
+
+    const resposta = await fetch(url, {
+        ...options,
+        headers,
+        credentials: "include",
+        cache: "no-store"
+    });
+
+    const texto = await resposta.text();
+    let dados = {};
+
+    try {
+        dados = texto ? JSON.parse(texto) : {};
+    } catch {
+        throw new Error(
+            `Resposta inválida do servidor (${resposta.status}).`
+        );
+    }
+
+    if (!resposta.ok) {
+        if (resposta.status === 401 && url !== "/api/admin/login") {
+            localStorage.removeItem("techshop_admin_token");
+            document.getElementById("loginScreen").style.display = "flex";
+            document.getElementById("adminApp").style.display = "none";
+        }
+
+        throw new Error(
+            dados.erro || `Erro ${resposta.status}.`
+        );
+    }
+
+    return dados;
+}
+
 
 /* =========================================================
    LOGIN
@@ -949,75 +1049,75 @@ document
 
             const usuario =
                 document
-                    .getElementById(
-                        "adminUsuario"
-                    )
+                    .getElementById("adminUsuario")
                     .value
                     .trim();
 
             const senha =
                 document
-                    .getElementById(
-                        "adminSenha"
-                    )
+                    .getElementById("adminSenha")
                     .value;
 
             const erro =
                 document
-                    .getElementById(
-                        "loginErro"
-                    );
+                    .getElementById("loginErro");
 
-            erro.style.display =
-                "none";
+            const botao =
+                event.currentTarget
+                    .querySelector('button[type="submit"]');
+
+            erro.style.display = "none";
+            botao.disabled = true;
+            botao.textContent = "ENTRANDO...";
 
             try {
 
-                const resposta =
-                    await fetch(
+                const dados =
+                    await fetchAdmin(
                         "/api/admin/login",
                         {
-                            method:
-                                "POST",
-
+                            method: "POST",
                             headers: {
                                 "Content-Type":
                                     "application/json"
                             },
-
-                            credentials:
-                                "include",
-
-                            body:
-                                JSON.stringify({
-                                    usuario,
-                                    senha
-                                })
+                            body: JSON.stringify({
+                                usuario,
+                                senha
+                            })
                         }
                     );
 
-                const dados =
-                    await resposta.json();
-
-                if (!resposta.ok) {
-
+                if (!dados.sucesso || !dados.token) {
                     throw new Error(
                         dados.erro ||
-                        "Login inválido."
+                        "O servidor não retornou a sessão administrativa."
                     );
                 }
 
-                abrirPainel(
-                    dados.usuario
+                localStorage.setItem(
+                    "techshop_admin_token",
+                    dados.token
                 );
+
+                abrirPainel(
+                    dados.usuario || "Administrador"
+                );
+
+                await carregarPedidos();
 
             } catch (erroAtual) {
 
                 erro.textContent =
-                    erroAtual.message;
+                    erroAtual.message ||
+                    "Não foi possível entrar.";
 
-                erro.style.display =
-                    "block";
+                erro.style.display = "block";
+
+            } finally {
+
+                botao.disabled = false;
+                botao.textContent = "ENTRAR NO PAINEL";
             }
         }
     );
@@ -1029,42 +1129,31 @@ document
 
 async function verificarAdmin() {
 
+    if (!tokenAdmin()) {
+        return false;
+    }
+
     try {
 
-        const resposta =
-            await fetch(
-                "/api/admin/me",
-                {
-                    credentials:
-                        "include",
-                    cache:
-                        "no-store"
-                }
+        const dados =
+            await fetchAdmin(
+                "/api/admin/me"
             );
 
-        if (!resposta.ok) {
-            return false;
-        }
-
-        const dados =
-            await resposta.json();
-
-        if (
-            dados.autenticado
-        ) {
+        if (dados.autenticado) {
 
             abrirPainel(
-                dados.usuario
+                dados.usuario || "Administrador"
             );
+
+            await carregarPedidos();
 
             return true;
         }
 
     } catch (erro) {
 
-        console.error(
-            erro
-        );
+        console.error("Sessão admin:", erro);
     }
 
     return false;
@@ -1123,38 +1212,11 @@ async function carregarPedidos() {
 
     try {
 
-        const resposta =
-            await fetch(
-                "/api/pedidos",
-                {
-                    credentials:
-                        "include",
-
-                    cache:
-                        "no-store"
-                }
-            );
-
-        if (
-            resposta.status ===
-            401
-        ) {
-
-            location.reload();
-
-            return;
-        }
-
         const dados =
-            await resposta.json();
-
-        if (!resposta.ok) {
-
-            throw new Error(
-                dados.erro ||
-                "Erro ao carregar pedidos."
+            await fetchAdmin(
+                "/api/pedidos"
             );
-        }
+
 
         pedidos =
             Array.isArray(dados)
@@ -1277,6 +1339,10 @@ function criarPedidoCard(
         pedido.cliente ||
         {};
 
+    const entrega =
+        pedido.entrega ||
+        {};
+
     const produtos =
         Array.isArray(
             pedido.produtos
@@ -1381,6 +1447,58 @@ function criarPedidoCard(
                         "-"
                     )}
                 </span>
+
+                <span>
+                    🪪 CPF:
+                    ${escapeHtml(
+                        cliente.cpf ||
+                        "-"
+                    )}
+                </span>
+
+            </div>
+
+
+            <div class="delivery-box">
+
+                <div class="delivery-title">
+                    <span>📍 Dados da entrega</span>
+                    <small style="color:var(--muted);font-weight:600">Informações enviadas no checkout</small>
+                </div>
+
+                <div class="delivery-grid">
+
+                    <div class="delivery-item">
+                        📱 Telefone: 
+                        <strong>${escapeHtml(entrega.telefone || cliente.telefone || "-")}</strong>
+                    </div>
+
+                    <div class="delivery-item">
+                        📮 CEP: 
+                        <strong>${escapeHtml(entrega.cep || "-")}</strong>
+                    </div>
+
+                    <div class="delivery-item">
+                        🏠 Endereço: 
+                        <strong>${escapeHtml(entrega.endereco || "-")}</strong>
+                    </div>
+
+                    <div class="delivery-item">
+                        🔢 Número: 
+                        <strong>${escapeHtml(entrega.numero || "-")}</strong>
+                    </div>
+
+                    <div class="delivery-item">
+                        🏙️ Cidade: 
+                        <strong>${escapeHtml(entrega.cidade || "-")}</strong>
+                    </div>
+
+                    <div class="delivery-item">
+                        🗺️ Estado: 
+                        <strong>${escapeHtml(entrega.estado || "-")}</strong>
+                    </div>
+
+                </div>
 
             </div>
 
@@ -1573,30 +1691,17 @@ async function atualizarStatus(
 
     try {
 
-        const resposta =
-            await fetch(
+        const dados =
+            await fetchAdmin(
                 `/api/pedidos/${encodeURIComponent(numero)}/status`,
                 {
-                    method:
-                        "PUT",
-
+                    method: "PUT",
                     headers: {
-                        "Content-Type":
-                            "application/json"
+                        "Content-Type": "application/json"
                     },
-
-                    credentials:
-                        "include",
-
-                    body:
-                        JSON.stringify({
-                            status
-                        })
+                    body: JSON.stringify({ status })
                 }
             );
-
-        const dados =
-            await resposta.json();
 
         if (!resposta.ok) {
 
@@ -1630,21 +1735,23 @@ async function atualizarStatus(
 async function logoutAdmin() {
 
     try {
-
-        await fetch(
+        await fetchAdmin(
             "/api/admin/logout",
-            {
-                method:
-                    "POST",
-
-                credentials:
-                    "include"
-            }
+            { method: "POST" }
         );
-
     } catch {}
 
-    location.reload();
+    localStorage.removeItem(
+        "techshop_admin_token"
+    );
+
+    document
+        .getElementById("adminApp")
+        .style.display = "none";
+
+    document
+        .getElementById("loginScreen")
+        .style.display = "flex";
 }
 
 
