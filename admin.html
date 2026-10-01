@@ -1,0 +1,1761 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#080a0f"
+    >
+
+    <title>TECHSHOP | Administração</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #07090d;
+            --card: #10141b;
+            --card2: #151a22;
+            --border: rgba(255,255,255,.08);
+            --orange: #ff6b00;
+            --orange2: #ff8a24;
+            --green: #22c55e;
+            --red: #ef4444;
+            --blue: #3b82f6;
+            --text: #f5f7fa;
+            --muted: #89919e;
+        }
+
+        body {
+            font-family:
+                Inter,
+                Arial,
+                sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at top right,
+                    rgba(255,107,0,.12),
+                    transparent 30%
+                ),
+                var(--bg);
+
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        /* LOGIN */
+
+        #loginScreen {
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 420px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255,255,255,.06),
+                    rgba(255,255,255,.02)
+                );
+
+            border: 1px solid var(--border);
+
+            border-radius: 24px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 30px 80px
+                rgba(0,0,0,.5);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo strong {
+            font-size: 32px;
+
+            color: var(--orange);
+
+            letter-spacing: 2px;
+        }
+
+        .logo span {
+            display: block;
+
+            margin-top: 6px;
+
+            color: var(--muted);
+
+            font-size: 13px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #c7cdd6;
+
+            font-size: 13px;
+        }
+
+        input,
+        select {
+
+            width: 100%;
+
+            background: #0b0f15;
+
+            border: 1px solid var(--border);
+
+            border-radius: 12px;
+
+            padding: 14px;
+
+            color: white;
+
+            outline: none;
+
+            transition: .2s;
+        }
+
+        input:focus,
+        select:focus {
+
+            border-color:
+                var(--orange);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(255,107,0,.1);
+        }
+
+        .btn {
+            width: 100%;
+
+            border: 0;
+
+            border-radius: 12px;
+
+            padding: 14px;
+
+            font-weight: 800;
+
+            transition: .2s;
+        }
+
+        .btn-primary {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--orange),
+                    var(--orange2)
+                );
+
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 10px 30px
+                rgba(255,107,0,.25);
+        }
+
+        .erro {
+            margin-top: 15px;
+
+            padding: 12px;
+
+            border-radius: 10px;
+
+            background:
+                rgba(239,68,68,.1);
+
+            color:
+                #ff7b7b;
+
+            font-size: 13px;
+
+            display: none;
+        }
+
+        /* ADMIN */
+
+        #adminApp {
+            display: none;
+        }
+
+        .topbar {
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 100;
+
+            height: 72px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding:
+                0 28px;
+
+            background:
+                rgba(7,9,13,.9);
+
+            backdrop-filter:
+                blur(18px);
+
+            border-bottom:
+                1px solid var(--border);
+        }
+
+        .brand {
+
+            font-size: 21px;
+
+            font-weight: 900;
+
+            letter-spacing: 1px;
+        }
+
+        .brand span {
+            color: var(--orange);
+        }
+
+        .admin-info {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+        }
+
+        .admin-name {
+            color: var(--muted);
+
+            font-size: 13px;
+        }
+
+        .logout {
+
+            border: 1px solid
+                rgba(239,68,68,.3);
+
+            background:
+                rgba(239,68,68,.08);
+
+            color:
+                #ff7777;
+
+            padding:
+                9px 14px;
+
+            border-radius:
+                10px;
+        }
+
+        .container {
+
+            width: 100%;
+
+            max-width: 1400px;
+
+            margin: auto;
+
+            padding: 30px 20px 60px;
+        }
+
+        .dashboard {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 15px;
+
+            margin-bottom: 25px;
+        }
+
+        .stat {
+
+            background:
+                var(--card);
+
+            border:
+                1px solid var(--border);
+
+            border-radius:
+                18px;
+
+            padding:
+                20px;
+        }
+
+        .stat small {
+            color: var(--muted);
+        }
+
+        .stat strong {
+
+            display: block;
+
+            font-size: 27px;
+
+            margin-top: 8px;
+        }
+
+        .orders-title {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 18px;
+        }
+
+        .orders-title h1 {
+            font-size: 25px;
+        }
+
+        .refresh {
+
+            background:
+                rgba(255,107,0,.1);
+
+            color:
+                var(--orange);
+
+            border:
+                1px solid
+                rgba(255,107,0,.2);
+
+            padding:
+                10px 15px;
+
+            border-radius:
+                10px;
+        }
+
+        .orders {
+
+            display: grid;
+
+            gap: 18px;
+        }
+
+        .order-card {
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #11161e,
+                    #0c1016
+                );
+
+            border:
+                1px solid var(--border);
+
+            border-radius:
+                20px;
+
+            padding:
+                22px;
+
+            transition:
+                .2s;
+        }
+
+        .order-card:hover {
+
+            border-color:
+                rgba(255,107,0,.3);
+
+            transform:
+                translateY(-2px);
+        }
+
+        .order-header {
+
+            display: flex;
+
+            align-items: flex-start;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            margin-bottom: 18px;
+        }
+
+        .order-number {
+
+            color:
+                var(--orange);
+
+            font-weight: 900;
+
+            font-size: 19px;
+        }
+
+        .order-date {
+
+            color:
+                var(--muted);
+
+            font-size: 12px;
+
+            margin-top: 5px;
+        }
+
+        .order-total {
+
+            font-size: 20px;
+
+            font-weight: 900;
+        }
+
+        .client {
+
+            background:
+                rgba(255,255,255,.025);
+
+            border:
+                1px solid
+                rgba(255,255,255,.05);
+
+            border-radius:
+                13px;
+
+            padding:
+                14px;
+
+            margin-bottom:
+                15px;
+        }
+
+        .client strong {
+            display: block;
+
+            margin-bottom: 5px;
+        }
+
+        .client span {
+
+            display: block;
+
+            color:
+                var(--muted);
+
+            font-size:
+                13px;
+
+            margin-top:
+                3px;
+        }
+
+        .products {
+
+            margin-bottom:
+                18px;
+        }
+
+        .product-row {
+
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            padding:
+                9px 0;
+
+            border-bottom:
+                1px solid
+                rgba(255,255,255,.04);
+
+            font-size:
+                13px;
+        }
+
+        .product-row span:last-child {
+            color:
+                #dbe0e7;
+        }
+
+        .status-area {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr auto;
+
+            gap: 10px;
+
+            align-items: end;
+        }
+
+        .status-area label {
+
+            display: block;
+
+            font-size:
+                12px;
+
+            color:
+                var(--muted);
+
+            margin-bottom:
+                7px;
+        }
+
+        .status-select {
+
+            width: 100%;
+        }
+
+        .status-button {
+
+            border: 0;
+
+            background:
+                var(--orange);
+
+            color: white;
+
+            padding:
+                13px 18px;
+
+            border-radius:
+                11px;
+
+            font-weight:
+                800;
+
+            white-space:
+                nowrap;
+        }
+
+        .status-button:hover {
+            background:
+                var(--orange2);
+        }
+
+        .updated {
+
+            margin-top:
+                12px;
+
+            font-size:
+                11px;
+
+            color:
+                var(--muted);
+
+            text-align:
+                right;
+        }
+
+        .empty {
+
+            padding:
+                60px 20px;
+
+            text-align:
+                center;
+
+            color:
+                var(--muted);
+
+            background:
+                var(--card);
+
+            border:
+                1px solid var(--border);
+
+            border-radius:
+                18px;
+        }
+
+        .loading {
+
+            padding:
+                50px;
+
+            text-align:
+                center;
+
+            color:
+                var(--muted);
+        }
+
+        .toast {
+
+            position:
+                fixed;
+
+            right:
+                20px;
+
+            bottom:
+                20px;
+
+            z-index:
+                999;
+
+            padding:
+                15px 18px;
+
+            border-radius:
+                13px;
+
+            background:
+                #171c24;
+
+            border:
+                1px solid var(--border);
+
+            box-shadow:
+                0 20px 50px
+                rgba(0,0,0,.5);
+
+            display:
+                none;
+        }
+
+        .toast.success {
+            border-color:
+                rgba(34,197,94,.3);
+        }
+
+        .toast.error {
+            border-color:
+                rgba(239,68,68,.3);
+        }
+
+        @media(max-width:900px) {
+
+            .dashboard {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width:600px) {
+
+            .topbar {
+                padding:
+                    0 15px;
+            }
+
+            .admin-name {
+                display:
+                    none;
+            }
+
+            .container {
+                padding:
+                    20px 12px 40px;
+            }
+
+            .dashboard {
+                grid-template-columns:
+                    1fr 1fr;
+            }
+
+            .order-header {
+                flex-direction:
+                    column;
+            }
+
+            .status-area {
+                grid-template-columns:
+                    1fr;
+            }
+
+            .status-button {
+                width:
+                    100%;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- LOGIN -->
+
+    <div id="loginScreen">
+
+        <div class="login-box">
+
+            <div class="logo">
+
+                <strong>
+                    TECHSHOP
+                </strong>
+
+                <span>
+                    Painel Administrativo
+                </span>
+
+            </div>
+
+            <form id="adminLoginForm">
+
+                <div class="form-group">
+
+                    <label>
+                        Usuário
+                    </label>
+
+                    <input
+                        type="text"
+                        id="adminUsuario"
+                        autocomplete="username"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Senha
+                    </label>
+
+                    <input
+                        type="password"
+                        id="adminSenha"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                </div>
+
+                <button
+                    class="btn btn-primary"
+                    type="submit"
+                >
+                    Entrar no painel
+                </button>
+
+            </form>
+
+            <div
+                id="loginErro"
+                class="erro"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ADMIN -->
+
+    <div id="adminApp">
+
+        <header class="topbar">
+
+            <div class="brand">
+
+                TECH<span>SHOP</span>
+
+            </div>
+
+            <div class="admin-info">
+
+                <span
+                    id="adminNome"
+                    class="admin-name"
+                >
+                    Administrador
+                </span>
+
+                <button
+                    class="logout"
+                    onclick="logoutAdmin()"
+                >
+                    Sair
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <main class="container">
+
+            <div class="dashboard">
+
+                <div class="stat">
+
+                    <small>
+                        Total de pedidos
+                    </small>
+
+                    <strong id="totalPedidos">
+                        0
+                    </strong>
+
+                </div>
+
+                <div class="stat">
+
+                    <small>
+                        Aguardando pagamento
+                    </small>
+
+                    <strong id="aguardando">
+                        0
+                    </strong>
+
+                </div>
+
+                <div class="stat">
+
+                    <small>
+                        Em preparação
+                    </small>
+
+                    <strong id="preparando">
+                        0
+                    </strong>
+
+                </div>
+
+                <div class="stat">
+
+                    <small>
+                        Em transporte
+                    </small>
+
+                    <strong id="transporte">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="orders-title">
+
+                <h1>
+                    Pedidos
+                </h1>
+
+                <button
+                    class="refresh"
+                    onclick="carregarPedidos()"
+                >
+                    ↻ Atualizar
+                </button>
+
+            </div>
+
+
+            <div
+                id="orders"
+                class="orders"
+            >
+
+                <div class="loading">
+                    Carregando pedidos...
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <div
+        id="toast"
+        class="toast"
+    ></div>
+
+
+<script>
+
+let pedidos = [];
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+document
+    .getElementById("adminLoginForm")
+    .addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+            const usuario =
+                document
+                    .getElementById(
+                        "adminUsuario"
+                    )
+                    .value
+                    .trim();
+
+            const senha =
+                document
+                    .getElementById(
+                        "adminSenha"
+                    )
+                    .value;
+
+            const erro =
+                document
+                    .getElementById(
+                        "loginErro"
+                    );
+
+            erro.style.display =
+                "none";
+
+            try {
+
+                const resposta =
+                    await fetch(
+                        "/api/admin/login",
+                        {
+                            method:
+                                "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            credentials:
+                                "include",
+
+                            body:
+                                JSON.stringify({
+                                    usuario,
+                                    senha
+                                })
+                        }
+                    );
+
+                const dados =
+                    await resposta.json();
+
+                if (!resposta.ok) {
+
+                    throw new Error(
+                        dados.erro ||
+                        "Login inválido."
+                    );
+                }
+
+                abrirPainel(
+                    dados.usuario
+                );
+
+            } catch (erroAtual) {
+
+                erro.textContent =
+                    erroAtual.message;
+
+                erro.style.display =
+                    "block";
+            }
+        }
+    );
+
+
+/* =========================================================
+   VERIFICAR LOGIN
+========================================================= */
+
+async function verificarAdmin() {
+
+    try {
+
+        const resposta =
+            await fetch(
+                "/api/admin/me",
+                {
+                    credentials:
+                        "include",
+                    cache:
+                        "no-store"
+                }
+            );
+
+        if (!resposta.ok) {
+            return false;
+        }
+
+        const dados =
+            await resposta.json();
+
+        if (
+            dados.autenticado
+        ) {
+
+            abrirPainel(
+                dados.usuario
+            );
+
+            return true;
+        }
+
+    } catch (erro) {
+
+        console.error(
+            erro
+        );
+    }
+
+    return false;
+}
+
+
+/* =========================================================
+   ABRIR PAINEL
+========================================================= */
+
+function abrirPainel(usuario) {
+
+    document
+        .getElementById(
+            "loginScreen"
+        )
+        .style.display =
+            "none";
+
+    document
+        .getElementById(
+            "adminApp"
+        )
+        .style.display =
+            "block";
+
+    document
+        .getElementById(
+            "adminNome"
+        )
+        .textContent =
+            usuario ||
+            "Administrador";
+
+    carregarPedidos();
+}
+
+
+/* =========================================================
+   PEDIDOS
+========================================================= */
+
+async function carregarPedidos() {
+
+    const container =
+        document
+            .getElementById(
+                "orders"
+            );
+
+    container.innerHTML = `
+        <div class="loading">
+            🔄 Carregando pedidos...
+        </div>
+    `;
+
+    try {
+
+        const resposta =
+            await fetch(
+                "/api/pedidos",
+                {
+                    credentials:
+                        "include",
+
+                    cache:
+                        "no-store"
+                }
+            );
+
+        if (
+            resposta.status ===
+            401
+        ) {
+
+            location.reload();
+
+            return;
+        }
+
+        const dados =
+            await resposta.json();
+
+        if (!resposta.ok) {
+
+            throw new Error(
+                dados.erro ||
+                "Erro ao carregar pedidos."
+            );
+        }
+
+        pedidos =
+            Array.isArray(dados)
+                ? dados
+                : [];
+
+        atualizarDashboard();
+
+        renderizarPedidos();
+
+    } catch (erro) {
+
+        container.innerHTML = `
+            <div class="empty">
+                ❌ ${escapeHtml(
+                    erro.message
+                )}
+            </div>
+        `;
+    }
+}
+
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+function atualizarDashboard() {
+
+    document
+        .getElementById(
+            "totalPedidos"
+        )
+        .textContent =
+            pedidos.length;
+
+    document
+        .getElementById(
+            "aguardando"
+        )
+        .textContent =
+            pedidos.filter(
+                p =>
+                    p.status ===
+                    "Aguardando pagamento"
+            ).length;
+
+    document
+        .getElementById(
+            "preparando"
+        )
+        .textContent =
+            pedidos.filter(
+                p =>
+                    p.status ===
+                    "Preparando pedido"
+            ).length;
+
+    document
+        .getElementById(
+            "transporte"
+        )
+        .textContent =
+            pedidos.filter(
+                p =>
+                    p.status ===
+                    "Em transporte"
+            ).length;
+}
+
+
+/* =========================================================
+   RENDER
+========================================================= */
+
+function renderizarPedidos() {
+
+    const container =
+        document
+            .getElementById(
+                "orders"
+            );
+
+    if (!pedidos.length) {
+
+        container.innerHTML = `
+            <div class="empty">
+                📦 Nenhum pedido encontrado.
+            </div>
+        `;
+
+        return;
+    }
+
+    container.innerHTML =
+        pedidos.map(
+            pedido =>
+                criarPedidoCard(
+                    pedido
+                )
+        ).join("");
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+function criarPedidoCard(
+    pedido
+) {
+
+    const numero =
+        pedido.numero ||
+        pedido.id ||
+        pedido.referencia ||
+        "";
+
+    const cliente =
+        pedido.cliente ||
+        {};
+
+    const produtos =
+        Array.isArray(
+            pedido.produtos
+        )
+            ? pedido.produtos
+            : [];
+
+    const valor =
+        Number(
+            pedido.valorTotal ||
+            pedido.valor ||
+            0
+        );
+
+    const criado =
+        pedido.criadoEm ||
+        pedido.createdAt;
+
+    const data =
+        criado
+            ? new Date(criado)
+                .toLocaleString(
+                    "pt-BR"
+                )
+            : "-";
+
+    const atualizado =
+        pedido.atualizadoEm
+            ? new Date(
+                pedido.atualizadoEm
+            ).toLocaleString(
+                "pt-BR"
+            )
+            : "-";
+
+    const status =
+        pedido.status ||
+        "Aguardando pagamento";
+
+    return `
+
+        <article
+            class="order-card"
+        >
+
+            <div
+                class="order-header"
+            >
+
+                <div>
+
+                    <div
+                        class="order-number"
+                    >
+                        #${escapeHtml(
+                            numero
+                        )}
+                    </div>
+
+                    <div
+                        class="order-date"
+                    >
+                        ${escapeHtml(
+                            data
+                        )}
+                    </div>
+
+                </div>
+
+                <div
+                    class="order-total"
+                >
+                    ${formatarDinheiro(
+                        valor
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="client">
+
+                <strong>
+                    ${escapeHtml(
+                        cliente.nome ||
+                        "Cliente"
+                    )}
+                </strong>
+
+                <span>
+                    📧
+                    ${escapeHtml(
+                        cliente.email ||
+                        "-"
+                    )}
+                </span>
+
+                <span>
+                    📱
+                    ${escapeHtml(
+                        cliente.telefone ||
+                        "-"
+                    )}
+                </span>
+
+            </div>
+
+
+            <div class="products">
+
+                ${produtos
+                    .map(
+                        produto => `
+
+                        <div
+                            class="product-row"
+                        >
+
+                            <span>
+                                ${escapeHtml(
+                                    produto.nome ||
+                                    "Produto"
+                                )}
+                                ×
+                                ${Number(
+                                    produto.quantidade ||
+                                    1
+                                )}
+                            </span>
+
+                            <span>
+                                ${formatarDinheiro(
+                                    Number(
+                                        produto.subtotal ||
+                                        (
+                                            produto.preco *
+                                            produto.quantidade
+                                        ) ||
+                                        0
+                                    )
+                                )}
+                            </span>
+
+                        </div>
+
+                    `
+                    )
+                    .join("")}
+
+            </div>
+
+
+            <div class="status-area">
+
+                <div>
+
+                    <label>
+                        Status do pedido
+                    </label>
+
+                    <select
+                        id="status-${escapeHtml(
+                            numero
+                        )}"
+                        class="status-select"
+                    >
+
+                        ${criarOpcao(
+                            "Aguardando pagamento",
+                            status,
+                            "💳"
+                        )}
+
+                        ${criarOpcao(
+                            "Pagamento aprovado",
+                            status,
+                            "✅"
+                        )}
+
+                        ${criarOpcao(
+                            "Preparando pedido",
+                            status,
+                            "📦"
+                        )}
+
+                        ${criarOpcao(
+                            "Enviado",
+                            status,
+                            "🚚"
+                        )}
+
+                        ${criarOpcao(
+                            "Em transporte",
+                            status,
+                            "🛵"
+                        )}
+
+                        ${criarOpcao(
+                            "Entregue",
+                            status,
+                            "🎉"
+                        )}
+
+                        ${criarOpcao(
+                            "Cancelado",
+                            status,
+                            "❌"
+                        )}
+
+                    </select>
+
+                </div>
+
+
+                <button
+                    class="status-button"
+                    onclick="
+                        atualizarStatus(
+                            '${escapeJs(numero)}'
+                        )
+                    "
+                >
+                    Atualizar status
+                </button>
+
+            </div>
+
+
+            <div class="updated">
+
+                Última atualização:
+                ${escapeHtml(
+                    atualizado
+                )}
+
+            </div>
+
+        </article>
+
+    `;
+}
+
+
+/* =========================================================
+   OPÇÃO STATUS
+========================================================= */
+
+function criarOpcao(
+    valor,
+    atual,
+    emoji
+) {
+
+    return `
+        <option
+            value="${escapeHtml(
+                valor
+            )}"
+            ${
+                valor === atual
+                    ? "selected"
+                    : ""
+            }
+        >
+            ${emoji}
+            ${escapeHtml(
+                valor
+            )}
+        </option>
+    `;
+}
+
+
+/* =========================================================
+   ATUALIZAR STATUS
+========================================================= */
+
+async function atualizarStatus(
+    numero
+) {
+
+    const select =
+        document
+            .getElementById(
+                `status-${numero}`
+            );
+
+    if (!select) {
+        return;
+    }
+
+    const status =
+        select.value;
+
+    try {
+
+        const resposta =
+            await fetch(
+                `/api/pedidos/${encodeURIComponent(numero)}/status`,
+                {
+                    method:
+                        "PUT",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    credentials:
+                        "include",
+
+                    body:
+                        JSON.stringify({
+                            status
+                        })
+                }
+            );
+
+        const dados =
+            await resposta.json();
+
+        if (!resposta.ok) {
+
+            throw new Error(
+                dados.erro ||
+                "Não foi possível atualizar."
+            );
+        }
+
+        mostrarToast(
+            `Pedido #${numero} atualizado para "${status}".`,
+            "success"
+        );
+
+        await carregarPedidos();
+
+    } catch (erro) {
+
+        mostrarToast(
+            erro.message,
+            "error"
+        );
+    }
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+async function logoutAdmin() {
+
+    try {
+
+        await fetch(
+            "/api/admin/logout",
+            {
+                method:
+                    "POST",
+
+                credentials:
+                    "include"
+            }
+        );
+
+    } catch {}
+
+    location.reload();
+}
+
+
+/* =========================================================
+   UTILIDADES
+========================================================= */
+
+function formatarDinheiro(
+    valor
+) {
+
+    return Number(
+        valor || 0
+    ).toLocaleString(
+        "pt-BR",
+        {
+            style: "currency",
+            currency: "BRL"
+        }
+    );
+}
+
+
+function escapeHtml(
+    valor
+) {
+
+    return String(
+        valor ?? ""
+    )
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
+}
+
+
+function escapeJs(
+    valor
+) {
+
+    return String(
+        valor ?? ""
+    )
+        .replaceAll(
+            "\\",
+            "\\\\"
+        )
+        .replaceAll(
+            "'",
+            "\\'"
+        );
+}
+
+
+function mostrarToast(
+    mensagem,
+    tipo
+) {
+
+    const toast =
+        document
+            .getElementById(
+                "toast"
+            );
+
+    toast.textContent =
+        mensagem;
+
+    toast.className =
+        `toast ${tipo}`;
+
+    toast.style.display =
+        "block";
+
+    setTimeout(
+        () => {
+
+            toast.style.display =
+                "none";
+
+        },
+        3500
+    );
+}
+
+
+/* =========================================================
+   INICIAR
+========================================================= */
+
+verificarAdmin();
+
+</script>
+
+</body>
+
+</html>

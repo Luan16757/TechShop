@@ -1,0 +1,11 @@
+NO TERMINAL, NA RAIZ DO SEU TECHSHOP:
+
+npm install serverless-http @netlify/blobs
+
+Depois faça o deploy pelo GitHub/Netlify.
+
+Environment Variables no Netlify (escopo Functions):
+MP_ACCESS_TOKEN = seu token do Mercado Pago
+ADMIN_USER = seu usuario de administrador
+ADMIN_PASSWORD = sua senha de administrador
+SESSION_SECRET = uma senha aleatoria longa

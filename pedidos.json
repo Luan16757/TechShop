@@ -1,0 +1,66 @@
+[
+  {
+    "numero": "20260930153436-7771",
+    "usuarioId": "f8a0363a-9baa-4585-a648-6517a3e311a6",
+    "cliente": {
+      "id": "f8a0363a-9baa-4585-a648-6517a3e311a6",
+      "nome": "LUAN MOD",
+      "email": "sccpmestre657@gmail.com",
+      "telefone": "+5519971544914",
+      "cpf": "45653578945"
+    },
+    "produtos": [
+      {
+        "id": 2,
+        "nome": "Fone Gamer Knup KP-396",
+        "preco": 119.9,
+        "quantidade": 1,
+        "subtotal": 119.9
+      }
+    ],
+    "valorTotal": 119.9,
+    "status": "Cancelado",
+    "pagamento": {
+      "id": 181623813428,
+      "status": "pending",
+      "metodo": "pix",
+      "qrCode": "00020126360014br.gov.bcb.pix0114+55199715449145204000053039865406119.905802BR5918MOLU202403111118226009Sao Paulo62250521mpqrinter1816238134286304034D",
+      "qrCodeBase64": "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",
+      "ticketUrl": "https://www.mercadopago.com.br/payments/181623813428/ticket?caller_id=1553042042&hash=d31bd6cb-b87c-46f8-99be-70e4928e5f66"
+    },
+    "criadoEm": "2026-09-30T15:34:38.038Z",
+    "atualizadoEm": "2026-10-01T00:32:04.219Z"
+  },
+  {
+    "numero": "20260930153538-9525",
+    "usuarioId": "f8a0363a-9baa-4585-a648-6517a3e311a6",
+    "cliente": {
+      "id": "f8a0363a-9baa-4585-a648-6517a3e311a6",
+      "nome": "LUAN MOD",
+      "email": "sccpmestre657@gmail.com",
+      "telefone": "+5519971544914",
+      "cpf": "45653578945"
+    },
+    "produtos": [
+      {
+        "id": 7,
+        "nome": "Carregador iPhone Turbo 20W",
+        "preco": 59.9,
+        "quantidade": 1,
+        "subtotal": 59.9
+      }
+    ],
+    "valorTotal": 59.9,
+    "status": "Cancelado",
+    "pagamento": {
+      "id": 180620552897,
+      "status": "pending",
+      "metodo": "pix",
+      "qrCode": "00020126360014br.gov.bcb.pix0114+5519971544914520400005303986540559.905802BR5918MOLU202403111118226009Sao Paulo62250521mpqrinter180620552897630428BC",
+      "qrCodeBase64": "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",
+      "ticketUrl": "https://www.mercadopago.com.br/payments/180620552897/ticket?caller_id=1553042042&hash=3ff2ad36-5eef-42c1-8b25-6ca241b8a50e"
+    },
+    "criadoEm": "2026-09-30T15:35:39.343Z",
+    "atualizadoEm": "2026-09-30T15:36:39.268Z"
+  }
+]

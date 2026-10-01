@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechShop</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+    <div class="logo">
+        TECH<span>SHOP</span>
+    </div>
+
+    <nav>
+        <a href="#produtos">Produtos</a>
+        <a href="#sobre">Sobre</a>
+        <a href="#contato">Contato</a>
+    </nav>
+
+    <button class="btn-carrinho" onclick="abrirCarrinho()">
+        🛒 Carrinho
+        <b id="cartCount">0</b>
+    </button>
+</header>
+
+    <<section class="hero">
+    <div class="hero-content">
+        <span>TECHSHOP</span>
+
+        <h1>
+            Tecnologia que combina
+            <br>
+            com você.
+        </h1>
+
+        <p>
+            Encontre acessórios, eletrônicos e novidades
+            para facilitar o seu dia.
+        </p>
+
+        <a href="#produtos" class="btn-hero">
+            Ver produtos
+        </a>
+    </div>
+</section>
+
+    <section id="produtos" class="secao-produtos">
+
+    <div class="titulo-secao">
+        <span>CATÁLOGO</span>
+        <h2>Produtos em destaque</h2>
+        <p>Confira nossas novidades e escolha o que combina com você.</p>
+    </div>
+
+    <div id="products"></div>
+
+</section>
+
+    <div id="cartModal">
+
+        <div>
+
+            <button onclick="fecharCarrinho()">
+                X
+            </button>
+
+            <h2>Meu carrinho</h2>
+
+            <div id="cartItems"></div>
+
+            <h3 id="cartTotal">
+                R$ 0,00
+            </h3>
+
+            <button onclick="abrirCheckout()">
+                Finalizar compra
+            </button>
+
+        </div>
+
+    </div>
+
+    <div id="checkoutModal">
+
+        <div>
+
+            <button onclick="fecharCheckout()">
+                X
+            </button>
+
+            <h2>Finalizar pedido</h2>
+
+<div id="checkoutResumo"></div>
+
+<input id="nome" placeholder="Nome completo">
+<input id="telefone" placeholder="WhatsApp">
+<input id="cpf" placeholder="CPF">
+<input id="cep" placeholder="CEP">
+<input id="endereco" placeholder="Endereço">
+<input id="numero" placeholder="Número">
+<input id="cidade" placeholder="Cidade">
+<input id="estado" placeholder="Estado">
+
+<button onclick="finalizarPedido()">Continuar</button>
+
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+
+    <footer id="contato">
+
+    <div class="footer-content">
+
+        <div>
+            <div class="logo">
+                TECH<span>SHOP</span>
+            </div>
+
+            <p>
+                Tecnologia e acessórios para facilitar o seu dia.
+            </p>
+        </div>
+
+        <div>
+            <h3>Links</h3>
+
+            <a href="#produtos">Produtos</a>
+            <a href="#sobre">Sobre nós</a>
+            <a href="#contato">Contato</a>
+        </div>
+
+        <div>
+            <h3>Atendimento</h3>
+
+            <p>Segunda a sexta</p>
+            <p>08:00 às 18:00</p>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        © 2026 TechShop — Todos os direitos reservados.
+    </div>
+
+</footer>
+
+</body>
+
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TechShop | Login</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                radial-gradient(
+                    circle at top right,
+                    #312e81,
+                    transparent 35%
+                ),
+                linear-gradient(
+                    135deg,
+                    #080b14,
+                    #111827
+                );
+
+            color: white;
+            padding: 20px;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 400px;
+
+            background: rgba(17, 24, 39, 0.96);
+
+            border: 1px solid rgba(139, 92, 246, 0.25);
+
+            border-radius: 22px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 25px 80px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 30px;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+
+        .logo span {
+            color: #8b5cf6;
+        }
+
+        .subtitulo {
+            text-align: center;
+            color: #9ca3af;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+
+            padding: 14px;
+
+            margin-bottom: 18px;
+
+            border: 1px solid #374151;
+
+            border-radius: 10px;
+
+            background: #0f172a;
+
+            color: white;
+
+            outline: none;
+
+            font-size: 15px;
+        }
+
+        input:focus {
+            border-color: #8b5cf6;
+
+            box-shadow:
+                0 0 0 3px rgba(
+                    139,
+                    92,
+                    246,
+                    0.12
+                );
+        }
+
+        button {
+            width: 100%;
+
+            padding: 14px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #7c3aed,
+                    #5b21b6
+                );
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        button:hover {
+            filter: brightness(1.1);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #mensagem {
+            display: none;
+
+            margin-top: 15px;
+
+            padding: 12px;
+
+            border-radius: 10px;
+
+            background: rgba(
+                239,
+                68,
+                68,
+                0.15
+            );
+
+            color: #fca5a5;
+
+            text-align: center;
+
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-box">
+
+        <div class="logo">
+            TECH<span>SHOP</span>
+        </div>
+
+        <p class="subtitulo">
+            Acesso ao painel administrativo
+        </p>
+
+        <form id="loginForm">
+
+            <label for="usuario">
+                Usuário
+            </label>
+
+            <input
+                type="text"
+                id="usuario"
+                placeholder="Digite seu usuário"
+                autocomplete="username"
+                required
+            >
+
+            <label for="senha">
+                Senha
+            </label>
+
+            <input
+                type="password"
+                id="senha"
+                placeholder="Digite sua senha"
+                autocomplete="current-password"
+                required
+            >
+
+            <button
+                type="submit"
+                id="btnLogin"
+            >
+                Entrar no painel
+            </button>
+
+        </form>
+
+        <div id="mensagem"></div>
+
+    </div>
+
+
+    <script>
+
+        var formulario =
+            document.getElementById(
+                "loginForm"
+            );
+
+        var botao =
+            document.getElementById(
+                "btnLogin"
+            );
+
+        var mensagem =
+            document.getElementById(
+                "mensagem"
+            );
+
+
+        formulario.addEventListener(
+            "submit",
+            async function (evento) {
+
+                evento.preventDefault();
+
+                botao.disabled = true;
+
+                botao.textContent =
+                    "Entrando...";
+
+                mensagem.style.display =
+                    "none";
+
+
+                var usuario =
+                    document.getElementById(
+                        "usuario"
+                    ).value.trim();
+
+
+                var senha =
+                    document.getElementById(
+                        "senha"
+                    ).value;
+
+
+                try {
+
+                    var resposta =
+                        await fetch(
+                            "/api/admin/login",
+                            {
+
+                                method:
+                                    "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                credentials:
+                                    "include",
+
+                                body:
+                                    JSON.stringify({
+                                        usuario:
+                                            usuario,
+
+                                        senha:
+                                            senha
+                                    })
+                            }
+                        );
+
+
+                    var dados =
+                        await resposta.json();
+
+
+                    if (!resposta.ok) {
+
+                        throw new Error(
+                            dados.erro ||
+                            "Usuário ou senha incorretos."
+                        );
+                    }
+
+
+                    window.location.href =
+                        "/admin.html";
+
+
+                } catch (erro) {
+
+                    mensagem.textContent =
+                        erro.message;
+
+                    mensagem.style.display =
+                        "block";
+
+                    botao.disabled =
+                        false;
+
+                    botao.textContent =
+                        "Entrar no painel";
+                }
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>
