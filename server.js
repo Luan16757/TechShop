@@ -1774,9 +1774,9 @@ function formatarPedidoWhatsApp(pedido, tipo = "novo") {
     }).join("\\n");
 
     const endereco = [
-        entrega.bairro,
         entrega.endereco,
         entrega.numero,
+        entrega.bairro,
         entrega.cidade,
         entrega.estado,
         entrega.cep
@@ -1855,13 +1855,6 @@ app.post(
 
             const itens = req.body?.itens || req.body?.produtos || [];
             const entrega = req.body?.entrega || {};
-            const cpfPedido = String(entrega.cpf || req.usuario.cpf || "").replace(/\D/g, "");
-
-            if (cpfPedido.length !== 11) {
-                return res.status(400).json({
-                    erro: "Informe um CPF válido com 11 números para finalizar o pedido."
-                });
-            }
 
             const carrinho =
                 calcularCarrinho(
@@ -1909,10 +1902,12 @@ app.post(
 
                                 payer: {
                                     email,
-                                    identification: {
-                                        type: "CPF",
-                                        number: cpfPedido
-                                    }
+                                    ...(req.usuario.cpf ? {
+                                        identification: {
+                                            type: "CPF",
+                                            number: String(req.usuario.cpf).replace(/\D/g, "")
+                                        }
+                                    } : {})
                                 },
 
                                 external_reference:
@@ -1968,13 +1963,12 @@ app.post(
                         req.usuario.telefone,
 
                     cpf:
-                        cpfPedido
+                        req.usuario.cpf
 
                 },
 
                 entrega: {
                     telefone: String(entrega.telefone || req.usuario.telefone || "").trim(),
-                    cpf: cpfPedido,
                     cep: String(entrega.cep || "").trim(),
                     bairro: String(entrega.bairro || "").trim(),
                     endereco: String(entrega.endereco || "").trim(),
@@ -2006,16 +2000,12 @@ app.post(
                     qrCode:
                         pagamento.point_of_interaction
                             ?.transaction_data
-                            ?.qr_code ||
-                        pagamento.qr_code ||
-                        "",
+                            ?.qr_code || "",
 
                     qrCodeBase64:
                         pagamento.point_of_interaction
                             ?.transaction_data
-                            ?.qr_code_base64 ||
-                        pagamento.qr_code_base64 ||
-                        "",
+                            ?.qr_code_base64 || "",
 
                     ticketUrl:
                         pagamento.point_of_interaction
@@ -2087,9 +2077,6 @@ app.post(
                     pagamento.id,
 
                 qr_code:
-                    pedido.pagamento.qrCode,
-
-                pix_copia_e_cola:
                     pedido.pagamento.qrCode,
 
                 qr_code_base64:
