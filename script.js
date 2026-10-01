@@ -452,7 +452,6 @@ async function fazerLogin(event) {
 
             mostrarMensagem(
                 loginMessage,
-                dados.detalhe ||
                 dados.erro ||
                 dados.mensagem ||
                 "E-mail ou senha incorretos."
@@ -589,7 +588,6 @@ async function fazerCadastro(event) {
 
             mostrarMensagem(
                 cadastroMessage,
-                dados.detalhe ||
                 dados.erro ||
                 dados.mensagem ||
                 "Não foi possível criar sua conta."
