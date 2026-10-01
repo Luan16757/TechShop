@@ -2,6 +2,9 @@
   publish = "."
   functions = "netlify/functions"
 
+# Deixe o Build command vazio no painel do Netlify.
+# As Functions já estão prontas em netlify/functions.
+
 [[redirects]]
   from = "/api/pix"
   to = "/.netlify/functions/pix"
