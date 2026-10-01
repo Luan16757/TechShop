@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TECHSHOP — Dropshipping</title>
+  <style>
+    :root{--bg:#090909;--panel:#121212;--panel2:#181818;--line:#2a2a2a;--text:#f5f5f5;--muted:#a9a9a9;--accent:#ff7a00;--accent2:#ff9e2c;--success:#24c77a;--blue:#4ea1ff;--danger:#ff5d5d}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 10% 0%,rgba(255,122,0,.12),transparent 28%),var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}body.modal-open{overflow:hidden}
+    button,input,select,textarea{font:inherit}button{cursor:pointer}
+    .topbar{position:sticky;top:0;z-index:50;background:rgba(9,9,9,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}.topbar-inner{max-width:1400px;margin:auto;padding:15px 20px;display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{font-size:22px;font-weight:900;letter-spacing:.4px}.brand span{color:var(--accent)}.top-actions{display:flex;gap:10px}.btn{border:1px solid var(--line);background:#181818;color:var(--text);padding:11px 15px;border-radius:12px;font-weight:700}.btn:hover{border-color:#444;transform:translateY(-1px)}.btn.primary{background:linear-gradient(135deg,var(--accent),#ff9c2d);color:#111;border:none}.btn.ghost{background:#121212}
+    .container{max-width:1400px;margin:auto;padding:25px 20px 60px}.statusbar{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;margin-bottom:22px}.status-badge{padding:8px 11px;border-radius:999px;font-size:13px;font-weight:800}.status-badge.online{background:rgba(36,199,122,.12);color:#66e0a7;border:1px solid rgba(36,199,122,.25)}.status-badge.local{background:rgba(255,122,0,.12);color:#ffad5c;border:1px solid rgba(255,122,0,.25)}.status-badge.carregando{background:rgba(78,161,255,.12);color:#83beff;border:1px solid rgba(78,161,255,.25)}
+    .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}.metric{background:linear-gradient(180deg,#151515,#101010);border:1px solid var(--line);border-radius:18px;padding:18px}.metric span{display:block;color:var(--muted);font-size:13px;margin-bottom:8px}.metric strong{font-size:26px}.metric.orange strong{color:var(--accent2)}.metric.green strong{color:var(--success)}
+    .toolbar{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px;display:grid;grid-template-columns:1.5fr 1fr 1fr auto;gap:10px;margin-bottom:18px}.toolbar input,.toolbar select,.form-grid input,.form-grid select,.form-grid textarea{width:100%;background:#0d0d0d;color:var(--text);border:1px solid #323232;border-radius:11px;padding:12px 13px;outline:none}.toolbar input:focus,.toolbar select:focus,.form-grid input:focus,.form-grid select:focus,.form-grid textarea:focus{border-color:var(--accent)}
+    .orders{display:grid;gap:14px}.order-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px}.order-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:15px}.order-number{font-size:18px;font-weight:900;margin-right:8px}.status-chip{display:inline-flex;align-items:center;padding:6px 9px;border-radius:999px;font-size:12px;font-weight:800;background:#252525;color:#ddd}.status-chip.pago{background:rgba(78,161,255,.13);color:#84c1ff}.status-chip.comprado{background:rgba(255,193,7,.13);color:#ffd65e}.status-chip.enviado{background:rgba(255,122,0,.13);color:#ffad5c}.status-chip.entregue{background:rgba(36,199,122,.13);color:#6ae2aa}.status-chip.cancelado{background:rgba(255,93,93,.12);color:#ff9292}.order-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}.order-grid div,.detail-grid div{background:#0d0d0d;border:1px solid #242424;border-radius:12px;padding:12px;min-width:0}.order-grid span,.detail-grid span{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}.order-grid strong,.detail-grid strong{display:block;word-break:break-word}.order-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}.empty-card{text-align:center;padding:60px 20px;background:var(--panel);border:1px dashed #333;border-radius:18px}.empty-icon{font-size:46px;margin-bottom:12px}.empty-card h3{margin:0 0 7px}.empty-card p{margin:0;color:var(--muted)}
+    .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:100;padding:20px;align-items:center;justify-content:center}.modal.show{display:flex}.modal-card{width:min(900px,100%);max-height:92vh;overflow:auto;background:#101010;border:1px solid #303030;border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,.5)}.modal-head{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:15px;background:#111;border-bottom:1px solid var(--line);padding:17px 20px}.modal-head h2{margin:0;font-size:20px}.close{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:#171717;color:#fff;font-size:20px}.modal-body{padding:20px}.detail-head{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:18px}.detail-head small{color:var(--muted)}.detail-head h2{margin:3px 0 0;font-size:28px}.detail-section{border-top:1px solid var(--line);padding-top:18px;margin-top:18px}.detail-section h3{margin:0 0 12px}.detail-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.address-box,.items-box{background:#0d0d0d;border:1px solid #242424;border-radius:12px;padding:13px;margin-top:10px}.address-box p{margin:7px 0 0;color:#ddd;line-height:1.5}.items-box>div{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #222}.items-box>div:last-child{border-bottom:0}.total-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0 0;font-size:18px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.form-grid label{display:block;font-size:13px;color:var(--muted)}.form-grid input,.form-grid select,.form-grid textarea{margin-top:6px}.form-grid .full{grid-column:1/-1}.action-row{display:flex;flex-wrap:wrap;gap:9px}
+    .toast{position:fixed;right:20px;bottom:20px;z-index:120;background:#161616;border:1px solid #333;color:#fff;border-left:4px solid var(--accent);border-radius:13px;padding:13px 15px;box-shadow:0 14px 40px rgba(0,0,0,.4);transform:translateY(30px);opacity:0;pointer-events:none;transition:.2s}.toast.show{transform:translateY(0);opacity:1}
+    @media (max-width:1100px){.metrics{grid-template-columns:repeat(2,1fr)}.toolbar{grid-template-columns:1fr 1fr}.order-grid{grid-template-columns:repeat(3,1fr)}.detail-grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:700px){.topbar-inner{padding:12px 14px}.brand{font-size:19px}.top-actions .btn{padding:10px 11px}.container{padding:18px 12px 40px}.metrics{grid-template-columns:1fr 1fr;gap:9px}.metric{padding:14px}.metric strong{font-size:21px}.toolbar{grid-template-columns:1fr;padding:11px}.order-card{padding:14px}.order-grid{grid-template-columns:1fr 1fr}.order-top{flex-direction:column}.detail-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.form-grid .full{grid-column:auto}.modal{padding:10px}.modal-card{max-height:96vh}.modal-body{padding:14px}.detail-head h2{font-size:24px}.order-actions .btn,.action-row .btn{flex:1 1 150px}.toast{left:12px;right:12px;bottom:12px}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">TECH<span>SHOP</span> <small style="color:#888;font-size:11px;font-weight:700">DROPSHIPPING</small></div>
+      <div class="top-actions">
+        <button class="btn ghost" id="btnTeste">🧪 Pedido teste</button>
+        <button class="btn primary" id="btnRecarregar">↻ Atualizar pedidos</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="statusbar">
+      <div><h1 style="margin:0 0 4px;font-size:28px">Pedidos para fornecedor</h1><p style="margin:0;color:#999">Controle compra, custo, rastreio e envio dos pedidos da TECHSHOP.</p></div>
+      <span id="statusConexao" class="status-badge carregando">Carregando pedidos...</span>
+    </div>
+
+    <section class="metrics">
+      <div class="metric"><span>Pedidos</span><strong id="metricPedidos">0</strong></div>
+      <div class="metric orange"><span>Aguardando envio</span><strong id="metricPendentes">0</strong></div>
+      <div class="metric green"><span>Enviados/entregues</span><strong id="metricEnviados">0</strong></div>
+      <div class="metric"><span>Vendas filtradas</span><strong id="metricVendas">R$ 0,00</strong></div>
+    </section>
+
+    <section class="toolbar">
+      <input id="busca" type="search" placeholder="🔎 Buscar pedido, cliente, telefone ou produto...">
+      <select id="filtroStatus"><option value="">Todos os status</option><option>Pago</option><option>Comprado</option><option>Enviado</option><option>Entregue</option><option>Cancelado</option></select>
+      <select id="filtroFornecedor"><option value="">Todos os fornecedores</option><option>Mercado Livre</option><option>Shopee</option><option>Outro</option></select>
+      <button class="btn ghost" id="btnRecarregarFiltro">Atualizar</button>
+    </section>
+
+    <section class="orders" id="listaPedidos"></section>
+  </main>
+
+  <div class="modal" id="modalPedido">
+    <div class="modal-card">
+      <div class="modal-head"><h2>Detalhes do pedido</h2><button class="close" id="fecharModal">×</button></div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="dropToast"></div>
+  <script src="dropshipping.js"></script>
+</body>
+</html>
