@@ -2476,6 +2476,8 @@
         #authScreen {
             min-height: 100dvh;
             padding: clamp(14px, 3vw, 28px);
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: contain;
         }
 
         .auth-box {
@@ -3065,7 +3067,8 @@
    LOGIN PRO — ANIMAÇÕES + PROTEÇÃO
 ================================================= */
 #authScreen {
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
     isolation: isolate;
     background:
         radial-gradient(circle at 50% 100%, rgba(255,115,0,.10), transparent 36%),
