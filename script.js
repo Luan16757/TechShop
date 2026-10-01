@@ -67,6 +67,17 @@ function normalizarTexto(valor) {
         .trim();
 }
 
+function obterIdProduto(produto, indiceFallback = 0) {
+    const valor =
+        produto?.id ??
+        produto?._id ??
+        produto?.codigo ??
+        produto?.slug ??
+        `produto-${indiceFallback}`;
+
+    return String(valor);
+}
+
 function formatarCPF(valor = "") {
     const numeros = String(valor).replace(/\D/g, "").slice(0, 11);
 
@@ -79,6 +90,56 @@ function formatarCPF(valor = "") {
 /* =========================================================
    IMAGENS DOS PRODUTOS
    ========================================================= */
+
+const DESCRICOES_PRODUTOS = {
+    "kit 5 cabos iphone usb": "Kit com 5 cabos USB para iPhone, ideal para uso diário, carregamento e reposição.",
+    "kit 10 peliculas iphone xr ate 14": "Kit com 10 películas para iPhone XR até iPhone 14, ajudando a proteger a tela contra riscos e pequenos impactos.",
+    "suporte de celular para carro": "Suporte prático para fixar o celular no carro com mais segurança e facilitar a visualização durante o trajeto.",
+    "kit 5 cabos usb tipo-c": "Kit com 5 cabos USB Tipo-C para carregamento e transferência de dados em aparelhos compatíveis.",
+    "kit 5 cabos usb tipo c": "Kit com 5 cabos USB Tipo-C para carregamento e transferência de dados em aparelhos compatíveis.",
+    "carregador turbo usb-c": "Carregador turbo com conexão USB-C para carregamento rápido de aparelhos compatíveis.",
+    "carregador turbo usb c": "Carregador turbo com conexão USB-C para carregamento rápido de aparelhos compatíveis.",
+    "cabo usb-c 1 metro": "Cabo USB-C de 1 metro para carregar dispositivos e realizar transferência de dados com praticidade.",
+    "cabo usb c 1 metro": "Cabo USB-C de 1 metro para carregar dispositivos e realizar transferência de dados com praticidade.",
+    "carregador veicular usb": "Carregador veicular USB para manter seus dispositivos carregados enquanto você está no carro.",
+    "kit 5 fones m10 bluetooth": "Kit com 5 fones M10 Bluetooth, opção prática para música, chamadas e uso no dia a dia.",
+    "fone bluetooth tws": "Fone Bluetooth TWS sem fio, compacto e prático para ouvir música e atender chamadas.",
+    "caixa de som bluetooth": "Caixa de som Bluetooth portátil para reproduzir suas músicas com praticidade em diferentes ambientes.",
+    "extensao filtro de linha 5 tomadas": "Extensão com filtro de linha e 5 tomadas para organizar e conectar vários equipamentos com mais praticidade.",
+    "power bank 20.000mah": "Power Bank de 20.000mAh para recarregar celulares e outros dispositivos quando você estiver longe da tomada.",
+    "power bank 20000mah": "Power Bank de 20.000mAh para recarregar celulares e outros dispositivos quando você estiver longe da tomada.",
+    "power bank pineng 10.000mah": "Power Bank Pineng de 10.000mAh para levar energia extra para seu celular no dia a dia.",
+    "power bank pineng 10000mah": "Power Bank Pineng de 10.000mAh para levar energia extra para seu celular no dia a dia.",
+    "mouse sem fio": "Mouse sem fio compacto para computador e notebook, com liberdade de movimento e menos cabos na mesa.",
+    "teclado usb": "Teclado USB para computador e notebook, ideal para estudos, trabalho e uso cotidiano.",
+    "hub usb 4 portas": "Hub USB com 4 portas para ampliar as conexões do seu computador ou notebook.",
+    "mousepad gamer grande": "Mousepad gamer grande para mais espaço de movimentação e melhor apoio do mouse durante os jogos.",
+    "tela para iphone 11 a2111 a2221 a2223 display touch incell": "Display Incell completo para iPhone 11, compatível com os modelos A2111, A2221 e A2223.",
+    "tela iphone 11 a2111 a2221 a2223 display touch incell": "Display Incell completo para iPhone 11, compatível com os modelos A2111, A2221 e A2223.",
+    "flex bateria iphone 11 3110mah wefix oficial": "Flex de bateria Wefix Oficial para iPhone 11 com capacidade de 3110mAh e foco em reposição da peça.",
+};
+
+function obterDescricaoProduto(produto) {
+    const descricaoBackend =
+        produto?.descricao ||
+        produto?.description ||
+        produto?.descricaoCurta ||
+        produto?.shortDescription ||
+        produto?.detalhes ||
+        "";
+
+    if (String(descricaoBackend).trim()) {
+        return String(descricaoBackend).trim();
+    }
+
+    const nome = normalizarTexto(produto?.nome || produto?.name || "");
+    if (DESCRICOES_PRODUTOS[nome]) {
+        return DESCRICOES_PRODUTOS[nome];
+    }
+
+    const categoria = produto?.categoria || produto?.category || "tecnologia";
+    return `Produto ${String(categoria).toLowerCase()} da TechShop, ideal para facilitar seu dia a dia com praticidade e qualidade.`;
+}
 
 function obterImagemProduto(produto) {
     const imagens = {
@@ -546,13 +607,14 @@ function renderizarProdutos(lista = produtos) {
     }
 
     container.innerHTML = lista.map(produto => {
-        const id = produto?.id;
+        const id = obterIdProduto(produto, lista.indexOf(produto));
         const nome = produto.nome || produto.name || "Produto";
         const preco = Number(produto.preco ?? produto.price ?? 0);
         const categoria =
             produto.categoria ||
             produto.category ||
             "Tecnologia";
+        const descricao = obterDescricaoProduto(produto);
         const imagem = obterImagemProduto(produto);
 
         return `
@@ -586,6 +648,10 @@ function renderizarProdutos(lista = produtos) {
                     <h3 class="product-name">
                         ${escaparHTML(nome)}
                     </h3>
+
+                    <p class="product-description">
+                        ${escaparHTML(descricao)}
+                    </p>
 
                     <div class="produto-preco product-price">
                         ${dinheiro(preco)}
@@ -636,10 +702,12 @@ function buscarProdutos() {
             produto.category ||
             ""
         );
+        const descricao = normalizarTexto(obterDescricaoProduto(produto));
 
         return (
             nome.includes(termo) ||
-            categoria.includes(termo)
+            categoria.includes(termo) ||
+            descricao.includes(termo)
         );
     });
 
@@ -707,7 +775,7 @@ function configurarPesquisa() {
 
 function adicionarCarrinho(id) {
     const produto = produtos.find(
-        item => String(item.id) === String(id)
+        (item, indice) => obterIdProduto(item, indice) === String(id)
     );
 
     if (!produto) {
@@ -719,15 +787,17 @@ function adicionarCarrinho(id) {
     const preco = Number(produto.preco ?? produto.price ?? 0);
     const imagem = obterImagemProduto(produto);
 
+    const produtoId = obterIdProduto(produto, produtos.indexOf(produto));
+
     const existente = carrinho.find(
-        item => String(item.id) === String(produto.id)
+        item => String(item.id) === produtoId
     );
 
     if (existente) {
         existente.quantidade += 1;
     } else {
         carrinho.push({
-            id: produto.id,
+            id: produtoId,
             nome,
             preco,
             imagem,
@@ -743,7 +813,9 @@ function adicionarCarrinho(id) {
         nome + " foi " + (existente ? "atualizado" : "adicionado") + " ao carrinho."
     );
 
-    const botaoProduto = document.querySelector(`.buy-btn[data-produto-id="${CSS.escape(String(produto.id))}"]`);
+    const botaoProduto = Array.from(document.querySelectorAll(".buy-btn[data-produto-id]")).find(
+        botao => botao.dataset.produtoId === produtoId
+    );
     if (botaoProduto) {
         botaoProduto.classList.remove("added");
         void botaoProduto.offsetWidth;
