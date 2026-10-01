@@ -1,14 +1,7 @@
-TECHSHOP — PAINEL PRO COM ABAS
+TECHSHOP - iPhone 11 corrigido
 
-Substitua SOMENTE o admin.html.
+Arquivos:
+- techshop.html
+- script.js
 
-Novidades:
-- Abas/filtros: Todos, Aguardando, Aceitos, Preparando, Enviados, Em transporte, Entregues e Cancelados.
-- Contadores em cada aba.
-- Fundo tecnológico animado com grade e partículas.
-- Cards dos pedidos com animação de entrada.
-- Atualização automática silenciosa a cada 15 segundos, sem piscar.
-- Botão de atualização manual.
-- Correção do fluxo de atualização de status.
-
-Não altere server.js ou .env.
+Os dois últimos produtos foram atualizados com descrições técnicas baseadas em anúncios do Mercado Livre e imagens por URL.

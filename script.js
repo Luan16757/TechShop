@@ -114,9 +114,9 @@ const DESCRICOES_PRODUTOS = {
     "teclado usb": "Teclado USB para computador e notebook, ideal para estudos, trabalho e uso cotidiano.",
     "hub usb 4 portas": "Hub USB com 4 portas para ampliar as conexões do seu computador ou notebook.",
     "mousepad gamer grande": "Mousepad gamer grande para mais espaço de movimentação e melhor apoio do mouse durante os jogos.",
-    "tela para iphone 11 a2111 a2221 a2223 display touch incell": "Display Incell completo para iPhone 11, compatível com os modelos A2111, A2221 e A2223.",
-    "tela iphone 11 a2111 a2221 a2223 display touch incell": "Display Incell completo para iPhone 11, compatível com os modelos A2111, A2221 e A2223.",
-    "flex bateria iphone 11 3110mah wefix oficial": "Flex de bateria Wefix Oficial para iPhone 11 com capacidade de 3110mAh e foco em reposição da peça.",
+    "tela para iphone 11 a2111 a2221 a2223 display touch incell": "Tela de reposição para iPhone 11 com módulo Display LCD + Touch e tecnologia Incell, compatível com A2111, A2221 e A2223. Indicada para recuperar a imagem e o funcionamento do toque em aparelhos com tela quebrada, sem imagem ou com falhas de touch. Recomenda-se testar imagem e touch antes da instalação e fazer a montagem com técnico especializado.",
+    "tela iphone 11 a2111 a2221 a2223 display touch incell": "Tela de reposição para iPhone 11 com módulo Display LCD + Touch e tecnologia Incell, compatível com A2111, A2221 e A2223. Indicada para recuperar a imagem e o funcionamento do toque em aparelhos com tela quebrada, sem imagem ou com falhas de touch. Recomenda-se testar imagem e touch antes da instalação e fazer a montagem com técnico especializado.",
+    "flex bateria iphone 11 3110mah wefix oficial": "Bateria Wefix para iPhone 11 com capacidade de 3110mAh, indicada para reposição da bateria do aparelho e recuperação da autonomia. Compatível com iPhone 11 nos modelos A2111, A2221 e A2223. Recomenda-se instalação por técnico especializado.",
 };
 
 function obterDescricaoProduto(produto) {
@@ -169,10 +169,10 @@ function obterImagemProduto(produto) {
         "mousepad gamer grande": "/imagens/mousepad-gamer-grande.webp",
 
         "tela para iphone 11 a2111 a2221 a2223 display touch incell":
-            "/imagens/tela-iphone-11-incell.webp",
+            "https://media.cdn.kaufland.de/product-images/original/1879a2e27a881e45fd48104d8b1bc341.jpg",
 
         "tela iphone 11 a2111 a2221 a2223 display touch incell":
-            "/imagens/tela-iphone-11-incell.webp",
+            "https://media.cdn.kaufland.de/product-images/original/1879a2e27a881e45fd48104d8b1bc341.jpg",
 
         "flex bateria iphone 11 3110mah wefix oficial":
             "https://http2.mlstatic.com/D_Q_NP_605979-MLB116841807748_092026-R-flex-bateria-iphone-11-3110mah-wefix-oficial-garantia-1-ano.webp"
@@ -551,15 +551,15 @@ function garantirProdutosIphone11(lista) {
             nome: "Tela Para Iphone 11 A2111 A2221 A2223 Display/touch Incell",
             preco: 130,
             categoria: "Celular e Proteção",
-            descricao: "Tela Incell para iPhone 11, compatível com os modelos A2111, A2221 e A2223. Peça indicada para reposição do display e touch.",
-            imagem: "/imagens/tela-iphone-11-incell.webp"
+            descricao: "Tela de reposição para iPhone 11 com módulo Display LCD + Touch e tecnologia Incell, compatível com A2111, A2221 e A2223. Indicada para recuperar imagem e touch. Teste a peça antes da instalação e, de preferência, faça a montagem com técnico especializado.",
+            imagem: "https://media.cdn.kaufland.de/product-images/original/1879a2e27a881e45fd48104d8b1bc341.jpg"
         },
         {
             id: "iphone-11-bateria-wefix",
             nome: "Flex Bateria Iphone 11 3110mah Wefix Oficial",
             preco: 150,
             categoria: "Celular e Proteção",
-            descricao: "Flex de bateria Wefix Oficial para iPhone 11 com capacidade de 3110mAh, indicado para reposição da peça e manutenção do aparelho.",
+            descricao: "Bateria Wefix para iPhone 11 com capacidade de 3110mAh, indicada para reposição e recuperação da autonomia do aparelho. Compatível com A2111, A2221 e A2223. Recomenda-se instalação por técnico especializado.",
             imagem: "https://http2.mlstatic.com/D_Q_NP_605979-MLB116841807748_092026-R-flex-bateria-iphone-11-3110mah-wefix-oficial-garantia-1-ano.webp"
         }
     ];
