@@ -3417,3 +3417,76 @@ p {
     }
 
 }
+
+/* =====================================================
+   ENTREGA NO CHECKOUT
+===================================================== */
+
+.delivery-options {
+    display: grid;
+    gap: 10px;
+    margin-top: 2px;
+}
+
+.delivery-title {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 900;
+    margin-bottom: 2px;
+}
+
+.delivery-option {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 14px;
+    border: 1px solid #292929;
+    border-radius: 13px;
+    background: #0b0b0b;
+    cursor: pointer;
+    transition:
+        border-color .2s ease,
+        background .2s ease,
+        transform .2s ease;
+}
+
+.delivery-option:hover {
+    border-color: rgba(255,115,0,.55);
+    transform: translateY(-1px);
+}
+
+.delivery-option:has(input:checked) {
+    border-color: var(--orange);
+    background: rgba(255,115,0,.07);
+    box-shadow: 0 0 0 2px rgba(255,115,0,.06);
+}
+
+.delivery-option input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--orange);
+    flex: 0 0 auto;
+}
+
+.delivery-option-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.delivery-option-content strong {
+    color: #fff;
+    font-size: 13px;
+}
+
+.delivery-option-content small {
+    color: #888;
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.delivery-option:first-of-type .delivery-option-content small {
+    color: #65d98a;
+    font-weight: 700;
+}
