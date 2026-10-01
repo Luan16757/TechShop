@@ -5,10 +5,16 @@ const path = require("path");
 const fs = require("fs");
 const crypto = require("crypto");
 
-// Netlify executa o Express como Function. Localmente, `node server.js` continua funcionando.
-const IS_NETLIFY = Boolean(process.env.NETLIFY);
-
+// Carrega as variáveis antes de detectar o ambiente.
 dotenv.config();
+
+// Netlify pode não expor NETLIFY em todas as execuções da Function.
+// AWS_LAMBDA_FUNCTION_NAME/CONTEXT são sinais confiáveis do ambiente serverless.
+const IS_NETLIFY = Boolean(
+    process.env.NETLIFY ||
+    process.env.CONTEXT ||
+    process.env.AWS_LAMBDA_FUNCTION_NAME
+);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -77,6 +83,10 @@ app.use(
 
 function garantirArquivo(arquivo, valorInicial) {
 
+    if (IS_NETLIFY) {
+        return;
+    }
+
     if (!fs.existsSync(arquivo)) {
 
         fs.writeFileSync(
@@ -89,7 +99,10 @@ function garantirArquivo(arquivo, valorInicial) {
 
 function lerJSONLocal(arquivo, valorInicial) {
 
-    garantirArquivo(arquivo, valorInicial);
+    // Nunca tenta criar/escrever arquivos dentro da Function do Netlify.
+    if (!fs.existsSync(arquivo)) {
+        return valorInicial;
+    }
 
     try {
 
