@@ -2251,6 +2251,138 @@
             }
         }
 
+    
+
+        /* =================================================
+           CONTA - NOVO LAYOUT
+        ================================================= */
+        .account-modal-content {
+            max-width: 760px;
+            padding: 0;
+            overflow: hidden;
+            background: #0d0d0d;
+        }
+        .account-modal-header {
+            margin: 0;
+            padding: 22px 24px;
+            background: radial-gradient(circle at top left, rgba(255,115,0,.14), transparent 45%), #111;
+            border-bottom: 1px solid #242424;
+        }
+        .account-modal-header h2 { margin-top: 3px; }
+        .account-kicker {
+            color: var(--orange);
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 1.4px;
+        }
+        .account-content { padding: 20px 24px 24px; }
+        .account-profile-hero {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 18px;
+            border: 1px solid #272727;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(255,115,0,.10), rgba(255,255,255,.02));
+        }
+        .account-avatar-large {
+            width: 58px; height: 58px; flex: 0 0 58px;
+            border-radius: 16px; display: grid; place-items: center;
+            background: linear-gradient(135deg, var(--orange), #ff9a45);
+            color: white; font-size: 22px; font-weight: 900;
+        }
+        .account-profile-hero h3 { font-size: 18px; margin-bottom: 4px; }
+        .account-profile-hero p { color: #8f8f8f; font-size: 12px; word-break: break-word; }
+        .account-info-grid {
+            display: grid; grid-template-columns: repeat(2,minmax(0,1fr));
+            gap: 10px; margin-top: 15px;
+        }
+        .account-info-box {
+            padding: 13px; border-radius: 12px; background: #101010; border: 1px solid #242424;
+        }
+        .account-info-box span {
+            display: block; margin-bottom: 5px; color: #777; font-size: 10px;
+            text-transform: uppercase; letter-spacing: .6px;
+        }
+        .account-info-box strong { display: block; color: #f5f5f5; font-size: 13px; line-height: 1.4; word-break: break-word; }
+        .account-orders-head {
+            display:flex; justify-content:space-between; align-items:flex-end; gap:12px; margin:24px 0 12px;
+        }
+        .account-orders-head h3 { font-size:16px; }
+        .account-orders-head p { color:#777; font-size:11px; margin-top:4px; }
+        .account-logout-btn {
+            border:1px solid #3a2020; background:rgba(220,38,38,.07); color:#ff8989;
+            border-radius:10px; padding:9px 12px; font-weight:800; font-size:11px;
+        }
+        .account-logout-btn:hover { border-color:#d84f4f; background:rgba(220,38,38,.12); }
+        .account-orders-list { display:flex; flex-direction:column; gap:10px; }
+        .account-order-card { border:1px solid #262626; border-radius:14px; padding:15px; background:#0a0a0a; }
+        .account-order-top,.account-order-bottom,.account-order-actions {
+            display:flex; align-items:center; justify-content:space-between; gap:10px;
+        }
+        .account-order-number { font-weight:900; color:#fff; font-size:13px; }
+        .account-order-date { color:#6f6f6f; font-size:10px; margin-top:3px; }
+        .account-status,.tracking-status-badge {
+            display:inline-flex; align-items:center; padding:5px 9px; border-radius:999px;
+            background:rgba(255,115,0,.10); border:1px solid rgba(255,115,0,.22);
+            color:#ff9a45; font-size:10px; font-weight:900; white-space:nowrap;
+        }
+        .account-order-products {
+            margin:12px 0; padding:11px 0; border-top:1px solid #1b1b1b; border-bottom:1px solid #1b1b1b;
+            color:#9a9a9a; font-size:11px; line-height:1.55;
+        }
+        .account-order-total { color:#fff; font-size:15px; font-weight:900; }
+        .account-order-total span { color:#777; font-size:10px; font-weight:500; display:block; margin-bottom:2px; }
+        .account-order-actions { justify-content:flex-end; margin-top:10px; }
+        .account-order-btn {
+            border:1px solid #2b2b2b; border-radius:9px; background:#151515; color:#fff;
+            min-height:34px; padding:0 12px; font-size:11px; font-weight:800;
+        }
+        .account-order-btn.primary { background:var(--orange); border-color:var(--orange); }
+        .account-order-btn.danger { color:#ff8f8f; border-color:#3b2525; }
+        .account-empty-orders,.account-loading,.account-error {
+            min-height:150px; display:grid; place-items:center; text-align:center; color:#777;
+            border:1px dashed #2a2a2a; border-radius:14px; padding:25px;
+        }
+        .account-empty-orders strong,.account-error strong { display:block; color:#fff; margin-bottom:6px; }
+        .account-loading-spinner {
+            width:26px; height:26px; border:3px solid #272727; border-top-color:var(--orange);
+            border-radius:50%; animation:spin .8s linear infinite; margin:0 auto 10px;
+        }
+
+        /* =================================================
+           ACOMPANHAR PEDIDO - NOVO LAYOUT
+        ================================================= */
+        .tracking-box {
+            overflow:hidden;
+            background:radial-gradient(circle at top right, rgba(255,115,0,.08), transparent 35%), #101010;
+        }
+        .tracking-title-row { display:flex; justify-content:space-between; gap:15px; align-items:flex-start; }
+        .tracking-mini-note {
+            padding:8px 10px; border:1px solid #282828; border-radius:999px; color:#8b8b8b;
+            font-size:10px; white-space:nowrap;
+        }
+        .tracking-form { padding:6px; border:1px solid #272727; background:#090909; border-radius:13px; }
+        .tracking-form input { height:44px; border:0; background:transparent; }
+        .tracking-form input:focus { border:0; box-shadow:none; }
+        .tracking-form button { min-height:44px; padding:0 18px; }
+        .tracking-result-wrap { margin-top:18px; }
+        .tracking-result-card { padding:16px; border:1px solid #282828; border-radius:15px; background:#0a0a0a; }
+        .tracking-result-top { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+        .tracking-result-top h3 { font-size:16px; }
+        .tracking-meta-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:12px; }
+        .tracking-meta-box { padding:11px; border-radius:11px; background:#111; border:1px solid #222; }
+        .tracking-meta-box span { display:block; color:#6f6f6f; font-size:10px; margin-bottom:4px; }
+        .tracking-meta-box strong { font-size:12px; color:#eee; }
+        .tracking-last { margin-top:12px; color:#727272; font-size:10px; }
+        @media (max-width:700px) {
+            .account-content { padding:16px; }
+            .account-info-grid,.tracking-meta-grid { grid-template-columns:1fr; }
+            .account-order-top,.account-order-bottom { flex-direction:column; align-items:flex-start; }
+            .tracking-title-row { flex-direction:column; }
+            .tracking-mini-note { white-space:normal; }
+        }
+
     </style>
 
 </head>
@@ -2512,7 +2644,7 @@
                     type="button"
                     onclick="abrirConta()"
                 >
-                    👤 Conta
+                    👤 <span id="accountButtonText">Conta</span>
                 </button>
 
 
@@ -2746,24 +2878,16 @@
 
             <div class="tracking-box">
 
-                <div class="section-tag">
-                    ACOMPANHAMENTO
+                <div class="tracking-title-row">
+                    <div>
+                        <div class="section-tag">ACOMPANHAMENTO</div>
+                        <h2>Acompanhar pedido</h2>
+                        <p style="color:#777;font-size:13px;margin-top:7px;">
+                            Consulte seu pedido pelo número recebido após a compra.
+                        </p>
+                    </div>
+                    <span class="tracking-mini-note">🟢 Atualização automática</span>
                 </div>
-
-                <h2>
-                    Acompanhar pedido
-                </h2>
-
-                <p
-                    style="
-                        color:#777;
-                        font-size:13px;
-                        margin-top:7px;
-                    "
-                >
-                    Digite o número do seu pedido
-                    para acompanhar o status.
-                </p>
 
 
                 <div class="tracking-form">
@@ -2784,7 +2908,7 @@
                 </div>
 
 
-                <div id="resultadoPedido"></div>
+                <div id="resultadoPedido" class="tracking-result-wrap"></div>
 
                 <div
                     id="timelinePedido"
@@ -3124,388 +3248,34 @@
 
 <div
     id="accountModal"
-    class="modal"
+    class="modal account-modal"
+    aria-hidden="true"
+    onclick="fecharModalAoClicarFora(event)"
 >
-
-    <div class="modal-content">
-
-        <div class="modal-header">
-
-            <h2>
-                👤 Minha conta
-            </h2>
-
+    <div class="modal-content account-modal-content">
+        <div class="modal-header account-modal-header">
+            <div>
+                <span class="account-kicker">ÁREA DO CLIENTE</span>
+                <h2>👤 Minha conta</h2>
+            </div>
             <button
                 class="close-modal"
                 type="button"
+                aria-label="Fechar conta"
                 onclick="fecharModal('accountModal')"
-            >
-                ×
-            </button>
-
+            >×</button>
         </div>
 
-
-        <div
-            id="accountWelcome"
-            style="
-                display:none;
-            "
-        ></div>
-
-
-        <div id="accountContent"></div>
-
+        <div id="accountContent" class="account-content">
+            <div class="account-loading">
+                <div>
+                    <div class="account-loading-spinner"></div>
+                    <p>Carregando sua conta...</p>
+                </div>
+            </div>
+        </div>
     </div>
-
-    /* =========================================================
-   TECHSHOP - CARDS PROFISSIONAIS
-========================================================= */
-
-#products {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 22px;
-    align-items: stretch;
-}
-
-
-/* CARD */
-
-.produto-card,
-.product-card {
-    width: 100%;
-    min-width: 0;
-    overflow: hidden;
-
-    display: flex;
-    flex-direction: column;
-
-    background: #111111;
-
-    border: 1px solid #252525;
-    border-radius: 16px;
-
-    box-shadow:
-        0 8px 25px rgba(0,0,0,.25);
-
-    transition:
-        transform .2s ease,
-        border-color .2s ease,
-        box-shadow .2s ease;
-}
-
-.produto-card:hover,
-.product-card:hover {
-    transform: translateY(-5px);
-
-    border-color: rgba(255,115,0,.7);
-
-    box-shadow:
-        0 15px 35px rgba(0,0,0,.45);
-}
-
-
-/* ÁREA DA IMAGEM */
-
-.produto-imagem,
-.product-image {
-    position: relative;
-
-    width: 100%;
-    height: 190px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 20px;
-
-    background:
-        radial-gradient(
-            circle at center,
-            rgba(255,115,0,.08),
-            transparent 60%
-        );
-
-    overflow: hidden;
-}
-
-
-/* IMAGEM */
-
-.produto-imagem img,
-.product-image img {
-
-    position: relative;
-
-    display: block;
-
-    width: auto !important;
-    height: auto !important;
-
-    max-width: 145px !important;
-    max-height: 145px !important;
-
-    min-width: 0 !important;
-    min-height: 0 !important;
-
-    object-fit: contain !important;
-
-    margin: 0 auto !important;
-
-    border: 0 !important;
-    border-radius: 0 !important;
-
-    z-index: 2;
-}
-
-
-/* INFORMAÇÕES */
-
-.produto-info,
-.product-info {
-
-    width: 100%;
-
-    display: flex;
-    flex-direction: column;
-
-    flex: 1;
-
-    padding: 16px;
-
-    background: #111111;
-
-    box-sizing: border-box;
-}
-
-
-/* CATEGORIA */
-
-.produto-categoria {
-
-    display: block;
-
-    margin-bottom: 7px;
-
-    color: #ff7300;
-
-    font-size: 10px;
-    font-weight: 700;
-
-    text-transform: uppercase;
-
-    letter-spacing: .7px;
-}
-
-
-/* NOME */
-
-.produto-info h3,
-.product-name {
-
-    margin: 0 0 12px 0;
-
-    min-height: 38px;
-
-    color: #ffffff;
-
-    font-size: 14px;
-
-    line-height: 1.35;
-
-    font-weight: 600;
-}
-
-
-/* PREÇO */
-
-.produto-preco,
-.product-price {
-
-    margin-top: auto;
-
-    margin-bottom: 13px;
-
-    color: #ffffff;
-
-    font-size: 21px;
-
-    font-weight: 800;
-}
-
-
-/* BOTÃO */
-
-.btn-comprar,
-.buy-btn {
-
-    width: 100%;
-    height: 40px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    gap: 6px;
-
-    border: 0;
-    border-radius: 9px;
-
-    background: #ff7300;
-
-    color: #ffffff;
-
-    font-size: 12px;
-    font-weight: 700;
-
-    cursor: pointer;
-
-    transition:
-        background .2s ease,
-        transform .2s ease;
-}
-
-.btn-comprar:hover,
-.buy-btn:hover {
-
-    background: #ff8b26;
-
-    transform: translateY(-1px);
-}
-
-
-/* TABLET */
-
-@media (max-width: 1100px) {
-
-    #products {
-        grid-template-columns:
-            repeat(3, minmax(0, 1fr));
-
-        gap: 18px;
-    }
-
-}
-
-
-/* CELULAR */
-
-@media (max-width: 700px) {
-
-    #products {
-
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
-
-        gap: 12px;
-    }
-
-
-    .produto-card,
-    .product-card {
-        border-radius: 13px;
-    }
-
-
-    .produto-imagem,
-    .product-image {
-
-        height: 145px;
-
-        padding: 12px;
-    }
-
-
-    .produto-imagem img,
-    .product-image img {
-
-        max-width: 105px !important;
-        max-height: 105px !important;
-    }
-
-
-    .produto-info,
-    .product-info {
-
-        padding: 12px;
-    }
-
-
-    .produto-categoria {
-
-        font-size: 9px;
-    }
-
-
-    .produto-info h3,
-    .product-name {
-
-        font-size: 12px;
-
-        min-height: 34px;
-
-        margin-bottom: 8px;
-    }
-
-
-    .produto-preco,
-    .product-price {
-
-        font-size: 17px;
-
-        margin-bottom: 10px;
-    }
-
-
-    .btn-comprar,
-    .buy-btn {
-
-        height: 36px;
-
-        font-size: 11px;
-    }
-
-}
-
-
-/* CELULAR PEQUENO */
-
-@media (max-width: 380px) {
-
-    #products {
-        gap: 9px;
-    }
-
-
-    .produto-imagem,
-    .product-image {
-
-        height: 135px;
-    }
-
-
-    .produto-imagem img,
-    .product-image img {
-
-        max-width: 95px !important;
-        max-height: 95px !important;
-    }
-
-
-    .produto-info,
-    .product-info {
-
-        padding: 10px;
-    }
-
-}
-
 </div>
-
-
 
 <script src="script.js"></script>
 

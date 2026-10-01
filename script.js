@@ -629,6 +629,7 @@ async function fazerLogout() {
 
     bloquearLoja();
 
+    atualizarInterfaceCliente();
     atualizarCarrinhoInterface();
 }
 
@@ -639,50 +640,18 @@ async function fazerLogout() {
 
 function atualizarInterfaceCliente() {
 
-    if (!clienteAtual) return;
+    const botao = document.getElementById("accountButtonText");
 
-    const nome =
-        clienteAtual.nome ||
-        clienteAtual.name ||
-        "Cliente";
-
-    const welcome =
-        document.getElementById("accountWelcome");
-
-    if (welcome) {
-        welcome.textContent =
-            `Olá, ${nome}!`;
+    if (!clienteAtual) {
+        if (botao) botao.textContent = "Conta";
+        return;
     }
 
-    const nomeConta =
-        document.getElementById("accountName");
+    const nome = clienteAtual.nome || clienteAtual.name || "Cliente";
 
-    if (nomeConta) {
-        nomeConta.textContent = nome;
-    }
-
-    const emailConta =
-        document.getElementById("accountEmail");
-
-    if (emailConta) {
-        emailConta.textContent =
-            clienteAtual.email || "";
-    }
-
-    const telefoneConta =
-        document.getElementById("accountTelefone");
-
-    if (telefoneConta) {
-        telefoneConta.textContent =
-            clienteAtual.telefone || "";
-    }
-
-    const cpfConta =
-        document.getElementById("accountCpf");
-
-    if (cpfConta) {
-        cpfConta.textContent =
-            clienteAtual.cpf || "";
+    if (botao) {
+        const primeiroNome = String(nome).trim().split(/\s+/)[0] || "Conta";
+        botao.textContent = primeiroNome.length > 16 ? "Minha conta" : primeiroNome;
     }
 }
 
@@ -1849,173 +1818,294 @@ async function copiarPix() {
    CONTA
 ========================================================= */
 
-function abrirConta() {
-
-    const modal =
-        document.getElementById(
-            "accountModal"
-        );
-
+async function abrirConta() {
+    const modal = document.getElementById("accountModal");
     if (!modal) return;
 
+    modal.classList.add("active");
     modal.style.display = "flex";
+    modal.setAttribute("aria-hidden", "false");
 
-    atualizarInterfaceCliente();
-}
+    const content = document.getElementById("accountContent");
+    if (!content) return;
 
-
-/* =========================================================
-   FECHAR CONTA
-========================================================= */
-
-function fecharConta() {
-
-    const modal =
-        document.getElementById(
-            "accountModal"
-        );
-
-    if (!modal) return;
-
-    modal.style.display = "none";
-}
-
-
-/* =========================================================
-   CONSULTAR PEDIDO
-========================================================= */
-
-async function consultarPedido() {
-
-    const campo =
-        document.getElementById(
-            "numeroPedidoConsulta"
-        );
-
-    const resultado =
-        document.getElementById(
-            "resultadoPedido"
-        );
-
-    if (!campo || !resultado) return;
-
-    const numero =
-        campo.value.trim();
-
-    if (!numero) {
-
-        resultado.innerHTML = `
-            <p class="erro">
-                Digite o número do pedido.
-            </p>
+    if (!clienteAtual) {
+        content.innerHTML = `
+            <div class="account-error">
+                <div>
+                    <strong>Faça login para acessar sua conta.</strong>
+                    <span>Entre com seus dados para visualizar seu perfil e pedidos.</span>
+                </div>
+            </div>
         `;
-
         return;
     }
 
-    resultado.innerHTML = `
-        <p>
-            Consultando pedido...
-        </p>
+    content.innerHTML = `
+        <div class="account-loading">
+            <div>
+                <div class="account-loading-spinner"></div>
+                <p>Carregando seus dados e pedidos...</p>
+            </div>
+        </div>
     `;
 
     try {
+        const [perfilResponse, pedidosResponse] = await Promise.all([
+            fetch("/api/cliente/perfil", { credentials: "include", cache: "no-store" }),
+            fetch("/api/cliente/pedidos", { credentials: "include", cache: "no-store" })
+        ]);
 
-        const resposta =
-            await fetch(
-                "/api/pedidos/" +
-                encodeURIComponent(numero),
-                {
-                    credentials: "include"
-                }
-            );
+        const perfil = await perfilResponse.json().catch(() => ({}));
+        const pedidos = await pedidosResponse.json().catch(() => []);
 
-        const dados =
-            await resposta.json();
-
-        if (!resposta.ok) {
-
-            resultado.innerHTML = `
-                <p class="erro">
-                    ${
-                        escaparHTML(
-                            dados.erro ||
-                            dados.mensagem ||
-                            "Pedido não encontrado."
-                        )
-                    }
-                </p>
-            `;
-
-            return;
+        if (!perfilResponse.ok) {
+            throw new Error(perfil.erro || "Sua sessão expirou. Faça login novamente.");
         }
 
-        const pedido =
-            dados.pedido ||
-            dados;
-
-        const status =
-            pedido.status ||
-            "Pendente";
-
-        const total =
-            Number(
-                pedido.total ||
-                0
-            );
-
-        resultado.innerHTML = `
-
-            <div class="pedido-resultado">
-
-                <h3>
-                    Pedido #${escaparHTML(
-                        pedido.numero ||
-                        pedido.id ||
-                        numero
-                    )}
-                </h3>
-
-                <p>
-                    <strong>Status:</strong>
-                    ${escaparHTML(status)}
-                </p>
-
-                <p>
-                    <strong>Total:</strong>
-                    ${dinheiro(total)}
-                </p>
-
-                ${
-                    pedido.criadoEm
-                        ? `
-                            <p>
-                                <strong>Data:</strong>
-                                ${new Date(
-                                    pedido.criadoEm
-                                ).toLocaleString(
-                                    "pt-BR"
-                                )}
-                            </p>
-                        `
-                        : ""
-                }
-
-            </div>
-        `;
-
+        clienteAtual = perfil.usuario || clienteAtual;
+        atualizarInterfaceCliente();
+        renderizarConta(pedidosResponse.ok && Array.isArray(pedidos) ? pedidos : []);
     } catch (erro) {
-
-        console.error(erro);
-
-        resultado.innerHTML = `
-            <p class="erro">
-                Erro ao consultar pedido.
-            </p>
+        console.error("Erro ao carregar conta:", erro);
+        content.innerHTML = `
+            <div class="account-error">
+                <div>
+                    <strong>Não foi possível carregar sua conta.</strong>
+                    <span>${escaparHTML(erro.message || "Tente novamente.")}</span>
+                </div>
+            </div>
         `;
     }
 }
 
+function renderizarConta(pedidos = []) {
+    const content = document.getElementById("accountContent");
+    if (!content || !clienteAtual) return;
+
+    const nome = clienteAtual.nome || "Cliente";
+    const inicial = escaparHTML(String(nome).trim().charAt(0).toUpperCase() || "C");
+    const lista = [...pedidos].sort((a,b) => new Date(b.criadoEm || 0) - new Date(a.criadoEm || 0));
+
+    const pedidosHTML = lista.length
+        ? lista.map(renderizarPedidoConta).join("")
+        : `
+            <div class="account-empty-orders">
+                <div>
+                    <strong>Você ainda não tem pedidos.</strong>
+                    <span>Quando fizer uma compra, ela aparecerá aqui.</span>
+                </div>
+            </div>
+        `;
+
+    content.innerHTML = `
+        <div class="account-profile-hero">
+            <div class="account-avatar-large">${inicial}</div>
+            <div>
+                <h3>${escaparHTML(nome)}</h3>
+                <p>${escaparHTML(clienteAtual.email || "E-mail não informado")}</p>
+            </div>
+        </div>
+
+        <div class="account-info-grid">
+            <div class="account-info-box"><span>Nome</span><strong>${escaparHTML(nome)}</strong></div>
+            <div class="account-info-box"><span>E-mail</span><strong>${escaparHTML(clienteAtual.email || "Não informado")}</strong></div>
+            <div class="account-info-box"><span>Telefone</span><strong>${escaparHTML(clienteAtual.telefone || "Não informado")}</strong></div>
+            <div class="account-info-box"><span>CPF</span><strong>${escaparHTML(clienteAtual.cpf || "Não informado")}</strong></div>
+        </div>
+
+        <div class="account-orders-head">
+            <div>
+                <h3>Meus pedidos</h3>
+                <p>${lista.length} pedido${lista.length === 1 ? "" : "s"} encontrado${lista.length === 1 ? "" : "s"}</p>
+            </div>
+            <button type="button" class="account-logout-btn" onclick="fazerLogout(); fecharModal('accountModal')">Sair da conta</button>
+        </div>
+
+        <div class="account-orders-list">${pedidosHTML}</div>
+    `;
+}
+
+function renderizarPedidoConta(pedido) {
+    const numero = String(pedido.numero || pedido.id || "-");
+    const status = pedido.status || "Aguardando pagamento";
+    const produtos = Array.isArray(pedido.produtos) ? pedido.produtos : [];
+    const produtosTexto = produtos.length
+        ? produtos.map(item => `${Number(item.quantidade || 1)}x ${escaparHTML(item.nome || "Produto")}`).join(" • ")
+        : "Itens do pedido";
+    const total = Number(pedido.valorTotal ?? pedido.total ?? 0);
+    const data = pedido.criadoEm
+        ? new Date(pedido.criadoEm).toLocaleString("pt-BR", { dateStyle:"short", timeStyle:"short" })
+        : "Data não informada";
+    const podeCancelar = status === "Aguardando pagamento";
+
+    return `
+        <article class="account-order-card">
+            <div class="account-order-top">
+                <div>
+                    <div class="account-order-number">#${escaparHTML(numero)}</div>
+                    <div class="account-order-date">${escaparHTML(data)}</div>
+                </div>
+                <span class="account-status">${escaparHTML(status)}</span>
+            </div>
+            <div class="account-order-products">${produtosTexto}</div>
+            <div class="account-order-bottom">
+                <div class="account-order-total"><span>Total</span>${dinheiro(total)}</div>
+                <div class="account-order-actions">
+                    <button type="button" class="account-order-btn primary" onclick="acompanharDoPedido('${escaparHTML(numero)}')">Acompanhar</button>
+                    ${podeCancelar ? `<button type="button" class="account-order-btn danger" onclick="cancelarPedido('${escaparHTML(numero)}')">Cancelar</button>` : ""}
+                </div>
+            </div>
+        </article>
+    `;
+}
+
+function acompanharDoPedido(numero) {
+    fecharModal("accountModal");
+    const campo = document.getElementById("numeroPedidoConsulta");
+    if (campo) campo.value = numero;
+    document.getElementById("acompanharPedido")?.scrollIntoView({ behavior:"smooth", block:"start" });
+    setTimeout(consultarPedido, 250);
+}
+
+function fecharConta() {
+    fecharModal("accountModal");
+}
+
+function fecharModal(id) {
+    const modal = document.getElementById(id);
+    if (!modal) return;
+    modal.classList.remove("active");
+    modal.style.display = "none";
+    modal.setAttribute("aria-hidden", "true");
+}
+
+
+/* =========================================================
+   ACOMPANHAR PEDIDO
+========================================================= */
+
+let pedidoTrackingTimer = null;
+
+const etapasPedido = [
+    { status:"Aguardando pagamento", icone:"💳", descricao:"Estamos aguardando a confirmação do pagamento." },
+    { status:"Pagamento aprovado", icone:"✅", descricao:"Pagamento confirmado com sucesso." },
+    { status:"Preparando pedido", icone:"📦", descricao:"Seu pedido está sendo separado e preparado." },
+    { status:"Enviado", icone:"🏷️", descricao:"Seu pedido já foi enviado." },
+    { status:"Em transporte", icone:"🚚", descricao:"Seu pedido está a caminho." },
+    { status:"Entregue", icone:"🏠", descricao:"Pedido entregue. Obrigado pela compra!" }
+];
+
+function renderizarTimelinePedido(status) {
+    const timeline = document.getElementById("timelinePedido");
+    if (!timeline) return;
+
+    if (status === "Cancelado") {
+        timeline.innerHTML = `
+            <div class="timeline-item atual">
+                <div class="timeline-marker">✕</div>
+                <div class="timeline-content">
+                    <strong>Pedido cancelado</strong>
+                    <p>Este pedido foi cancelado e não seguirá para as próximas etapas.</p>
+                </div>
+            </div>
+        `;
+        return;
+    }
+
+    let indiceAtual = etapasPedido.findIndex(item => item.status === status);
+    if (indiceAtual < 0) indiceAtual = 0;
+
+    timeline.innerHTML = etapasPedido.map((item,index) => {
+        const classe = index < indiceAtual ? "concluido" : index === indiceAtual ? "atual" : "";
+        return `
+            <div class="timeline-item ${classe}">
+                <div class="timeline-marker">${item.icone}</div>
+                <div class="timeline-content">
+                    <strong>${escaparHTML(item.status)}</strong>
+                    <p>${escaparHTML(item.descricao)}</p>
+                </div>
+            </div>
+        `;
+    }).join("");
+}
+
+async function consultarPedido() {
+    const campo = document.getElementById("numeroPedidoConsulta");
+    const resultado = document.getElementById("resultadoPedido");
+    const atualizado = document.getElementById("ultimaAtualizacaoPedido");
+    const timeline = document.getElementById("timelinePedido");
+    if (!campo || !resultado) return;
+
+    const numero = campo.value.trim();
+    if (!numero) {
+        resultado.innerHTML = `<div class="tracking-result-card"><p class="erro">Digite o número do pedido.</p></div>`;
+        if (timeline) timeline.innerHTML = "";
+        if (atualizado) atualizado.textContent = "";
+        return;
+    }
+
+    if (pedidoTrackingTimer) {
+        clearInterval(pedidoTrackingTimer);
+        pedidoTrackingTimer = null;
+    }
+
+    resultado.innerHTML = `<div class="tracking-result-card"><p style="color:#888;font-size:12px">Consultando pedido <strong style="color:#fff">#${escaparHTML(numero)}</strong>...</p></div>`;
+    if (timeline) timeline.innerHTML = "";
+
+    const consultar = async (silencioso=false) => {
+        try {
+            const resposta = await fetch("/api/pedido/" + encodeURIComponent(numero) + "/status", {
+                credentials:"include",
+                cache:"no-store"
+            });
+            const dados = await resposta.json().catch(() => ({}));
+
+            if (!resposta.ok) {
+                if (!silencioso) {
+                    resultado.innerHTML = `<div class="tracking-result-card"><p class="erro">${escaparHTML(dados.erro || "Pedido não encontrado.")}</p></div>`;
+                    if (timeline) timeline.innerHTML = "";
+                    if (atualizado) atualizado.textContent = "";
+                }
+                return false;
+            }
+
+            const status = dados.status || "Aguardando pagamento";
+            const criado = dados.criadoEm ? new Date(dados.criadoEm).toLocaleString("pt-BR") : "Não informado";
+            const atualizadoEm = dados.atualizadoEm ? new Date(dados.atualizadoEm).toLocaleString("pt-BR") : criado;
+
+            resultado.innerHTML = `
+                <div class="tracking-result-card">
+                    <div class="tracking-result-top">
+                        <div>
+                            <h3>Pedido #${escaparHTML(dados.numero || numero)}</h3>
+                            <p style="color:#777;font-size:11px;margin-top:4px">Status atual do seu pedido</p>
+                        </div>
+                        <span class="tracking-status-badge">${escaparHTML(status)}</span>
+                    </div>
+                    <div class="tracking-meta-grid">
+                        <div class="tracking-meta-box"><span>Pedido criado</span><strong>${escaparHTML(criado)}</strong></div>
+                        <div class="tracking-meta-box"><span>Última atualização</span><strong>${escaparHTML(atualizadoEm)}</strong></div>
+                    </div>
+                    <div class="tracking-last">🔄 Atualizado automaticamente a cada 15 segundos.</div>
+                </div>
+            `;
+
+            renderizarTimelinePedido(status);
+            if (atualizado) atualizado.textContent = `🟢 Acompanhamento ativo • última consulta ${new Date().toLocaleTimeString("pt-BR")}`;
+            return true;
+        } catch (erro) {
+            if (!silencioso) {
+                resultado.innerHTML = `<div class="tracking-result-card"><p class="erro">Erro ao consultar o pedido. Tente novamente.</p></div>`;
+                if (timeline) timeline.innerHTML = "";
+            }
+            return false;
+        }
+    };
+
+    const ok = await consultar(false);
+    if (ok) pedidoTrackingTimer = setInterval(() => consultar(true), 15000);
+}
 
 /* =========================================================
    CANCELAR PEDIDO
