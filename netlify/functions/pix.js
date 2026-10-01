@@ -32,11 +32,15 @@ export async function handler(event) {
   if (event.httpMethod === "OPTIONS") return { statusCode: 204, headers, body: "" };
   if (event.httpMethod !== "POST") return json(405, { erro: "Método não permitido." }, headers);
 
-  const token = clean(process.env.MERCADOPAGO_ACCESS_TOKEN);
+  const token = clean(
+    process.env.MP_ACCESS_TOKEN ||
+    process.env.MERCADOPAGO_ACCESS_TOKEN ||
+    process.env.MERCADO_PAGO_ACCESS_TOKEN
+  );
   if (!token) {
     return json(500, {
       erro: "Mercado Pago não configurado no servidor.",
-      detalhe: "Cadastre MERCADOPAGO_ACCESS_TOKEN nas variáveis de ambiente do Netlify."
+      detalhe: "Não foi encontrado um Access Token do Mercado Pago nas variáveis de ambiente do Netlify (aceitos: MP_ACCESS_TOKEN, MERCADOPAGO_ACCESS_TOKEN ou MERCADO_PAGO_ACCESS_TOKEN)."
     }, headers);
   }
 
