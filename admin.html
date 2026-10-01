@@ -1,389 +1,1762 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#070b14">
-  <title>TechShop — Painel Administrativo</title>
-  <style>
-    :root{
-      --bg:#050812;
-      --panel:#0b1220;
-      --panel2:#0e1727;
-      --panel3:#111d31;
-      --border:rgba(255,255,255,.08);
-      --text:#f5f7fb;
-      --muted:#8d9ab0;
-      --blue:#2f8cff;
-      --blue2:#6eb4ff;
-      --green:#27d17f;
-      --yellow:#f5c451;
-      --red:#ff6675;
-      --shadow:0 18px 55px rgba(0,0,0,.32);
-      --radius:18px;
-    }
-    *{box-sizing:border-box;margin:0;padding:0}
-    html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,Arial,Helvetica,sans-serif}
-    body{overflow-x:hidden}
-    button,input,select{font:inherit}
-    button{cursor:pointer}
-    a{text-decoration:none;color:inherit}
-    .hidden{display:none!important}
 
-    /* LOGIN */
-    #loginScreen{min-height:100vh;display:grid;place-items:center;padding:24px;background:
-      radial-gradient(circle at 20% 15%,rgba(47,140,255,.14),transparent 28%),
-      radial-gradient(circle at 85% 20%,rgba(110,180,255,.09),transparent 24%),
-      var(--bg)}
-    .login-card{width:min(430px,100%);padding:34px;border:1px solid var(--border);background:linear-gradient(145deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border-radius:24px;box-shadow:var(--shadow)}
-    .brand-lockup{text-align:center;margin-bottom:28px}
-    .brand-mark{width:66px;height:66px;margin:0 auto 14px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,#1d5fb7,#328cff);font-size:30px;box-shadow:0 10px 35px rgba(47,140,255,.28)}
-    .brand-lockup h1{font-size:28px}.brand-lockup h1 span{color:var(--blue2)}
-    .brand-lockup p{color:var(--muted);margin-top:7px;font-size:13px}
-    .field{margin-bottom:16px}.field label{display:block;font-size:12px;color:#bbc5d5;margin-bottom:7px}
-    .field input{width:100%;padding:13px 14px;border:1px solid var(--border);border-radius:12px;background:#09101b;color:white;outline:none}
-    .field input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(47,140,255,.11)}
-    .primary{width:100%;padding:13px 16px;border:0;border-radius:12px;background:linear-gradient(135deg,var(--blue),#1465d4);color:#fff;font-weight:800}
-    .error-box{display:none;margin-top:13px;padding:11px 12px;border-radius:10px;background:rgba(255,102,117,.08);border:1px solid rgba(255,102,117,.16);color:#ff9aa4;font-size:13px}
+    <meta charset="UTF-8">
 
-    /* APP */
-    #adminApp{display:none;min-height:100vh}
-    .layout{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
-    .sidebar{position:sticky;top:0;height:100vh;padding:22px 16px;border-right:1px solid var(--border);background:rgba(5,8,18,.94);backdrop-filter:blur(16px);display:flex;flex-direction:column}
-    .side-brand{display:flex;align-items:center;gap:12px;padding:7px 8px 22px}.side-icon{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#1d5fb7,#328cff)}.side-brand strong{font-size:18px}.side-brand span{color:var(--blue2)}
-    .nav-label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#657186;padding:8px 10px 7px}
-    .nav{display:grid;gap:6px}.nav button{width:100%;display:flex;align-items:center;gap:11px;padding:12px 12px;border-radius:12px;background:transparent;border:1px solid transparent;color:#aab4c5;text-align:left}.nav button:hover{background:rgba(255,255,255,.04);color:#fff}.nav button.active{background:rgba(47,140,255,.12);border-color:rgba(47,140,255,.2);color:#eaf3ff}.nav .ico{width:25px;text-align:center}
-    .side-bottom{margin-top:auto;padding-top:18px;border-top:1px solid var(--border);display:grid;gap:9px}.admin-mini{padding:11px 10px;border-radius:12px;background:rgba(255,255,255,.03)}.admin-mini small{display:block;color:var(--muted);font-size:11px}.admin-mini strong{display:block;margin-top:3px;font-size:13px}
-    .side-btn{width:100%;padding:11px;border-radius:11px;border:1px solid var(--border);background:transparent;color:#bbc5d5}
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    .main{min-width:0}
-    .topbar{height:72px;position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:0 26px;border-bottom:1px solid var(--border);background:rgba(5,8,18,.82);backdrop-filter:blur(16px)}
-    .top-left h2{font-size:20px}.top-left p{font-size:12px;color:var(--muted);margin-top:3px}
-    .top-right{display:flex;align-items:center;gap:10px}.search{min-width:260px}.search input{width:100%;padding:11px 13px;border:1px solid var(--border);border-radius:11px;background:#09101b;color:#fff;outline:none}.icon-btn{width:40px;height:40px;border:1px solid var(--border);border-radius:11px;background:#0b1220;color:#d9e2f2}
-    .content{padding:24px 26px 40px}.page{display:none}.page.active{display:block}
+    <meta
+        name="theme-color"
+        content="#080a0f"
+    >
 
-    .hero-line{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:22px}.hero-line h3{font-size:24px}.hero-line p{color:var(--muted);font-size:13px;margin-top:5px}.hero-actions{display:flex;gap:9px}.btn{border:1px solid var(--border);border-radius:11px;padding:10px 13px;background:#0b1220;color:#dce4f1}.btn.primary-small{background:linear-gradient(135deg,var(--blue),#1465d4);border-color:transparent;color:#fff;font-weight:800}.btn.danger{color:#ff9da7;border-color:rgba(255,102,117,.18)}
+    <title>TECHSHOP | Administração</title>
 
-    .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.stat-card{padding:18px;border:1px solid var(--border);background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.02));border-radius:16px;box-shadow:0 10px 35px rgba(0,0,0,.14)}.stat-card .label{font-size:12px;color:var(--muted)}.stat-card .value{font-size:26px;font-weight:900;margin-top:8px}.stat-card .meta{font-size:11px;color:#9fb0c6;margin-top:7px}.stat-icon{float:right;width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:rgba(47,140,255,.1);color:var(--blue2)}
+    <style>
 
-    .grid-2{display:grid;grid-template-columns:1.35fr 1fr;gap:16px;margin-top:16px}.panel{border:1px solid var(--border);background:var(--panel);border-radius:16px;overflow:hidden}.panel-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--border)}.panel-head h4{font-size:14px}.panel-head span{font-size:11px;color:var(--muted)}.panel-body{padding:16px 18px}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    .chart{height:230px;display:flex;align-items:flex-end;gap:12px;padding:16px 2px 26px}.bar-col{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:8px}.bar{width:min(40px,80%);border-radius:9px 9px 4px 4px;background:linear-gradient(180deg,#6eb4ff,#2f8cff);min-height:7px;box-shadow:0 6px 18px rgba(47,140,255,.17)}.bar-label{font-size:10px;color:var(--muted)}.bar-value{font-size:9px;color:#dbe8fb}
+        :root {
+            --bg: #07090d;
+            --card: #10141b;
+            --card2: #151a22;
+            --border: rgba(255,255,255,.08);
+            --orange: #ff6b00;
+            --orange2: #ff8a24;
+            --green: #22c55e;
+            --red: #ef4444;
+            --blue: #3b82f6;
+            --text: #f5f7fa;
+            --muted: #89919e;
+        }
 
-    .mini-list{display:grid;gap:9px}.mini-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;border:1px solid var(--border);border-radius:11px;background:rgba(255,255,255,.02)}.mini-row strong{font-size:12px}.mini-row span{font-size:11px;color:var(--muted)}
+        body {
+            font-family:
+                Inter,
+                Arial,
+                sans-serif;
 
-    .table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:860px}.table th,.table td{padding:13px 14px;border-bottom:1px solid var(--border);font-size:12px;text-align:left;vertical-align:middle}.table th{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#718098;background:rgba(255,255,255,.018)}.table td{color:#dbe3ef}.table tr:hover td{background:rgba(255,255,255,.018)}
-    .badge{display:inline-flex;align-items:center;gap:5px;padding:6px 8px;border-radius:999px;font-size:10px;font-weight:800;border:1px solid transparent}.b-yellow{background:rgba(245,196,81,.09);border-color:rgba(245,196,81,.18);color:#ffd978}.b-green{background:rgba(39,209,127,.09);border-color:rgba(39,209,127,.18);color:#7cf0b5}.b-blue{background:rgba(47,140,255,.09);border-color:rgba(47,140,255,.18);color:#8fc4ff}.b-red{background:rgba(255,102,117,.09);border-color:rgba(255,102,117,.18);color:#ff9da7}
-    .status-select{padding:8px 9px;border:1px solid var(--border);border-radius:9px;background:#09101b;color:white;max-width:185px}.tiny{padding:7px 9px;border:1px solid var(--border);border-radius:9px;background:#0b1220;color:#dbe3ef;font-size:11px}
+            background:
+                radial-gradient(
+                    circle at top right,
+                    rgba(255,107,0,.12),
+                    transparent 30%
+                ),
+                var(--bg);
 
-    .filters{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}.filters input,.filters select{min-width:170px;padding:10px 11px;border:1px solid var(--border);border-radius:10px;background:#09101b;color:white;outline:none}.filters input{min-width:260px}
+            color: var(--text);
+            min-height: 100vh;
+        }
 
-    .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.product-card{border:1px solid var(--border);background:var(--panel);border-radius:15px;overflow:hidden}.product-card img{width:100%;height:180px;object-fit:contain;background:#08101b;padding:16px}.product-card .pc-body{padding:14px}.product-card h4{font-size:14px}.product-card p{color:var(--muted);font-size:11px;margin-top:5px;min-height:30px}.pc-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px}.price{font-size:17px;font-weight:900}.cat{font-size:10px;color:#9bb1cd;padding:5px 7px;border-radius:999px;background:rgba(255,255,255,.04)}
+        button,
+        input,
+        select {
+            font: inherit;
+        }
 
-    .billing-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.bill-card{padding:18px;border:1px solid var(--border);border-radius:15px;background:var(--panel)}.bill-card small{color:var(--muted)}.bill-card strong{display:block;font-size:25px;margin-top:9px}
-    .note{margin-top:14px;padding:12px 14px;border-radius:11px;background:rgba(47,140,255,.07);border:1px solid rgba(47,140,255,.12);color:#a8c8ef;font-size:11px}
+        button {
+            cursor: pointer;
+        }
 
-    .empty{padding:28px;text-align:center;color:var(--muted)}
-    .loading{padding:28px;text-align:center;color:#a9b8cd}
-    .toast{position:fixed;right:22px;bottom:22px;z-index:120;max-width:360px;display:none;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:#0d1624;box-shadow:var(--shadow);font-size:12px}.toast.success{border-color:rgba(39,209,127,.2);color:#a0f3c8}.toast.error{border-color:rgba(255,102,117,.2);color:#ffabb3}
+        /* LOGIN */
 
-    @media(max-width:1100px){.stats,.billing-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-2{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
-    @media(max-width:850px){.layout{grid-template-columns:1fr}.sidebar{position:fixed;left:-270px;top:0;width:250px;z-index:110;transition:.25s}.sidebar.open{left:0}.content{padding:18px}.topbar{padding:0 18px}.search{min-width:0;flex:1}.hero-line{align-items:flex-start}.top-right{width:50%}}
-    @media(max-width:640px){.stats,.billing-grid,.cards{grid-template-columns:1fr}.topbar{height:auto;min-height:72px;flex-wrap:wrap;padding:12px 16px}.top-right{width:100%}.hero-line{flex-direction:column}.hero-actions{width:100%}.hero-actions .btn{flex:1}.content{padding:14px}}
-  </style>
+        #loginScreen {
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 420px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255,255,255,.06),
+                    rgba(255,255,255,.02)
+                );
+
+            border: 1px solid var(--border);
+
+            border-radius: 24px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 30px 80px
+                rgba(0,0,0,.5);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo strong {
+            font-size: 32px;
+
+            color: var(--orange);
+
+            letter-spacing: 2px;
+        }
+
+        .logo span {
+            display: block;
+
+            margin-top: 6px;
+
+            color: var(--muted);
+
+            font-size: 13px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #c7cdd6;
+
+            font-size: 13px;
+        }
+
+        input,
+        select {
+
+            width: 100%;
+
+            background: #0b0f15;
+
+            border: 1px solid var(--border);
+
+            border-radius: 12px;
+
+            padding: 14px;
+
+            color: white;
+
+            outline: none;
+
+            transition: .2s;
+        }
+
+        input:focus,
+        select:focus {
+
+            border-color:
+                var(--orange);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(255,107,0,.1);
+        }
+
+        .btn {
+            width: 100%;
+
+            border: 0;
+
+            border-radius: 12px;
+
+            padding: 14px;
+
+            font-weight: 800;
+
+            transition: .2s;
+        }
+
+        .btn-primary {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--orange),
+                    var(--orange2)
+                );
+
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 10px 30px
+                rgba(255,107,0,.25);
+        }
+
+        .erro {
+            margin-top: 15px;
+
+            padding: 12px;
+
+            border-radius: 10px;
+
+            background:
+                rgba(239,68,68,.1);
+
+            color:
+                #ff7b7b;
+
+            font-size: 13px;
+
+            display: none;
+        }
+
+        /* ADMIN */
+
+        #adminApp {
+            display: none;
+        }
+
+        .topbar {
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 100;
+
+            height: 72px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding:
+                0 28px;
+
+            background:
+                rgba(7,9,13,.9);
+
+            backdrop-filter:
+                blur(18px);
+
+            border-bottom:
+                1px solid var(--border);
+        }
+
+        .brand {
+
+            font-size: 21px;
+
+            font-weight: 900;
+
+            letter-spacing: 1px;
+        }
+
+        .brand span {
+            color: var(--orange);
+        }
+
+        .admin-info {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+        }
+
+        .admin-name {
+            color: var(--muted);
+
+            font-size: 13px;
+        }
+
+        .logout {
+
+            border: 1px solid
+                rgba(239,68,68,.3);
+
+            background:
+                rgba(239,68,68,.08);
+
+            color:
+                #ff7777;
+
+            padding:
+                9px 14px;
+
+            border-radius:
+                10px;
+        }
+
+        .container {
+
+            width: 100%;
+
+            max-width: 1400px;
+
+            margin: auto;
+
+            padding: 30px 20px 60px;
+        }
+
+        .dashboard {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 15px;
+
+            margin-bottom: 25px;
+        }
+
+        .stat {
+
+            background:
+                var(--card);
+
+            border:
+                1px solid var(--border);
+
+            border-radius:
+                18px;
+
+            padding:
+                20px;
+        }
+
+        .stat small {
+            color: var(--muted);
+        }
+
+        .stat strong {
+
+            display: block;
+
+            font-size: 27px;
+
+            margin-top: 8px;
+        }
+
+        .orders-title {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 18px;
+        }
+
+        .orders-title h1 {
+            font-size: 25px;
+        }
+
+        .refresh {
+
+            background:
+                rgba(255,107,0,.1);
+
+            color:
+                var(--orange);
+
+            border:
+                1px solid
+                rgba(255,107,0,.2);
+
+            padding:
+                10px 15px;
+
+            border-radius:
+                10px;
+        }
+
+        .orders {
+
+            display: grid;
+
+            gap: 18px;
+        }
+
+        .order-card {
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #11161e,
+                    #0c1016
+                );
+
+            border:
+                1px solid var(--border);
+
+            border-radius:
+                20px;
+
+            padding:
+                22px;
+
+            transition:
+                .2s;
+        }
+
+        .order-card:hover {
+
+            border-color:
+                rgba(255,107,0,.3);
+
+            transform:
+                translateY(-2px);
+        }
+
+        .order-header {
+
+            display: flex;
+
+            align-items: flex-start;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            margin-bottom: 18px;
+        }
+
+        .order-number {
+
+            color:
+                var(--orange);
+
+            font-weight: 900;
+
+            font-size: 19px;
+        }
+
+        .order-date {
+
+            color:
+                var(--muted);
+
+            font-size: 12px;
+
+            margin-top: 5px;
+        }
+
+        .order-total {
+
+            font-size: 20px;
+
+            font-weight: 900;
+        }
+
+        .client {
+
+            background:
+                rgba(255,255,255,.025);
+
+            border:
+                1px solid
+                rgba(255,255,255,.05);
+
+            border-radius:
+                13px;
+
+            padding:
+                14px;
+
+            margin-bottom:
+                15px;
+        }
+
+        .client strong {
+            display: block;
+
+            margin-bottom: 5px;
+        }
+
+        .client span {
+
+            display: block;
+
+            color:
+                var(--muted);
+
+            font-size:
+                13px;
+
+            margin-top:
+                3px;
+        }
+
+        .products {
+
+            margin-bottom:
+                18px;
+        }
+
+        .product-row {
+
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            padding:
+                9px 0;
+
+            border-bottom:
+                1px solid
+                rgba(255,255,255,.04);
+
+            font-size:
+                13px;
+        }
+
+        .product-row span:last-child {
+            color:
+                #dbe0e7;
+        }
+
+        .status-area {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr auto;
+
+            gap: 10px;
+
+            align-items: end;
+        }
+
+        .status-area label {
+
+            display: block;
+
+            font-size:
+                12px;
+
+            color:
+                var(--muted);
+
+            margin-bottom:
+                7px;
+        }
+
+        .status-select {
+
+            width: 100%;
+        }
+
+        .status-button {
+
+            border: 0;
+
+            background:
+                var(--orange);
+
+            color: white;
+
+            padding:
+                13px 18px;
+
+            border-radius:
+                11px;
+
+            font-weight:
+                800;
+
+            white-space:
+                nowrap;
+        }
+
+        .status-button:hover {
+            background:
+                var(--orange2);
+        }
+
+        .updated {
+
+            margin-top:
+                12px;
+
+            font-size:
+                11px;
+
+            color:
+                var(--muted);
+
+            text-align:
+                right;
+        }
+
+        .empty {
+
+            padding:
+                60px 20px;
+
+            text-align:
+                center;
+
+            color:
+                var(--muted);
+
+            background:
+                var(--card);
+
+            border:
+                1px solid var(--border);
+
+            border-radius:
+                18px;
+        }
+
+        .loading {
+
+            padding:
+                50px;
+
+            text-align:
+                center;
+
+            color:
+                var(--muted);
+        }
+
+        .toast {
+
+            position:
+                fixed;
+
+            right:
+                20px;
+
+            bottom:
+                20px;
+
+            z-index:
+                999;
+
+            padding:
+                15px 18px;
+
+            border-radius:
+                13px;
+
+            background:
+                #171c24;
+
+            border:
+                1px solid var(--border);
+
+            box-shadow:
+                0 20px 50px
+                rgba(0,0,0,.5);
+
+            display:
+                none;
+        }
+
+        .toast.success {
+            border-color:
+                rgba(34,197,94,.3);
+        }
+
+        .toast.error {
+            border-color:
+                rgba(239,68,68,.3);
+        }
+
+        @media(max-width:900px) {
+
+            .dashboard {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width:600px) {
+
+            .topbar {
+                padding:
+                    0 15px;
+            }
+
+            .admin-name {
+                display:
+                    none;
+            }
+
+            .container {
+                padding:
+                    20px 12px 40px;
+            }
+
+            .dashboard {
+                grid-template-columns:
+                    1fr 1fr;
+            }
+
+            .order-header {
+                flex-direction:
+                    column;
+            }
+
+            .status-area {
+                grid-template-columns:
+                    1fr;
+            }
+
+            .status-button {
+                width:
+                    100%;
+            }
+        }
+
+    </style>
+
 </head>
+
 <body>
 
-  <section id="loginScreen">
-    <div class="login-card">
-      <div class="brand-lockup">
-        <div class="brand-mark">🛒</div>
-        <h1>Tech<span>Shop</span></h1>
-        <p>Painel administrativo</p>
-      </div>
-      <form id="adminLoginForm">
-        <div class="field">
-          <label>Usuário</label>
-          <input id="adminUsuario" autocomplete="username" required>
+    <!-- LOGIN -->
+
+    <div id="loginScreen">
+
+        <div class="login-box">
+
+            <div class="logo">
+
+                <strong>
+                    TECHSHOP
+                </strong>
+
+                <span>
+                    Painel Administrativo
+                </span>
+
+            </div>
+
+            <form id="adminLoginForm">
+
+                <div class="form-group">
+
+                    <label>
+                        Usuário
+                    </label>
+
+                    <input
+                        type="text"
+                        id="adminUsuario"
+                        autocomplete="username"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Senha
+                    </label>
+
+                    <input
+                        type="password"
+                        id="adminSenha"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                </div>
+
+                <button
+                    class="btn btn-primary"
+                    type="submit"
+                >
+                    Entrar no painel
+                </button>
+
+            </form>
+
+            <div
+                id="loginErro"
+                class="erro"
+            ></div>
+
         </div>
-        <div class="field">
-          <label>Senha</label>
-          <input id="adminSenha" type="password" autocomplete="current-password" required>
-        </div>
-        <button class="primary" type="submit">Entrar no painel</button>
-        <div id="loginErro" class="error-box"></div>
-      </form>
+
     </div>
-  </section>
 
-  <div id="adminApp">
-    <div class="layout">
-      <aside class="sidebar" id="sidebar">
-        <div class="side-brand">
-          <div class="side-icon">🛒</div>
-          <div><strong>Tech<span>Shop</span></strong><small style="display:block;color:#728096;font-size:10px;margin-top:3px">Administração</small></div>
-        </div>
-        <div class="nav-label">Menu</div>
-        <nav class="nav">
-          <button class="nav-btn active" data-page="dashboard"><span class="ico">▦</span>Dashboard</button>
-          <button class="nav-btn" data-page="pedidos"><span class="ico">📦</span>Pedidos</button>
-          <button class="nav-btn" data-page="clientes"><span class="ico">👥</span>Clientes</button>
-          <button class="nav-btn" data-page="produtos"><span class="ico">🛍️</span>Produtos</button>
-          <button class="nav-btn" data-page="faturamento"><span class="ico">💰</span>Faturamento</button>
-        </nav>
-        <div class="side-bottom">
-          <div class="admin-mini"><small>Logado como</small><strong id="adminNome">Administrador</strong></div>
-          <button class="side-btn" id="logoutBtn">Sair do painel</button>
-        </div>
-      </aside>
 
-      <main class="main">
+    <!-- ADMIN -->
+
+    <div id="adminApp">
+
         <header class="topbar">
-          <div class="top-left">
-            <h2 id="pageTitle">Dashboard</h2>
-            <p id="pageSubtitle">Visão geral da sua loja</p>
-          </div>
-          <div class="top-right">
-            <div class="search"><input id="globalSearch" placeholder="Buscar pedidos ou clientes..."></div>
-            <button class="icon-btn" id="refreshBtn" title="Atualizar">↻</button>
-            <button class="icon-btn" id="mobileMenu" title="Menu">☰</button>
-          </div>
+
+            <div class="brand">
+
+                TECH<span>SHOP</span>
+
+            </div>
+
+            <div class="admin-info">
+
+                <span
+                    id="adminNome"
+                    class="admin-name"
+                >
+                    Administrador
+                </span>
+
+                <button
+                    class="logout"
+                    onclick="logoutAdmin()"
+                >
+                    Sair
+                </button>
+
+            </div>
+
         </header>
 
-        <div class="content">
-          <section class="page active" id="page-dashboard">
-            <div class="hero-line">
-              <div><h3>Visão geral</h3><p>Indicadores calculados a partir dos pedidos registrados na loja.</p></div>
-              <div class="hero-actions"><button class="btn primary-small" onclick="loadAll()">Atualizar dados</button></div>
-            </div>
-            <div id="dashboardStats" class="stats"></div>
-            <div class="grid-2">
-              <div class="panel"><div class="panel-head"><h4>Faturamento — últimos 7 dias</h4><span>Somente pedidos aprovados</span></div><div id="revenueChart" class="chart"></div></div>
-              <div class="panel"><div class="panel-head"><h4>Pedidos recentes</h4><span>Últimos 6</span></div><div id="recentOrders" class="panel-body mini-list"></div></div>
-            </div>
-            <div class="grid-2">
-              <div class="panel"><div class="panel-head"><h4>Distribuição por status</h4><span>Pedidos</span></div><div id="statusSummary" class="panel-body mini-list"></div></div>
-              <div class="panel"><div class="panel-head"><h4>Resumo da operação</h4><span>Hoje</span></div><div id="opsSummary" class="panel-body mini-list"></div></div>
-            </div>
-          </section>
 
-          <section class="page" id="page-pedidos">
-            <div class="hero-line"><div><h3>Pedidos</h3><p>Consulte pedidos, clientes, valores e altere o status.</p></div><div class="hero-actions"><button class="btn" onclick="exportOrdersCsv()">Exportar CSV</button><button class="btn primary-small" onclick="loadAll()">Atualizar</button></div></div>
-            <div class="filters"><input id="orderSearch" placeholder="Buscar por número, nome ou e-mail"><select id="orderStatusFilter"><option value="">Todos os status</option><option>Aguardando pagamento</option><option>Pagamento aprovado</option><option>Preparando pedido</option><option>Enviado</option><option>Em transporte</option><option>Entregue</option><option>Cancelado</option></select></div>
-            <div class="panel"><div class="table-wrap"><table class="table"><thead><tr><th>Pedido</th><th>Cliente</th><th>Data</th><th>Total</th><th>Status</th><th>Ação</th></tr></thead><tbody id="ordersTable"></tbody></table></div></div>
-          </section>
+        <main class="container">
 
-          <section class="page" id="page-clientes">
-            <div class="hero-line"><div><h3>Clientes</h3><p>Clientes identificados pelos pedidos registrados.</p></div><div class="hero-actions"><button class="btn" onclick="exportClientsCsv()">Exportar CSV</button></div></div>
-            <div class="filters"><input id="clientSearch" placeholder="Buscar nome, e-mail ou telefone"></div>
-            <div class="panel"><div class="table-wrap"><table class="table"><thead><tr><th>Cliente</th><th>Contato</th><th>Pedidos</th><th>Total comprado</th><th>Último pedido</th></tr></thead><tbody id="clientsTable"></tbody></table></div></div>
-          </section>
+            <div class="dashboard">
 
-          <section class="page" id="page-produtos">
-            <div class="hero-line"><div><h3>Produtos</h3><p>Catálogo atual retornado pela API da loja.</p></div><div class="hero-actions"><button class="btn primary-small" onclick="loadProducts()">Atualizar produtos</button></div></div>
-            <div id="productCards" class="cards"></div>
-          </section>
+                <div class="stat">
 
-          <section class="page" id="page-faturamento">
-            <div class="hero-line"><div><h3>Faturamento</h3><p>Resumo financeiro derivado dos status dos pedidos.</p></div><div class="hero-actions"><button class="btn" onclick="exportOrdersCsv()">Exportar pedidos</button></div></div>
-            <div id="billingStats" class="billing-grid"></div>
-            <div class="grid-2">
-              <div class="panel"><div class="panel-head"><h4>Últimos pedidos aprovados</h4><span>Receita</span></div><div class="table-wrap"><table class="table"><thead><tr><th>Pedido</th><th>Data</th><th>Cliente</th><th>Valor</th></tr></thead><tbody id="billingTable"></tbody></table></div></div>
-              <div class="panel"><div class="panel-head"><h4>Observações</h4><span>Como interpretar</span></div><div class="panel-body"><div class="note">Faturamento considera somente pedidos com status <strong>Pagamento aprovado</strong> ou <strong>Entregue</strong>. Pedidos cancelados e aguardando pagamento ficam fora da receita.</div><div class="note">O projeto atual não possui campo de estoque/custo por produto na API; por isso este painel não inventa estoque ou lucro.</div></div></div>
+                    <small>
+                        Total de pedidos
+                    </small>
+
+                    <strong id="totalPedidos">
+                        0
+                    </strong>
+
+                </div>
+
+                <div class="stat">
+
+                    <small>
+                        Aguardando pagamento
+                    </small>
+
+                    <strong id="aguardando">
+                        0
+                    </strong>
+
+                </div>
+
+                <div class="stat">
+
+                    <small>
+                        Em preparação
+                    </small>
+
+                    <strong id="preparando">
+                        0
+                    </strong>
+
+                </div>
+
+                <div class="stat">
+
+                    <small>
+                        Em transporte
+                    </small>
+
+                    <strong id="transporte">
+                        0
+                    </strong>
+
+                </div>
+
             </div>
-          </section>
-        </div>
-      </main>
+
+
+            <div class="orders-title">
+
+                <h1>
+                    Pedidos
+                </h1>
+
+                <button
+                    class="refresh"
+                    onclick="carregarPedidos()"
+                >
+                    ↻ Atualizar
+                </button>
+
+            </div>
+
+
+            <div
+                id="orders"
+                class="orders"
+            >
+
+                <div class="loading">
+                    Carregando pedidos...
+                </div>
+
+            </div>
+
+        </main>
+
     </div>
-  </div>
 
-  <div id="toast" class="toast"></div>
+
+    <div
+        id="toast"
+        class="toast"
+    ></div>
+
 
 <script>
-  const state = { pedidos: [], produtos: [], page: 'dashboard' };
-  const money = n => Number(n || 0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-  const esc = v => String(v ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;');
 
-  const api = async (url, options={}) => {
+let pedidos = [];
+
+/* =========================================================
+   AUTENTICAÇÃO ADMINISTRATIVA
+========================================================= */
+
+function tokenAdmin() {
+    return localStorage.getItem("techshop_admin_token") || "";
+}
+
+async function fetchAdmin(url, options = {}) {
+
     const headers = new Headers(options.headers || {});
-    const adminToken = localStorage.getItem('techshop_admin_token');
-    if (adminToken && !headers.has('Authorization')) {
-      headers.set('Authorization', `Bearer ${adminToken}`);
+    const token = tokenAdmin();
+
+    if (token && !headers.has("Authorization")) {
+        headers.set("Authorization", `Bearer ${token}`);
     }
-    const res = await fetch(url,{credentials:'include',cache:'no-store',...options,headers});
-    const text = await res.text();
-    let data={};
-    try { data = text ? JSON.parse(text) : {}; } catch { throw new Error('Resposta inválida do servidor.'); }
-    if (res.status === 401) { localStorage.removeItem('techshop_admin_token'); location.reload(); throw new Error(data.erro || 'Sessão expirada.'); }
-    if (!res.ok) throw new Error(data.erro || 'Erro ao carregar dados.');
-    return data;
-  };
 
-  const statusClass = status => {
-    if (status === 'Pagamento aprovado' || status === 'Entregue') return 'b-green';
-    if (status === 'Cancelado') return 'b-red';
-    if (status === 'Aguardando pagamento') return 'b-yellow';
-    return 'b-blue';
-  };
+    const resposta = await fetch(url, {
+        ...options,
+        headers,
+        credentials: "include",
+        cache: "no-store"
+    });
 
-  const approved = p => ['Pagamento aprovado','Entregue'].includes(p.status);
-  const orderValue = p => Number(p.valorTotal || p.valor || 0);
-  const orderDate = p => p.criadoEm || p.createdAt ? new Date(p.criadoEm || p.createdAt) : null;
+    const texto = await resposta.text();
+    let dados = {};
 
-  document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => navigate(btn.dataset.page)));
-  document.getElementById('refreshBtn').addEventListener('click', loadAll);
-  document.getElementById('mobileMenu').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('open'));
-  document.getElementById('logoutBtn').addEventListener('click', logout);
-  document.getElementById('orderSearch').addEventListener('input', renderOrders);
-  document.getElementById('orderStatusFilter').addEventListener('change', renderOrders);
-  document.getElementById('clientSearch').addEventListener('input', renderClients);
-  document.getElementById('globalSearch').addEventListener('keydown', e => { if(e.key==='Enter'){ const q=e.currentTarget.value.trim(); if(!q) return; navigate('pedidos'); document.getElementById('orderSearch').value=q; renderOrders(); }});
+    try {
+        dados = texto ? JSON.parse(texto) : {};
+    } catch {
+        throw new Error(
+            `Resposta inválida do servidor (${resposta.status}).`
+        );
+    }
 
-  document.getElementById('adminLoginForm').addEventListener('submit', async e => {
-    e.preventDefault();
-    const box=document.getElementById('loginErro'); box.style.display='none';
-    try{
-      const login = await api('/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usuario:document.getElementById('adminUsuario').value.trim(),senha:document.getElementById('adminSenha').value})});
-      if (!login?.sucesso || !login?.token) throw new Error('O servidor não retornou a sessão administrativa.');
-      localStorage.setItem('techshop_admin_token', login.token);
-      await startApp();
-    }catch(err){box.textContent=err.message;box.style.display='block';}
-  });
+    if (!resposta.ok) {
+        if (resposta.status === 401 && url !== "/api/admin/login") {
+            localStorage.removeItem("techshop_admin_token");
+            document.getElementById("loginScreen").style.display = "flex";
+            document.getElementById("adminApp").style.display = "none";
+        }
 
-  function navigate(page){
-    state.page=page;
-    document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===`page-${page}`));
-    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
-    const meta={dashboard:['Dashboard','Visão geral da sua loja'],pedidos:['Pedidos','Acompanhe e atualize pedidos'],clientes:['Clientes','Clientes identificados pelos pedidos'],produtos:['Produtos','Catálogo atual'],faturamento:['Faturamento','Resumo financeiro']};
-    document.getElementById('pageTitle').textContent=meta[page][0];
-    document.getElementById('pageSubtitle').textContent=meta[page][1];
-    document.getElementById('sidebar').classList.remove('open');
-  }
+        throw new Error(
+            dados.erro || `Erro ${resposta.status}.`
+        );
+    }
 
-  async function verifySession(){
-    try{ await api('/api/admin/me'); return true; }catch{return false;}
-  }
+    return dados;
+}
 
-  async function startApp(){
-    document.getElementById('loginScreen').style.display='none';
-    document.getElementById('adminApp').style.display='block';
-    navigate('dashboard');
-    await loadAll();
-  }
 
-  async function init(){
-    const ok=await verifySession();
-    if(ok) await startApp();
-  }
+/* =========================================================
+   LOGIN
+========================================================= */
 
-  async function loadAll(){
-    try{
-      const [pedidos,produtos]=await Promise.all([api('/api/pedidos'),api('/api/produtos')]);
-      state.pedidos=Array.isArray(pedidos)?pedidos:[];
-      state.produtos=Array.isArray(produtos)?produtos:[];
-      renderEverything();
-      toast('Dados atualizados.','success');
-    }catch(err){toast(err.message,'error');}
-  }
+document
+    .getElementById("adminLoginForm")
+    .addEventListener(
+        "submit",
+        async function(event) {
 
-  async function loadProducts(){
-    try{const produtos=await api('/api/produtos');state.produtos=Array.isArray(produtos)?produtos:[];renderProducts();toast('Produtos atualizados.','success');}catch(err){toast(err.message,'error');}
-  }
+            event.preventDefault();
 
-  function renderEverything(){ renderDashboard(); renderOrders(); renderClients(); renderProducts(); renderBilling(); }
+            const usuario =
+                document
+                    .getElementById("adminUsuario")
+                    .value
+                    .trim();
 
-  function renderDashboard(){
-    const faturamento=state.pedidos.filter(approved).reduce((s,p)=>s+orderValue(p),0);
-    const totalPedidos=state.pedidos.length;
-    const clientes=new Map();
-    state.pedidos.forEach(p=>{const c=p.cliente||{};const key=(c.email||c.nome||p.usuarioId||p.numero||'').toLowerCase();if(key) clientes.set(key,c);});
-    const ticket=totalPedidos?faturamento/state.pedidos.filter(approved).length:0;
-    const pend=state.pedidos.filter(p=>p.status==='Aguardando pagamento').length;
-    const aprov=state.pedidos.filter(approved).length;
-    const transporte=state.pedidos.filter(p=>p.status==='Em transporte').length;
-    document.getElementById('dashboardStats').innerHTML=[
-      ['💰','Faturamento',money(faturamento),`${aprov} pedidos aprovados`],
-      ['📦','Pedidos',String(totalPedidos),`${pend} aguardando pagamento`],
-      ['👥','Clientes',String(clientes.size),'clientes identificados em pedidos'],
-      ['🧾','Ticket médio',money(ticket),'sobre pedidos aprovados']
-    ].map(([i,l,v,m])=>`<div class="stat-card"><div class="stat-icon">${i}</div><div class="label">${l}</div><div class="value">${esc(v)}</div><div class="meta">${esc(m)}</div></div>`).join('');
+            const senha =
+                document
+                    .getElementById("adminSenha")
+                    .value;
 
-    const days=[]; for(let i=6;i>=0;i--){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-i);days.push(d)}
-    const vals=days.map(d=>state.pedidos.filter(p=>approved(p)&&orderDate(p)&&sameDay(orderDate(p),d)).reduce((s,p)=>s+orderValue(p),0));
-    const max=Math.max(...vals,1);
-    document.getElementById('revenueChart').innerHTML=days.map((d,i)=>`<div class="bar-col"><div class="bar-value">${vals[i]?money(vals[i]):'R$ 0'}</div><div class="bar" style="height:${Math.max(7,(vals[i]/max)*150)}px"></div><div class="bar-label">${d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})}</div></div>`).join('');
+            const erro =
+                document
+                    .getElementById("loginErro");
 
-    const recent=[...state.pedidos].sort((a,b)=>(orderDate(b)?.getTime()||0)-(orderDate(a)?.getTime()||0)).slice(0,6);
-    document.getElementById('recentOrders').innerHTML=recent.length?recent.map(p=>`<div class="mini-row"><div><strong>#${esc(p.numero||'-')}</strong><span style="display:block;margin-top:3px">${esc(p.cliente?.nome||'Cliente')}</span></div><div style="text-align:right"><strong>${money(orderValue(p))}</strong><span style="display:block;margin-top:3px">${esc(p.status||'-')}</span></div></div>`).join(''):'<div class="empty">Nenhum pedido registrado.</div>';
+            const botao =
+                event.currentTarget
+                    .querySelector('button[type="submit"]');
 
-    const statusOrder=['Aguardando pagamento','Pagamento aprovado','Preparando pedido','Enviado','Em transporte','Entregue','Cancelado'];
-    document.getElementById('statusSummary').innerHTML=statusOrder.map(s=>`<div class="mini-row"><strong>${esc(s)}</strong><span>${state.pedidos.filter(p=>p.status===s).length}</span></div>`).join('');
-    document.getElementById('opsSummary').innerHTML=[
-      ['Aguardando',pend],['Preparando',state.pedidos.filter(p=>p.status==='Preparando pedido').length],['Transporte',transporte],['Entregues',state.pedidos.filter(p=>p.status==='Entregue').length]
-    ].map(([a,b])=>`<div class="mini-row"><strong>${a}</strong><span>${b}</span></div>`).join('');
-  }
+            erro.style.display = "none";
+            botao.disabled = true;
+            botao.textContent = "ENTRANDO...";
 
-  function renderOrders(){
-    const q=(document.getElementById('orderSearch').value||'').trim().toLowerCase();
-    const status=document.getElementById('orderStatusFilter').value;
-    let list=[...state.pedidos].sort((a,b)=>(orderDate(b)?.getTime()||0)-(orderDate(a)?.getTime()||0));
-    list=list.filter(p=>{const c=p.cliente||{};const hay=[p.numero,c.nome,c.email,c.telefone].join(' ').toLowerCase();return (!q||hay.includes(q))&&(!status||p.status===status)});
-    document.getElementById('ordersTable').innerHTML=list.length?list.map(p=>`<tr>
-      <td><strong>#${esc(p.numero||'-')}</strong><div style="color:#718098;font-size:10px;margin-top:4px">${orderDate(p)?orderDate(p).toLocaleString('pt-BR'):'-'}</div></td>
-      <td><strong>${esc(p.cliente?.nome||'Cliente')}</strong><div style="color:#718098;font-size:10px;margin-top:3px">${esc(p.cliente?.email||'-')}</div></td>
-      <td>${orderDate(p)?orderDate(p).toLocaleDateString('pt-BR'):'-'}</td>
-      <td><strong>${money(orderValue(p))}</strong></td>
-      <td><span class="badge ${statusClass(p.status)}">${esc(p.status||'-')}</span></td>
-      <td><div style="display:flex;gap:6px;flex-wrap:wrap"><select class="status-select" id="status-${safeId(p.numero)}">${statusOptions(p.status)}</select><button class="tiny" onclick="saveStatus('${escJs(p.numero)}')">Salvar</button><button class="tiny" onclick="removeOrder('${escJs(p.numero)}')">Excluir</button></div></td>
-    </tr>`).join(''):'<tr><td colspan="6"><div class="empty">Nenhum pedido encontrado.</div></td></tr>';
-  }
+            try {
 
-  function safeId(v){return String(v||'').replace(/[^a-zA-Z0-9_-]/g,'_')}
-  function escJs(v){return String(v??'').replaceAll('\\','\\\\').replaceAll("'","\\'")}
-  function statusOptions(current){return ['Aguardando pagamento','Pagamento aprovado','Preparando pedido','Enviado','Em transporte','Entregue','Cancelado'].map(s=>`<option ${s===current?'selected':''}>${esc(s)}</option>`).join('')}
+                const dados =
+                    await fetchAdmin(
+                        "/api/admin/login",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+                            body: JSON.stringify({
+                                usuario,
+                                senha
+                            })
+                        }
+                    );
 
-  async function saveStatus(numero){
-    const el=document.getElementById(`status-${safeId(numero)}`); if(!el)return;
-    try{await api(`/api/pedidos/${encodeURIComponent(numero)}/status`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:el.value})});const p=state.pedidos.find(x=>x.numero===numero);if(p)p.status=el.value;renderEverything();toast(`Pedido #${numero} atualizado.`,'success');}catch(err){toast(err.message,'error')}
-  }
+                if (!dados.sucesso || !dados.token) {
+                    throw new Error(
+                        dados.erro ||
+                        "O servidor não retornou a sessão administrativa."
+                    );
+                }
 
-  async function removeOrder(numero){
-    if(!confirm(`Excluir o pedido #${numero}?`))return;
-    try{await api(`/api/pedidos/${encodeURIComponent(numero)}`,{method:'DELETE'});state.pedidos=state.pedidos.filter(p=>p.numero!==numero);renderEverything();toast('Pedido excluído.','success');}catch(err){toast(err.message,'error')}
-  }
+                localStorage.setItem(
+                    "techshop_admin_token",
+                    dados.token
+                );
 
-  function renderClients(){
-    const q=(document.getElementById('clientSearch').value||'').trim().toLowerCase();
-    const map=new Map();
-    state.pedidos.forEach(p=>{const c=p.cliente||{};const key=(c.email||c.cpf||c.nome||p.usuarioId||p.numero||'').toLowerCase();if(!key)return;let item=map.get(key);if(!item){item={nome:c.nome||'-',email:c.email||'-',telefone:c.telefone||'-',pedidos:0,total:0,ultimo:null}}item.pedidos++;item.total+=orderValue(p);const d=orderDate(p);if(d&&(!item.ultimo||d>item.ultimo))item.ultimo=d;map.set(key,item)});
-    const list=[...map.values()].filter(c=>[c.nome,c.email,c.telefone].join(' ').toLowerCase().includes(q)).sort((a,b)=>b.total-a.total);
-    document.getElementById('clientsTable').innerHTML=list.length?list.map(c=>`<tr><td><strong>${esc(c.nome)}</strong></td><td>${esc(c.email)}<div style="color:#718098;font-size:10px;margin-top:3px">${esc(c.telefone)}</div></td><td>${c.pedidos}</td><td><strong>${money(c.total)}</strong></td><td>${c.ultimo?c.ultimo.toLocaleString('pt-BR'):'-'}</td></tr>`).join(''):'<tr><td colspan="5"><div class="empty">Nenhum cliente encontrado.</div></td></tr>';
-  }
+                abrirPainel(
+                    dados.usuario || "Administrador"
+                );
 
-  function renderProducts(){
-    document.getElementById('productCards').innerHTML=state.produtos.length?state.produtos.map(p=>`<article class="product-card"><img src="/${String(p.imagem||'').replace(/^\//,'')}" alt="${esc(p.nome)}" onerror="this.style.opacity=.25"><div class="pc-body"><h4>${esc(p.nome)}</h4><p>${esc(p.descricao||'Sem descrição')}</p><div class="pc-meta"><span class="price">${money(p.preco)}</span><span class="cat">${esc(p.categoria||'Sem categoria')}</span></div></div></article>`).join(''):'<div class="empty">Nenhum produto retornado.</div>';
-  }
+                await carregarPedidos();
 
-  function renderBilling(){
-    const aprovado=state.pedidos.filter(approved).reduce((s,p)=>s+orderValue(p),0);
-    const pend=state.pedidos.filter(p=>p.status==='Aguardando pagamento').reduce((s,p)=>s+orderValue(p),0);
-    const cancel=state.pedidos.filter(p=>p.status==='Cancelado').reduce((s,p)=>s+orderValue(p),0);
-    const mes=new Date();const mesAtual=state.pedidos.filter(p=>approved(p)&&orderDate(p)&&orderDate(p).getMonth()===mes.getMonth()&&orderDate(p).getFullYear()===mes.getFullYear()).reduce((s,p)=>s+orderValue(p),0);
-    document.getElementById('billingStats').innerHTML=[['Faturamento aprovado',aprovado],['Pendente',pend],['Cancelado',cancel],['Faturamento no mês',mesAtual]].map(([l,v])=>`<div class="bill-card"><small>${l}</small><strong>${money(v)}</strong></div>`).join('');
-    const list=state.pedidos.filter(approved).sort((a,b)=>(orderDate(b)?.getTime()||0)-(orderDate(a)?.getTime()||0)).slice(0,20);
-    document.getElementById('billingTable').innerHTML=list.length?list.map(p=>`<tr><td>#${esc(p.numero||'-')}</td><td>${orderDate(p)?orderDate(p).toLocaleDateString('pt-BR'):'-'}</td><td>${esc(p.cliente?.nome||'Cliente')}</td><td><strong>${money(orderValue(p))}</strong></td></tr>`).join(''):'<tr><td colspan="4"><div class="empty">Nenhum pedido aprovado ainda.</div></td></tr>';
-  }
+            } catch (erroAtual) {
 
-  function sameDay(a,b){return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate()}
+                erro.textContent =
+                    erroAtual.message ||
+                    "Não foi possível entrar.";
 
-  function csvEscape(v){return `"${String(v??'').replaceAll('"','""')}"`}
-  function downloadCsv(name,rows){const blob=new Blob([rows.map(r=>r.map(csvEscape).join(';')).join('\n')],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;a.click();URL.revokeObjectURL(url)}
-  function exportOrdersCsv(){downloadCsv('techshop-pedidos.csv',[['Pedido','Cliente','E-mail','Telefone','Data','Valor','Status'],...state.pedidos.map(p=>[p.numero,p.cliente?.nome,p.cliente?.email,p.cliente?.telefone,orderDate(p)?.toLocaleString('pt-BR'),orderValue(p).toFixed(2),p.status])])}
-  function exportClientsCsv(){const rows=[['Cliente','E-mail','Telefone','Pedidos','Total comprado','Último pedido']];const map=new Map();state.pedidos.forEach(p=>{const c=p.cliente||{};const k=(c.email||c.nome||p.numero||'').toLowerCase();let i=map.get(k);if(!i){i={nome:c.nome||'',email:c.email||'',telefone:c.telefone||'',pedidos:0,total:0,ultimo:null}}i.pedidos++;i.total+=orderValue(p);const d=orderDate(p);if(d&&(!i.ultimo||d>i.ultimo))i.ultimo=d;map.set(k,i)});for(const c of map.values())rows.push([c.nome,c.email,c.telefone,c.pedidos,c.total.toFixed(2),c.ultimo?.toLocaleString('pt-BR')||'']);downloadCsv('techshop-clientes.csv',rows)}
+                erro.style.display = "block";
 
-  function toast(msg,type='success'){const t=document.getElementById('toast');t.textContent=msg;t.className=`toast ${type}`;t.style.display='block';clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.style.display='none',3200)}
+            } finally {
 
-  init();
+                botao.disabled = false;
+                botao.textContent = "ENTRAR NO PAINEL";
+            }
+        }
+    );
+
+
+/* =========================================================
+   VERIFICAR LOGIN
+========================================================= */
+
+async function verificarAdmin() {
+
+    if (!tokenAdmin()) {
+        return false;
+    }
+
+    try {
+
+        const dados =
+            await fetchAdmin(
+                "/api/admin/me"
+            );
+
+        if (dados.autenticado) {
+
+            abrirPainel(
+                dados.usuario || "Administrador"
+            );
+
+            await carregarPedidos();
+
+            return true;
+        }
+
+    } catch (erro) {
+
+        console.error("Sessão admin:", erro);
+    }
+
+    return false;
+}
+
+
+/* =========================================================
+   ABRIR PAINEL
+========================================================= */
+
+function abrirPainel(usuario) {
+
+    document
+        .getElementById(
+            "loginScreen"
+        )
+        .style.display =
+            "none";
+
+    document
+        .getElementById(
+            "adminApp"
+        )
+        .style.display =
+            "block";
+
+    document
+        .getElementById(
+            "adminNome"
+        )
+        .textContent =
+            usuario ||
+            "Administrador";
+
+    carregarPedidos();
+}
+
+
+/* =========================================================
+   PEDIDOS
+========================================================= */
+
+async function carregarPedidos() {
+
+    const container =
+        document
+            .getElementById(
+                "orders"
+            );
+
+    container.innerHTML = `
+        <div class="loading">
+            🔄 Carregando pedidos...
+        </div>
+    `;
+
+    try {
+
+        const dados =
+            await fetchAdmin(
+                "/api/pedidos"
+            );
+
+
+        pedidos =
+            Array.isArray(dados)
+                ? dados
+                : [];
+
+        atualizarDashboard();
+
+        renderizarPedidos();
+
+    } catch (erro) {
+
+        container.innerHTML = `
+            <div class="empty">
+                ❌ ${escapeHtml(
+                    erro.message
+                )}
+            </div>
+        `;
+    }
+}
+
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+function atualizarDashboard() {
+
+    document
+        .getElementById(
+            "totalPedidos"
+        )
+        .textContent =
+            pedidos.length;
+
+    document
+        .getElementById(
+            "aguardando"
+        )
+        .textContent =
+            pedidos.filter(
+                p =>
+                    p.status ===
+                    "Aguardando pagamento"
+            ).length;
+
+    document
+        .getElementById(
+            "preparando"
+        )
+        .textContent =
+            pedidos.filter(
+                p =>
+                    p.status ===
+                    "Preparando pedido"
+            ).length;
+
+    document
+        .getElementById(
+            "transporte"
+        )
+        .textContent =
+            pedidos.filter(
+                p =>
+                    p.status ===
+                    "Em transporte"
+            ).length;
+}
+
+
+/* =========================================================
+   RENDER
+========================================================= */
+
+function renderizarPedidos() {
+
+    const container =
+        document
+            .getElementById(
+                "orders"
+            );
+
+    if (!pedidos.length) {
+
+        container.innerHTML = `
+            <div class="empty">
+                📦 Nenhum pedido encontrado.
+            </div>
+        `;
+
+        return;
+    }
+
+    container.innerHTML =
+        pedidos.map(
+            pedido =>
+                criarPedidoCard(
+                    pedido
+                )
+        ).join("");
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+function criarPedidoCard(
+    pedido
+) {
+
+    const numero =
+        pedido.numero ||
+        pedido.id ||
+        pedido.referencia ||
+        "";
+
+    const cliente =
+        pedido.cliente ||
+        {};
+
+    const produtos =
+        Array.isArray(
+            pedido.produtos
+        )
+            ? pedido.produtos
+            : [];
+
+    const valor =
+        Number(
+            pedido.valorTotal ||
+            pedido.valor ||
+            0
+        );
+
+    const criado =
+        pedido.criadoEm ||
+        pedido.createdAt;
+
+    const data =
+        criado
+            ? new Date(criado)
+                .toLocaleString(
+                    "pt-BR"
+                )
+            : "-";
+
+    const atualizado =
+        pedido.atualizadoEm
+            ? new Date(
+                pedido.atualizadoEm
+            ).toLocaleString(
+                "pt-BR"
+            )
+            : "-";
+
+    const status =
+        pedido.status ||
+        "Aguardando pagamento";
+
+    return `
+
+        <article
+            class="order-card"
+        >
+
+            <div
+                class="order-header"
+            >
+
+                <div>
+
+                    <div
+                        class="order-number"
+                    >
+                        #${escapeHtml(
+                            numero
+                        )}
+                    </div>
+
+                    <div
+                        class="order-date"
+                    >
+                        ${escapeHtml(
+                            data
+                        )}
+                    </div>
+
+                </div>
+
+                <div
+                    class="order-total"
+                >
+                    ${formatarDinheiro(
+                        valor
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="client">
+
+                <strong>
+                    ${escapeHtml(
+                        cliente.nome ||
+                        "Cliente"
+                    )}
+                </strong>
+
+                <span>
+                    📧
+                    ${escapeHtml(
+                        cliente.email ||
+                        "-"
+                    )}
+                </span>
+
+                <span>
+                    📱
+                    ${escapeHtml(
+                        cliente.telefone ||
+                        "-"
+                    )}
+                </span>
+
+            </div>
+
+
+            <div class="products">
+
+                ${produtos
+                    .map(
+                        produto => `
+
+                        <div
+                            class="product-row"
+                        >
+
+                            <span>
+                                ${escapeHtml(
+                                    produto.nome ||
+                                    "Produto"
+                                )}
+                                ×
+                                ${Number(
+                                    produto.quantidade ||
+                                    1
+                                )}
+                            </span>
+
+                            <span>
+                                ${formatarDinheiro(
+                                    Number(
+                                        produto.subtotal ||
+                                        (
+                                            produto.preco *
+                                            produto.quantidade
+                                        ) ||
+                                        0
+                                    )
+                                )}
+                            </span>
+
+                        </div>
+
+                    `
+                    )
+                    .join("")}
+
+            </div>
+
+
+            <div class="status-area">
+
+                <div>
+
+                    <label>
+                        Status do pedido
+                    </label>
+
+                    <select
+                        id="status-${escapeHtml(
+                            numero
+                        )}"
+                        class="status-select"
+                    >
+
+                        ${criarOpcao(
+                            "Aguardando pagamento",
+                            status,
+                            "💳"
+                        )}
+
+                        ${criarOpcao(
+                            "Pagamento aprovado",
+                            status,
+                            "✅"
+                        )}
+
+                        ${criarOpcao(
+                            "Preparando pedido",
+                            status,
+                            "📦"
+                        )}
+
+                        ${criarOpcao(
+                            "Enviado",
+                            status,
+                            "🚚"
+                        )}
+
+                        ${criarOpcao(
+                            "Em transporte",
+                            status,
+                            "🛵"
+                        )}
+
+                        ${criarOpcao(
+                            "Entregue",
+                            status,
+                            "🎉"
+                        )}
+
+                        ${criarOpcao(
+                            "Cancelado",
+                            status,
+                            "❌"
+                        )}
+
+                    </select>
+
+                </div>
+
+
+                <button
+                    class="status-button"
+                    onclick="
+                        atualizarStatus(
+                            '${escapeJs(numero)}'
+                        )
+                    "
+                >
+                    Atualizar status
+                </button>
+
+            </div>
+
+
+            <div class="updated">
+
+                Última atualização:
+                ${escapeHtml(
+                    atualizado
+                )}
+
+            </div>
+
+        </article>
+
+    `;
+}
+
+
+/* =========================================================
+   OPÇÃO STATUS
+========================================================= */
+
+function criarOpcao(
+    valor,
+    atual,
+    emoji
+) {
+
+    return `
+        <option
+            value="${escapeHtml(
+                valor
+            )}"
+            ${
+                valor === atual
+                    ? "selected"
+                    : ""
+            }
+        >
+            ${emoji}
+            ${escapeHtml(
+                valor
+            )}
+        </option>
+    `;
+}
+
+
+/* =========================================================
+   ATUALIZAR STATUS
+========================================================= */
+
+async function atualizarStatus(
+    numero
+) {
+
+    const select =
+        document
+            .getElementById(
+                `status-${numero}`
+            );
+
+    if (!select) {
+        return;
+    }
+
+    const status =
+        select.value;
+
+    try {
+
+        const dados =
+            await fetchAdmin(
+                `/api/pedidos/${encodeURIComponent(numero)}/status`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ status })
+                }
+            );
+
+        if (!resposta.ok) {
+
+            throw new Error(
+                dados.erro ||
+                "Não foi possível atualizar."
+            );
+        }
+
+        mostrarToast(
+            `Pedido #${numero} atualizado para "${status}".`,
+            "success"
+        );
+
+        await carregarPedidos();
+
+    } catch (erro) {
+
+        mostrarToast(
+            erro.message,
+            "error"
+        );
+    }
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+async function logoutAdmin() {
+
+    try {
+        await fetchAdmin(
+            "/api/admin/logout",
+            { method: "POST" }
+        );
+    } catch {}
+
+    localStorage.removeItem(
+        "techshop_admin_token"
+    );
+
+    document
+        .getElementById("adminApp")
+        .style.display = "none";
+
+    document
+        .getElementById("loginScreen")
+        .style.display = "flex";
+}
+
+
+/* =========================================================
+   UTILIDADES
+========================================================= */
+
+function formatarDinheiro(
+    valor
+) {
+
+    return Number(
+        valor || 0
+    ).toLocaleString(
+        "pt-BR",
+        {
+            style: "currency",
+            currency: "BRL"
+        }
+    );
+}
+
+
+function escapeHtml(
+    valor
+) {
+
+    return String(
+        valor ?? ""
+    )
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
+}
+
+
+function escapeJs(
+    valor
+) {
+
+    return String(
+        valor ?? ""
+    )
+        .replaceAll(
+            "\\",
+            "\\\\"
+        )
+        .replaceAll(
+            "'",
+            "\\'"
+        );
+}
+
+
+function mostrarToast(
+    mensagem,
+    tipo
+) {
+
+    const toast =
+        document
+            .getElementById(
+                "toast"
+            );
+
+    toast.textContent =
+        mensagem;
+
+    toast.className =
+        `toast ${tipo}`;
+
+    toast.style.display =
+        "block";
+
+    setTimeout(
+        () => {
+
+            toast.style.display =
+                "none";
+
+        },
+        3500
+    );
+}
+
+
+/* =========================================================
+   INICIAR
+========================================================= */
+
+verificarAdmin();
+
 </script>
+
 </body>
+
 </html>

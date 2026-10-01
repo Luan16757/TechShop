@@ -5,10 +5,11 @@ const path = require("path");
 const fs = require("fs");
 const crypto = require("crypto");
 
+// Carrega o .env antes de ler as variáveis.
+dotenv.config();
+
 // Netlify executa o Express como Function. Localmente, `node server.js` continua funcionando.
 const IS_NETLIFY = Boolean(process.env.NETLIFY);
-
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -38,7 +39,9 @@ const MP_ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN || "";
 
 const SESSION_SECRET =
     process.env.SESSION_SECRET ||
-    (IS_NETLIFY ? "" : "techshop-local-session-secret");
+    (IS_NETLIFY
+        ? (process.env.ADMIN_PASSWORD || "techshop-netlify-admin-secret")
+        : "techshop-local-session-secret");
 
 const USUARIOS_KEY = "usuarios";
 const PEDIDOS_KEY = "pedidos";
@@ -674,18 +677,11 @@ function exigirCliente(req, res, next) {
 
 function exigirAdmin(req, res, next) {
 
-    const cookieToken = obterCookie(
-        req,
-        "techshop_admin"
-    );
-
-    const authHeader = String(
-        req.headers.authorization || ""
-    );
-
+    const cookieToken = obterCookie(req, "techshop_admin");
+    const authHeader = String(req.headers.authorization || "");
     const bearerToken = authHeader.startsWith("Bearer ")
         ? authHeader.slice(7).trim()
-        : null;
+        : "";
 
     const token = bearerToken || cookieToken;
 
@@ -695,10 +691,7 @@ function exigirAdmin(req, res, next) {
         });
     }
 
-    const sessao = verificarToken(
-        token,
-        "admin"
-    );
+    const sessao = verificarToken(token, "admin");
 
     if (!sessao) {
         return res.status(401).json({
@@ -707,7 +700,6 @@ function exigirAdmin(req, res, next) {
     }
 
     req.admin = sessao;
-
     next();
 }
 
@@ -1057,7 +1049,8 @@ app.post(
 
         res.json({
             sucesso: true,
-            token
+            token,
+            usuario: ADMIN_USER
         });
 
     }
