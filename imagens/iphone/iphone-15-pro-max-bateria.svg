@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#08090d"/><stop offset="1" stop-color="#646a7f"/></linearGradient><filter id="shadow"><feDropShadow dx="0" dy="18" stdDeviation="18" flood-opacity=".4"/></filter></defs>
+<rect width="900" height="900" rx="64" fill="url(#bg)"/>
+<circle cx="120" cy="120" r="100" fill="#fff" opacity=".05"/>
+<g filter="url(#shadow)" transform="rotate(5 450 450)">
+<rect x="305" y="100" width="290" height="700" rx="36" fill="#111318" stroke="#69707c" stroke-width="10"/>
+<rect x="330" y="155" width="240" height="510" rx="24" fill="#090a0d" stroke="#272b33" stroke-width="5"/>
+<rect x="420" y="70" width="60" height="55" rx="12" fill="#30343d"/>
+<rect x="390" y="665" width="120" height="60" rx="12" fill="#1e2128"/>
+<path d="M450 215 v260" stroke="#646a7f" stroke-width="16" stroke-linecap="round" opacity=".8"/>
+<text x="450" y="555" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="34" fill="#fff" font-weight="800">15 Pro Max</text>
+<text x="450" y="600" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="24" fill="#aab2c0">REPOSIÇÃO</text>
+<text x="450" y="635" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#7f8794">CAPACIDADE CONFORME O MODELO</text>
+</g>
+<text x="54" y="72" font-family="Arial,Helvetica,sans-serif" font-size="30" fill="#fff" font-weight="800">TECHSHOP • BATERIA</text>
+<text x="54" y="840" font-family="Arial,Helvetica,sans-serif" font-size="25" fill="#dfe4ee">Peça de reposição • confirme a compatibilidade</text>
+</svg>

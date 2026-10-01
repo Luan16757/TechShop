@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#08090d"/><stop offset="1" stop-color="#905ed2"/></linearGradient><linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f4f4f4"/><stop offset=".15" stop-color="#8f95a1"/><stop offset=".55" stop-color="#15171d"/><stop offset="1" stop-color="#030406"/></linearGradient><filter id="shadow"><feDropShadow dx="0" dy="18" stdDeviation="18" flood-opacity=".35"/></filter></defs>
+<rect width="900" height="900" rx="64" fill="url(#bg)"/>
+<circle cx="780" cy="110" r="130" fill="#905ed2" opacity=".25"/>
+<g filter="url(#shadow)" transform="rotate(12 450 450)">
+<rect x="245" y="95" width="410" height="710" rx="58" fill="#0a0b0f" stroke="#555b69" stroke-width="8"/>
+<rect x="270" y="125" width="360" height="610" rx="38" fill="url(#glass)"/>
+<rect x="340" y="145" width="220" height="24" rx="12" fill="#000" opacity=".75"/>
+<circle cx="450" cy="700" r="11" fill="#fff" opacity=".45"/>
+<rect x="300" y="560" width="300" height="76" rx="18" fill="#050608" opacity=".58"/>
+<text x="450" y="600" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="28" fill="#fff" font-weight="700">17e</text>
+</g>
+<text x="54" y="72" font-family="Arial,Helvetica,sans-serif" font-size="30" fill="#fff" font-weight="800">TECHSHOP • TELA</text>
+<text x="54" y="840" font-family="Arial,Helvetica,sans-serif" font-size="25" fill="#dfe4ee">Peça de reposição • confirme o modelo</text>
+</svg>
