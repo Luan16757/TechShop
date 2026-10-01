@@ -1,21 +1,23 @@
-TECHSHOP - CORRECAO DEFINITIVA DA API NETLIFY
+TECHSHOP - FIX V4
 
-Substitua SOMENTE:
-1) server.js
-2) netlify/functions/api.js
+Este pacote elimina a mistura entre Netlify Functions moderno e o handler Lambda legado.
+A Function agora recebe Request/Context do runtime moderno e adapta internamente para o
+serverless-http/Express existente. Isso permite que os recursos Netlify, incluindo Blobs,
+sejam inicializados no runtime moderno sem precisar de connectLambda() no handler.
 
-Nao mexa no techshop.html, script.js, admin.html, imagens, .env,
-usuarios.json ou pedidos.json.
+Arquivos para substituir:
+- server.js
+- netlify/functions/api.mjs
 
-Motivo da correção:
-A API estava usando serverless-http (Lambda compatibility) com Netlify Blobs,
-mas a função nao inicializava o contexto Lambda antes de chamar getStore().
-Agora api.js chama connectLambda(event) antes de executar o Express.
+Remover do projeto:
+- netlify/functions/api.js
 
-Depois:
-GitHub Desktop -> Commit -> Push origin -> aguardar Netlify Published.
+Nao precisa alterar package.json, package-lock, .env, techshop.html, script.js ou painel.
 
 Teste primeiro:
 https://rad-malasada-9dec4e.netlify.app/api/status
 
-Depois abra a loja normalmente.
+Resposta esperada:
+{"online":true,"servidor":"TECHSHOP","porta":"serverless","produtos":17}
+
+Depois teste a loja.

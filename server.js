@@ -139,16 +139,14 @@ async function obterNetlifyStore() {
     const token = String(process.env.NETLIFY_AUTH_TOKEN || "").trim();
 
     if (siteID && token) {
-        return getStore({
-            name: "techshop-data",
+        return getStore("techshop-data", {
             consistency: "strong",
             siteID,
             token
         });
     }
 
-    return getStore({
-        name: "techshop-data",
+    return getStore("techshop-data", {
         consistency: "strong"
     });
 }
@@ -280,17 +278,21 @@ app.use(
             return next();
         }
 
+        // Estas rotas usam apenas dados fixos e não precisam abrir o Blobs Store.
+        if (req.path === "/api/status" || req.path === "/api/produtos") {
+            return next();
+        }
+
         try {
             await carregarDadosNetlify(false);
             next();
         } catch (erro) {
             console.error(
                 "Erro carregando dados do Netlify:",
-                erro
+                erro?.stack || erro
             );
             res.status(500).json({
-                erro:
-                    "Não foi possível carregar os dados da loja."
+                erro: "Não foi possível carregar os dados da loja."
             });
         }
     }
