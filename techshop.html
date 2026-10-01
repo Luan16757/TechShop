@@ -1,38 +1,391 @@
-<div class="delivery-options checkout-full">
-    <div class="delivery-title">
-        🚚 Forma de entrega
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080808">
+<title>TECHSHOP</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--orange:#ff7300;--orange-light:#ff8a26;--bg:#080808;--card:#111;--border:#242424;--text:#fff;--muted:#929292;--green:#22c55e}
+html{scroll-behavior:smooth}
+body{font-family:Arial,Helvetica,sans-serif;background:radial-gradient(circle at 15% 0%,rgba(255,115,0,.08),transparent 30%),radial-gradient(circle at 85% 10%,rgba(255,150,0,.05),transparent 25%),#080808;color:#fff;min-height:100vh;overflow-x:hidden}
+body.site-bloqueado{overflow:hidden}
+button,input{font-family:inherit}button{cursor:pointer}a{color:inherit}
+/* LOGIN */
+#authScreen{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:18px;overflow-y:auto;background:radial-gradient(circle at top,rgba(255,115,0,.15),transparent 42%),radial-gradient(circle at bottom,rgba(255,115,0,.06),transparent 35%),#06070a}
+.auth-bg-grid,.auth-orb,.auth-orb-2,.auth-particles{position:absolute;inset:0;pointer-events:none}
+.auth-bg-grid{opacity:.25;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:38px 38px;mask-image:radial-gradient(circle at center,#000 22%,transparent 88%);-webkit-mask-image:radial-gradient(circle at center,#000 22%,transparent 88%);animation:authGrid 20s linear infinite}
+.auth-orb::before,.auth-orb::after,.auth-orb-2::before,.auth-orb-2::after{content:"";position:absolute;border-radius:999px;filter:blur(3px)}
+.auth-orb::before{width:260px;height:260px;left:-70px;top:8%;background:radial-gradient(circle,rgba(255,115,0,.2),transparent 68%);animation:orbFloat 8s ease-in-out infinite}
+.auth-orb::after{width:360px;height:360px;right:-140px;bottom:-80px;background:radial-gradient(circle,rgba(255,177,66,.12),transparent 70%);animation:orbFloat 11s ease-in-out infinite reverse}
+.auth-orb-2::before{width:170px;height:170px;right:20%;top:-60px;background:radial-gradient(circle,rgba(255,255,255,.05),transparent 72%);animation:orbPulse 6s ease-in-out infinite}
+.auth-orb-2::after{width:130px;height:130px;left:18%;bottom:2%;background:radial-gradient(circle,rgba(255,115,0,.1),transparent 70%);animation:orbPulse 5s ease-in-out infinite reverse}
+.auth-particles{opacity:.4;background-image:radial-gradient(circle,rgba(255,255,255,.65) 0 1px,transparent 1.5px),radial-gradient(circle,rgba(255,115,0,.8) 0 1px,transparent 1.5px);background-size:110px 110px,170px 170px;background-position:0 0,60px 40px;animation:particlesDrift 24s linear infinite}
+.auth-box{position:relative;z-index:2;width:min(460px,100%);max-height:calc(100dvh - 32px);overflow-y:auto;padding:28px;border-radius:22px;background:linear-gradient(145deg,rgba(17,17,17,.95),rgba(9,10,12,.95));border:1px solid rgba(255,255,255,.08);box-shadow:0 28px 90px rgba(0,0,0,.56),0 0 60px rgba(255,115,0,.06);animation:authIn .65s ease both}
+.auth-logo{text-align:center;margin-bottom:22px}.auth-logo h1{font-size:30px;font-weight:900}.auth-logo h1 span{color:var(--orange);text-shadow:0 0 25px rgba(255,115,0,.28)}.auth-logo p{margin-top:6px;color:#818181;font-size:12px}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:5px;margin-bottom:20px;border-radius:12px;background:#080808}.auth-tabs button{min-height:42px;border:0;border-radius:9px;background:transparent;color:#888;font-weight:800;transition:.2s}.auth-tabs button.active{background:var(--orange);color:#fff}
+.auth-form{display:none}.auth-form.active{display:block}.field{margin-bottom:13px}.field label{display:block;margin-bottom:7px;color:#aaa;font-size:11px}.field input{width:100%;height:46px;padding:0 13px;border:1px solid #292929;border-radius:10px;outline:none;background:#080808;color:#fff}.field input:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(255,115,0,.08)}
+.password-field{position:relative}.password-field input{padding-right:54px}.password-toggle{position:absolute;right:7px;top:4px;width:38px;height:38px;border:0;border-radius:9px;background:#171717;color:#fff}.auth-submit{width:100%;height:47px;margin-top:4px;border:0;border-radius:11px;background:var(--orange);color:#fff;font-weight:900;box-shadow:0 12px 30px rgba(255,115,0,.16)}.auth-submit:hover{background:var(--orange-light)}
+.auth-message{display:none;margin-bottom:12px;padding:10px 12px;border-radius:9px;background:#0c0c0c;border:1px solid #242424;font-size:12px}.auth-register-cta{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.07);text-align:center}.auth-register-text{margin-bottom:8px;color:#929292;font-size:11px}.auth-register-link,.auth-login-back{width:100%;min-height:43px;border-radius:10px;font-weight:900}.auth-register-link{border:1px solid rgba(255,115,0,.35);background:rgba(255,115,0,.08);color:#fff}.auth-login-back{margin-top:9px;border:1px solid #292929;background:#171717;color:#ddd}.auth-security-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px}.auth-security-badge{min-height:47px;padding:9px 10px;border:1px solid rgba(255,255,255,.07);border-radius:11px;background:rgba(255,255,255,.025);color:#aeb4bd;font-size:10px}.auth-security-badge strong{display:block;margin-bottom:2px;color:#fff;font-size:10px}.auth-24h{margin-top:10px;text-align:center;color:#9da4ad;font-size:10px}
+/* SITE/HEADER */
+#siteContent{display:none}#siteContent.active{display:block;padding-top:72px;animation:siteIn .5s ease both}
+header{position:fixed;top:0;right:0;left:0;z-index:4000;background:rgba(8,8,8,.94);backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);border-bottom:1px solid #202020;box-shadow:0 8px 26px rgba(0,0,0,.24)}
+.header-inner{width:min(1320px,calc(100% - 40px));min-height:72px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:16px}.logo{font-size:22px;font-weight:900;letter-spacing:-.5px;white-space:nowrap}.logo span{color:var(--orange)}
+.main-nav{display:flex;align-items:center;gap:6px;padding:4px;border:1px solid rgba(255,255,255,.06);border-radius:13px;background:rgba(255,255,255,.025)}.main-nav a,.nav-link-button{padding:9px 11px;border:0;border-radius:9px;background:transparent;color:#aeb3bc;text-decoration:none;font-size:11px;font-weight:800;white-space:nowrap;transition:.2s}.main-nav a:hover,.nav-link-button:hover{color:#fff;background:rgba(255,115,0,.1)}
+.header-actions{display:flex;align-items:center;gap:8px}.header-button{position:relative;min-width:42px;height:40px;padding:0 11px;border:1px solid #292929;border-radius:9px;background:#111;color:#fff;font-weight:800}.header-button:hover{border-color:var(--orange)}#cartCount{position:absolute;top:-6px;right:-6px;min-width:19px;height:19px;padding:0 4px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--orange);color:#fff;font-size:10px;font-weight:900}
+/* HERO */
+.hero{position:relative;width:min(1320px,calc(100% - 40px));margin:auto;padding:72px 0 42px;display:grid;grid-template-columns:1.15fr .85fr;align-items:center;gap:45px}.hero>div:first-child{max-width:700px}.hero-tag{display:inline-flex;padding:7px 10px;border:1px solid rgba(255,115,0,.24);border-radius:999px;background:rgba(255,115,0,.07);color:var(--orange);font-size:10px;font-weight:900;letter-spacing:1px}.hero h1{margin:15px 0 17px;font-size:clamp(40px,5vw,65px);line-height:1;letter-spacing:-2px}.hero h1 span{color:var(--orange)}.hero p{max-width:620px;color:#999;line-height:1.7;font-size:15px}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:23px}.hero-primary,.hero-secondary{min-height:45px;padding:0 17px;display:inline-flex;align-items:center;justify-content:center;border-radius:11px;font-size:12px;font-weight:900;text-decoration:none}.hero-primary{border:1px solid var(--orange);background:var(--orange);color:#fff}.hero-secondary{border:1px solid #292929;background:#111;color:#fff}.hero-primary:hover,.hero-secondary:hover{transform:translateY(-2px)}
+.hero-box{position:relative;min-height:310px;overflow:hidden;border:1px solid #272727;border-radius:22px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at center,rgba(255,115,0,.22),transparent 36%),linear-gradient(145deg,#121720,#0a0c10);box-shadow:0 20px 55px rgba(0,0,0,.28);text-align:center}.hero-box::before,.hero-box::after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(255,115,0,.16)}.hero-box::before{width:230px;height:230px}.hero-box::after{width:320px;height:320px}.hero-box>div{position:relative;z-index:2}.hero-box strong{display:block;margin-bottom:4px;font-size:57px;text-shadow:0 0 25px rgba(255,115,0,.34)}.hero-box span{color:#aaa;font-size:12px}
+/* BENEFITS */
+.benefits{width:min(1320px,calc(100% - 40px));margin:auto;padding-bottom:38px;display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.benefit{padding:17px;border:1px solid rgba(255,255,255,.07);border-radius:14px;background:linear-gradient(145deg,#11151b,#0c0f14);box-shadow:0 12px 30px rgba(0,0,0,.16);transition:.2s}.benefit:hover{transform:translateY(-3px);border-color:rgba(255,115,0,.32)}.benefit strong{display:block;margin-bottom:5px;font-size:13px}.benefit span{color:#888;font-size:11px}
+/* PRODUCTS */
+.products-section{width:min(1320px,calc(100% - 40px));margin:auto;padding:35px 0 75px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:15px;margin-bottom:18px}.section-tag{margin-bottom:7px;color:var(--orange);font-size:10px;font-weight:900;letter-spacing:1px}.section-head h2{font-size:30px;letter-spacing:-.7px}.section-head p{color:#777;font-size:11px}.search-box input{width:100%;height:46px;padding:0 15px;border:1px solid #292929;border-radius:10px;outline:none;background:#101010;color:#fff}.search-box input:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(255,115,0,.07)}.filters{display:flex;gap:8px;overflow-x:auto;padding:11px 0 19px;scrollbar-width:thin}.filtro-produto{flex:0 0 auto;padding:9px 13px;border:1px solid #292929;border-radius:9px;background:#101010;color:#999;font-size:11px;font-weight:800}.filtro-produto:hover,.filtro-produto.active,.filtro-produto.ativo{border-color:var(--orange);background:var(--orange);color:#fff}
+#products{width:100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;align-items:stretch}.product-card{min-width:0;overflow:hidden;display:flex;flex-direction:column;border:1px solid #252525;border-radius:15px;background:linear-gradient(160deg,#11151b,#0b0e13);transition:.2s}.product-card:hover{transform:translateY(-4px);border-color:rgba(255,115,0,.55);box-shadow:0 18px 40px rgba(0,0,0,.3)}.product-image{position:relative;width:100%;height:190px;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:15px;overflow:hidden;background:radial-gradient(circle,rgba(255,115,0,.06),transparent 65%),#0b0b0b}.product-image::before{content:"";position:absolute;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(255,115,0,.1),transparent 68%);pointer-events:none}.product-image img{position:relative;z-index:1;display:block;width:auto!important;height:auto!important;max-width:145px!important;max-height:145px!important;min-width:0!important;min-height:0!important;object-fit:contain!important;margin:0!important;border:0!important;border-radius:0!important}.product-no-image{color:#555;font-size:11px;font-weight:900;letter-spacing:2px}.product-info{min-width:0;flex:1;display:flex;flex-direction:column;padding:14px}.product-category{display:block;margin-bottom:6px;color:var(--orange);font-size:9px;text-transform:uppercase;font-weight:900;letter-spacing:.8px}.product-name{min-height:38px;margin-bottom:13px;color:#fff;font-size:13px;line-height:1.35;font-weight:700}.product-price{margin-top:auto;margin-bottom:11px;color:#fff;font-size:20px;font-weight:900}.buy-btn{width:100%;height:40px;border:0;border-radius:9px;background:var(--orange);color:#fff;font-size:11px;font-weight:900;transition:.2s}.buy-btn:hover{background:var(--orange-light);transform:translateY(-1px)}
+.carregando-produtos,.erro-produtos,.produtos-vazio{grid-column:1/-1;min-height:220px;display:grid;place-items:center;text-align:center;color:#777}.erro-produtos button{margin-top:10px;padding:10px 14px;border:1px solid #292929;border-radius:9px;background:#171717;color:#fff}
+/* TRACKING */
+.tracking-section{width:min(920px,calc(100% - 40px));margin:auto;padding:25px 0 80px}.tracking-box{overflow:hidden;padding:24px;border:1px solid #242424;border-radius:18px;background:radial-gradient(circle at top right,rgba(255,115,0,.08),transparent 35%),#101010}.tracking-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:15px}.tracking-title-row h2,.tracking-box>h2{font-size:25px}.tracking-mini-note{padding:7px 10px;border:1px solid #282828;border-radius:999px;color:#888;font-size:10px;white-space:nowrap}.tracking-form{display:flex;gap:9px;margin:19px 0}.tracking-form input{flex:1;height:45px;padding:0 13px;border:1px solid #292929;border-radius:9px;outline:none;background:#080808;color:#fff}.tracking-form input:focus{border-color:var(--orange)}.tracking-form button{min-height:45px;padding:0 17px;border:0;border-radius:9px;background:var(--orange);color:#fff;font-weight:900}.tracking-result-wrap{margin-top:10px}.tracking-result-card{padding:16px;border:1px solid #282828;border-radius:15px;background:#0a0a0a}.tracking-result-top{display:flex;align-items:center;justify-content:space-between;gap:12px}.tracking-result-top h3{font-size:16px}.tracking-meta-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}.tracking-meta-box{padding:11px;border:1px solid #222;border-radius:11px;background:#111}.tracking-meta-box span{display:block;margin-bottom:4px;color:#6f6f6f;font-size:10px}.tracking-meta-box strong{color:#eee;font-size:12px}.tracking-last{margin-top:12px;color:#727272;font-size:10px}.tracking-status-badge{display:inline-flex;align-items:center;padding:5px 9px;border:1px solid rgba(255,115,0,.22);border-radius:999px;background:rgba(255,115,0,.1);color:#ff9a45;font-size:10px;font-weight:900;white-space:nowrap}.timeline-pedido{margin-top:25px}.timeline-item{position:relative;display:flex;gap:14px;padding-bottom:22px}.timeline-item:not(:last-child)::after{content:"";position:absolute;left:16px;top:34px;width:2px;height:calc(100% - 20px);background:#292929}.timeline-marker{z-index:2;width:34px;height:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#202020;color:#777;font-size:14px}.timeline-item.atual .timeline-marker,.timeline-item.concluido .timeline-marker{background:var(--orange);color:#fff}.timeline-content strong{display:block;margin-bottom:4px;color:#ddd}.timeline-content p{color:#777;font-size:11px}.timeline-item.futuro .timeline-content strong{color:#666}.timeline-item.futuro .timeline-content p{color:#555}.tracking-pulse{animation:trackingPulse .45s ease}
+/* MODAL */
+.modal{position:fixed;inset:0;z-index:5000;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.74)}.modal.active{display:flex}.modal-content{width:100%;max-width:720px;max-height:92vh;overflow-y:auto;padding:22px;border:1px solid #292929;border-radius:18px;background:#111;box-shadow:0 30px 80px rgba(0,0,0,.65);animation:modalIn .25s ease both}.modal-large{max-width:760px}.modal-header{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:18px}.modal-header h2{font-size:20px}.close-modal{width:34px;height:34px;border:1px solid #292929;border-radius:8px;background:#181818;color:#aaa;font-size:18px}.close-modal:hover{border-color:var(--orange);color:#fff}
+/* CART */
+#cartModal{align-items:stretch;justify-content:flex-end;padding:0}#cartModal .modal-content{width:min(460px,100vw);max-width:none;height:100vh;max-height:100vh;border-radius:24px 0 0 24px;padding:22px;background:linear-gradient(180deg,#151515 0%,#0d0d0d 100%)}#cartModal .modal-header{position:sticky;top:-22px;z-index:5;margin:-22px -22px 18px;padding:18px 22px;background:rgba(17,17,17,.96);backdrop-filter:blur(12px);border-bottom:1px solid #242424}#cartItems{display:flex;flex-direction:column;gap:10px}#cartItems .cart-item{display:grid;grid-template-columns:72px minmax(0,1fr);gap:13px;padding:13px;border:1px solid #272727;border-radius:15px;background:rgba(255,255,255,.025)}.cart-item-image{width:72px;height:72px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid #222;border-radius:12px;background:#080808}.cart-item-image img{max-width:62px;max-height:62px;object-fit:contain}.cart-item-info{min-width:0}.cart-item-info h4{margin-bottom:6px;color:#fff;font-size:14px;line-height:1.35}.cart-item-info>strong{display:block;margin-bottom:9px;color:#fff;font-size:14px}.cart-item-actions{display:flex;align-items:center;gap:6px}.cart-item-actions button{width:31px;height:31px;border:1px solid #2c2c2c;border-radius:8px;background:#171717;color:#fff;font-weight:900}.cart-item-actions button:hover{border-color:var(--orange)}.cart-item-actions span{min-width:30px;text-align:center;color:#fff;font-weight:800}.cart-remove{margin-left:auto;color:#ff7b7b!important}.cart-empty-modern{min-height:280px;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:30px 15px;text-align:center;color:#777}.empty-cart-icon{width:78px;height:78px;display:flex;align-items:center;justify-content:center;margin-bottom:15px;border:1px solid rgba(255,115,0,.18);border-radius:22px;background:rgba(255,115,0,.08);font-size:34px}.cart-empty-modern h3{margin-bottom:6px;color:#fff;font-size:17px}.cart-empty-modern p{max-width:260px;line-height:1.5;font-size:12px}.cart-summary-box{margin-top:18px;padding:16px;border:1px solid #292929;border-radius:15px;background:#090909}.cart-summary-line{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:8px;color:#999;font-size:13px}.cart-summary-line.total{margin-top:12px;padding-top:12px;border-top:1px solid #252525;color:#fff;font-size:16px}.cart-summary-line.total strong{color:var(--orange);font-size:20px}.cart-drawer-actions{display:grid;grid-template-columns:.9fr 1.4fr;gap:9px;margin-top:11px}.cart-secondary-button{width:100%;height:46px;border:1px solid #2b2b2b;border-radius:11px;background:#151515;color:#fff;font-weight:800}.cart-secondary-button:hover{border-color:var(--orange)}#cartToast.show{opacity:1;transform:translateY(0)}
+/* CHECKOUT */
+.checkout-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.checkout-full{grid-column:1/-1}.checkout-form input{width:100%;height:44px;padding:0 12px;border:1px solid #292929;border-radius:9px;outline:none;background:#080808;color:#fff}.checkout-form input:focus{border-color:var(--orange)}.checkout-button{width:100%;height:45px;border:0;border-radius:9px;background:var(--orange);color:#fff;font-weight:900}.checkout-button:hover{background:var(--orange-light)}
+/* DELIVERY ONLY IN CHECKOUT */
+.delivery-options{display:grid;gap:10px;margin-top:2px}.delivery-title{color:#fff;font-size:13px;font-weight:900}.delivery-option{position:relative;display:flex;align-items:center;gap:11px;padding:13px;border:1px solid #292929;border-radius:13px;background:#0b0b0b;cursor:pointer;transition:border-color .2s ease,background .2s ease,transform .2s ease}.delivery-option:hover{border-color:rgba(255,115,0,.55);transform:translateY(-1px)}.delivery-option:has(input:checked){border-color:var(--orange);background:rgba(255,115,0,.07);box-shadow:0 0 0 2px rgba(255,115,0,.05)}.delivery-option input{width:18px;height:18px;margin:0;accent-color:var(--orange);flex:0 0 auto}.delivery-option-content{display:flex;flex-direction:column;gap:3px}.delivery-option-content strong{color:#fff;font-size:12px}.delivery-option-content small{color:#888;font-size:10px;line-height:1.4}
+#checkoutResumo{position:relative;overflow:hidden;margin-top:2px;padding:0!important;border:1px solid rgba(255,255,255,.08)!important;border-radius:18px!important;background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.018))!important;box-shadow:0 18px 40px rgba(0,0,0,.25)}#checkoutResumo::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 100% 0%,rgba(255,115,0,.12),transparent 34%)}.resumo-checkout{position:relative;padding:18px}.resumo-checkout h3{margin:0 0 11px;font-size:16px}.resumo-item{display:flex!important;align-items:center;justify-content:space-between;gap:14px;padding:10px 0!important;border-bottom:1px solid rgba(255,255,255,.06);color:#d6d9de!important}.resumo-item span{min-width:0;color:#c7ccd3!important;font-size:12px;line-height:1.4}.resumo-item strong{flex:0 0 auto;color:#fff!important;font-size:12px;white-space:nowrap}.resumo-total{display:flex!important;align-items:center;justify-content:space-between;gap:15px;margin-top:10px;padding-top:14px;border-top:1px solid rgba(255,255,255,.1)}.resumo-total span{color:#8f96a0;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}.resumo-total strong{color:#ff8a21;font-size:22px;line-height:1}
+/* PIX */
+#pixResultado{text-align:center}.pix-success{width:55px;height:55px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(34,197,94,.15);color:#62e58c;font-size:25px;font-weight:900}.pix-title{margin-bottom:5px}.pix-subtitle{color:#777;font-size:12px;line-height:1.5}.pix-value{max-width:300px;margin:18px auto;padding:15px;border:1px solid #252525;border-radius:11px;background:#080808}.pix-value span{display:block;margin-bottom:5px;color:#777;font-size:11px}.pix-value strong{color:var(--orange);font-size:25px}.pix-layout{display:grid;grid-template-columns:1fr 1fr;gap:15px;align-items:center}.pix-qr{width:230px;height:230px;margin:18px auto;padding:10px;border-radius:12px;background:#fff}.pix-qr img{width:100%;height:100%;object-fit:contain}.pix-copy{display:flex;gap:7px;margin-top:9px}.pix-copy input{flex:1;min-width:0;height:42px;padding:0 10px;border:1px solid #292929;border-radius:8px;outline:none;background:#080808;color:#fff;font-size:10px}.pix-copy button{padding:0 14px;border:0;border-radius:8px;background:var(--orange);color:#fff;font-weight:800}.pix-help{margin-top:13px;color:#777;font-size:11px;line-height:1.5}.pix-order{margin-top:12px;color:#777;font-size:11px}.pix-close-action{width:100%;height:42px;margin-top:12px;border:1px solid #292929;border-radius:9px;background:#171717;color:#fff;font-weight:900}
+/* ACCOUNT */
+.account-modal-content{max-width:760px;padding:0;overflow:hidden}.account-modal-header{margin:0;padding:22px 24px;background:radial-gradient(circle at top left,rgba(255,115,0,.14),transparent 45%),#111;border-bottom:1px solid #242424}.account-kicker{color:var(--orange);font-size:10px;font-weight:900;letter-spacing:1.4px}.account-content{padding:20px 24px 24px}.account-profile-hero{display:flex;align-items:center;gap:14px;padding:18px;border:1px solid #272727;border-radius:16px;background:linear-gradient(135deg,rgba(255,115,0,.1),rgba(255,255,255,.02))}.account-avatar-large{width:58px;height:58px;flex:0 0 58px;display:grid;place-items:center;border-radius:16px;background:linear-gradient(135deg,var(--orange),#ff9a45);color:#fff;font-size:22px;font-weight:900}.account-profile-hero h3{margin-bottom:4px;font-size:18px}.account-profile-hero p{color:#8f8f8f;font-size:12px;word-break:break-word}.account-info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:15px}.account-info-box{padding:13px;border:1px solid #242424;border-radius:12px;background:#101010}.account-info-box span{display:block;margin-bottom:5px;color:#777;font-size:10px;text-transform:uppercase;letter-spacing:.6px}.account-info-box strong{display:block;color:#f5f5f5;font-size:13px;line-height:1.4;word-break:break-word}.account-orders-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:24px 0 12px}.account-orders-head h3{font-size:16px}.account-orders-head p{margin-top:4px;color:#777;font-size:11px}.account-logout-btn{padding:9px 12px;border:1px solid #3a2020;border-radius:10px;background:rgba(220,38,38,.07);color:#ff8989;font-size:11px;font-weight:800}.account-orders-list{display:flex;flex-direction:column;gap:10px}.account-order-card{padding:15px;border:1px solid #262626;border-radius:14px;background:#0a0a0a}.account-order-top,.account-order-bottom,.account-order-actions{display:flex;align-items:center;justify-content:space-between;gap:10px}.account-order-number{color:#fff;font-size:13px;font-weight:900}.account-order-date{margin-top:3px;color:#6f6f6f;font-size:10px}.account-status{display:inline-flex;align-items:center;padding:5px 9px;border:1px solid rgba(255,115,0,.22);border-radius:999px;background:rgba(255,115,0,.1);color:#ff9a45;font-size:10px;font-weight:900;white-space:nowrap}.account-order-products{margin:12px 0;padding:11px 0;border-top:1px solid #1b1b1b;border-bottom:1px solid #1b1b1b;color:#9a9a9a;font-size:11px;line-height:1.55}.account-order-total{color:#fff;font-size:15px;font-weight:900}.account-order-total span{display:block;margin-bottom:2px;color:#777;font-size:10px;font-weight:500}.account-order-actions{justify-content:flex-end;margin-top:10px}.account-order-btn{min-height:34px;padding:0 12px;border:1px solid #2b2b2b;border-radius:9px;background:#151515;color:#fff;font-size:11px;font-weight:800}.account-order-btn.primary{border-color:var(--orange);background:var(--orange)}.account-order-btn.danger{border-color:#3b2525;color:#ff8f8f}.account-empty-orders,.account-loading,.account-error{min-height:150px;display:grid;place-items:center;padding:25px;border:1px dashed #2a2a2a;border-radius:14px;color:#777;text-align:center}.account-empty-orders strong,.account-error strong{display:block;margin-bottom:6px;color:#fff}.account-loading-spinner{width:26px;height:26px;margin:0 auto 10px;border:3px solid #272727;border-top-color:var(--orange);border-radius:50%;animation:spin .8s linear infinite}
+/* INFO/SUPPORT */
+.info-modal-content,.support-modal-content{max-width:720px}.info-kicker{color:var(--orange);font-size:10px;font-weight:900;letter-spacing:1.4px}.info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.info-highlight,.info-item,.support-card{padding:18px;border:1px solid rgba(255,255,255,.07);border-radius:16px;background:#0d1117}.info-highlight{grid-column:1/-1;background:linear-gradient(145deg,rgba(255,115,0,.12),#0d1117 55%)}.info-icon,.support-icon{width:42px;height:42px;margin-bottom:12px;display:grid;place-items:center;border:1px solid rgba(255,115,0,.22);border-radius:12px;background:rgba(255,115,0,.1);font-size:20px}.info-highlight h3,.info-item strong,.support-card h3{display:block;margin-bottom:7px}.info-highlight p,.info-item span,.support-card p,.support-help{color:#8e96a3;line-height:1.65;font-size:12px}.support-card{display:flex;align-items:center;gap:14px}.support-icon{flex:0 0 auto;margin:0}.whatsapp-button{min-height:48px;margin-top:14px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:#1b8f57;color:#fff;text-decoration:none;font-size:12px;font-weight:900}.support-help{margin-top:13px;padding:13px 14px;border-radius:12px;background:rgba(255,255,255,.025)}
+/* FOOTER */
+footer{padding:30px 20px;border-top:1px solid #202020;text-align:center;color:#666;font-size:11px}footer strong{color:var(--orange)}
+/* ANIMATIONS */
+@keyframes spin{to{transform:rotate(360deg)}}@keyframes authIn{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}@keyframes siteIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@keyframes modalIn{from{opacity:0;transform:translateY(15px) scale(.985)}to{opacity:1;transform:none}}@keyframes authGrid{from{transform:translate3d(0,0,0)}to{transform:translate3d(38px,38px,0)}}@keyframes orbFloat{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(18px,-15px,0)}}@keyframes orbPulse{0%,100%{transform:scale(.92);opacity:.55}50%{transform:scale(1.08);opacity:.95}}@keyframes particlesDrift{from{background-position:0 0,60px 40px}to{background-position:0 520px,360px 620px}}@keyframes trackingPulse{from{transform:translateY(2px);opacity:.72}to{transform:translateY(0);opacity:1}}
+/* RESPONSIVE */
+@media (max-width:1100px){.hero{grid-template-columns:1fr}.hero-box{min-height:230px}#products{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:760px){#siteContent.active{padding-top:66px}.header-inner{width:min(100% - 22px,1320px);min-height:64px}.main-nav{display:none}.logo{font-size:19px}.header-button{height:38px;padding:0 10px}.hero{width:calc(100% - 28px);padding:42px 0 30px;gap:20px}.hero h1{font-size:clamp(34px,10vw,48px);letter-spacing:-1.5px}.hero p{font-size:13px}.hero-box{min-height:175px}.benefits{width:calc(100% - 28px);grid-template-columns:1fr 1fr;gap:9px}.benefit{padding:13px}.benefit strong{font-size:11px}.benefit span{font-size:9px;line-height:1.4}.products-section{width:calc(100% - 24px);padding-top:28px}.section-head{align-items:flex-start;flex-direction:column}.section-head h2{font-size:24px}#products{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.product-image{height:145px;padding:10px}.product-image img{max-width:108px!important;max-height:108px!important}.product-info{padding:10px}.product-name{min-height:32px;margin-bottom:8px;font-size:11px}.product-price{font-size:17px;margin-bottom:8px}.buy-btn{height:37px;font-size:10px}.tracking-section{width:calc(100% - 28px)}.tracking-form{flex-direction:column}.tracking-form button{height:44px}.tracking-meta-grid{grid-template-columns:1fr}.checkout-form{grid-template-columns:1fr}.checkout-full{grid-column:1/-1}.account-content{padding:16px}.account-info-grid,.info-grid{grid-template-columns:1fr}.info-highlight{grid-column:auto}.account-order-top,.account-order-bottom{align-items:flex-start;flex-direction:column}.tracking-title-row{flex-direction:column}.tracking-mini-note{white-space:normal}.pix-layout{grid-template-columns:1fr}}
+@media (max-width:600px){#cartModal{align-items:flex-end}#cartModal .modal-content{width:100vw;height:min(92vh,760px);max-height:92vh;align-self:flex-end;border-radius:22px 22px 0 0}.cart-drawer-actions{grid-template-columns:1fr}.pix-copy{flex-direction:column}.pix-copy button{height:42px}}
+@media (max-width:430px){.auth-box{padding:21px 16px}.auth-security-row{grid-template-columns:1fr}.hero-actions{display:grid;grid-template-columns:1fr 1fr}.hero-primary,.hero-secondary{width:100%;padding:0 10px}.product-image{height:128px}.product-image img{max-width:92px!important;max-height:92px!important}.product-info{padding:9px}.product-name{font-size:10.5px}.product-price{font-size:16px}.buy-btn{height:36px;font-size:9.5px}.modal{padding:10px}.modal-content{padding:16px}.account-modal-content{padding:0}.account-modal-header{padding:18px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body class="site-bloqueado">
+
+<!-- LOGIN / CADASTRO -->
+<section id="authScreen">
+    <div class="auth-bg-grid" aria-hidden="true"></div>
+    <div class="auth-orb" aria-hidden="true"></div>
+    <div class="auth-orb-2" aria-hidden="true"></div>
+    <div class="auth-particles" aria-hidden="true"></div>
+
+    <div class="auth-box">
+        <div class="auth-logo">
+            <h1>TECH<span>SHOP</span></h1>
+            <p>Sua loja de tecnologia</p>
+        </div>
+
+        <div class="auth-tabs">
+            <button id="tabLogin" class="active" type="button" onclick="mostrarLogin()">Entrar</button>
+            <button id="tabCadastro" type="button" onclick="mostrarCadastro()">Criar conta</button>
+        </div>
+
+        <form id="loginForm" class="auth-form active">
+            <div id="loginMessage" class="auth-message"></div>
+
+            <div class="field">
+                <label>E-mail</label>
+                <input id="loginEmail" type="email" placeholder="seu@email.com" autocomplete="email" required>
+            </div>
+
+            <div class="field">
+                <label>Senha</label>
+                <div class="password-field">
+                    <input id="loginSenha" type="password" placeholder="Sua senha" autocomplete="current-password" required>
+                    <button class="password-toggle" type="button" data-target="loginSenha" aria-label="Mostrar senha" title="Mostrar senha">👁</button>
+                </div>
+            </div>
+
+            <button id="loginButton" class="auth-submit" type="submit">Entrar na TECHSHOP →</button>
+
+            <div class="auth-register-cta">
+                <div class="auth-register-text">Ainda não tem uma conta?</div>
+                <button class="auth-register-link" type="button" onclick="mostrarCadastro()">Criar minha conta grátis →</button>
+            </div>
+        </form>
+
+        <div class="auth-security-row">
+            <div class="auth-security-badge"><strong>Proteção ativa</strong>sessão monitorada</div>
+            <div class="auth-security-badge"><strong>Anti-tamper</strong>integridade da página</div>
+        </div>
+        <div class="auth-24h">🛡️ <strong>Suporte 24h</strong> e atendimento seguro</div>
+
+        <form id="cadastroForm" class="auth-form">
+            <div id="cadastroMessage" class="auth-message"></div>
+
+            <div class="field"><label>Nome completo</label><input id="cadastroNome" type="text" placeholder="Seu nome" autocomplete="name" required></div>
+            <div class="field"><label>E-mail</label><input id="cadastroEmail" type="email" placeholder="seu@email.com" autocomplete="email" required></div>
+            <div class="field"><label>Telefone</label><input id="cadastroTelefone" type="text" placeholder="(00) 00000-0000" autocomplete="tel" required></div>
+            <div class="field"><label>CPF</label><input id="cadastroCpf" type="text" placeholder="000.000.000-00" inputmode="numeric" required></div>
+
+            <div class="field">
+                <label>Senha</label>
+                <div class="password-field">
+                    <input id="cadastroSenha" type="password" placeholder="Crie uma senha" minlength="6" autocomplete="new-password" required>
+                    <button class="password-toggle" type="button" data-target="cadastroSenha" aria-label="Mostrar senha" title="Mostrar senha">👁</button>
+                </div>
+            </div>
+
+            <button id="cadastroButton" class="auth-submit" type="submit">Criar minha conta →</button>
+            <button class="auth-login-back" type="button" onclick="mostrarLogin()">← Já tenho uma conta</button>
+        </form>
     </div>
+</section>
 
-    <label class="delivery-option">
-        <input
-            type="radio"
-            name="tipoEntrega"
-            id="entregaNormal"
-            value="normal"
-            checked
-        >
+<!-- SITE -->
+<div id="siteContent">
+    <header>
+        <div class="header-inner">
+            <div class="logo">TECH<span>SHOP</span></div>
 
-        <span class="delivery-option-content">
-            <strong>📦 Entrega normal</strong>
-            <small id="textoFreteNormal">
-                Verificando frete...
-            </small>
-        </span>
-    </label>
+            <nav class="main-nav" aria-label="Navegação principal">
+                <a href="#inicio">Início</a>
+                <a href="#produtos">Produtos</a>
+                <a href="#acompanharPedido">Pedidos</a>
+                <button class="nav-link-button" type="button" onclick="abrirInfoLoja()">Sobre a loja</button>
+                <button class="nav-link-button" type="button" onclick="abrirSuporte()">Suporte</button>
+            </nav>
 
-    <label class="delivery-option">
-        <input
-            type="radio"
-            name="tipoEntrega"
-            id="entregaRapida"
-            value="rapida"
-        >
+            <div class="header-actions">
+                <button id="accountButton" class="header-button" type="button" onclick="abrirConta()">👤 <span id="accountButtonText">Conta</span></button>
+                <button class="header-button" type="button" onclick="abrirCarrinho()">🛒 <span id="cartCount" style="display:none;">0</span></button>
+            </div>
+        </div>
+    </header>
 
-        <span class="delivery-option-content">
-            <strong>⚡ Entrega rápida</strong>
-            <small id="textoFreteRapida">
-                + R$ 10,00 sobre o frete normal
-            </small>
-        </span>
-    </label>
+    <main id="inicio">
+        <section class="hero">
+            <div>
+                <div class="hero-tag">TECNOLOGIA • ACESSÓRIOS • INFORMÁTICA</div>
+                <h1>Tecnologia que <span>cabe no seu bolso.</span></h1>
+                <p>Encontre cabos, carregadores, acessórios, produtos gamer, áudio e muito mais.</p>
+                <div class="hero-actions">
+                    <a class="hero-primary" href="#produtos">Ver produtos</a>
+                    <button class="hero-secondary" type="button" onclick="abrirSuporte()">Falar com suporte</button>
+                </div>
+            </div>
+
+            <div class="hero-box">
+                <div>
+                    <strong>⚡</strong>
+                    <span>Produtos selecionados</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="benefits">
+            <div class="benefit"><strong>🚚 Envio</strong><span>Primeira compra com frete normal grátis.</span></div>
+            <div class="benefit"><strong>🔒 Compra segura</strong><span>Pagamento Pix protegido.</span></div>
+            <div class="benefit"><strong>⚡ Compra rápida</strong><span>Escolha entrega normal ou rápida no checkout.</span></div>
+        </section>
+
+        <section id="produtos" class="products-section">
+            <div class="section-head">
+                <div>
+                    <div class="section-tag">NOSSA LOJA</div>
+                    <h2>Produtos</h2>
+                </div>
+                <p><span id="productCount">0</span> produtos disponíveis</p>
+            </div>
+
+            <div class="search-box">
+                <input id="searchInput" type="search" placeholder="🔎 Pesquisar produto..." autocomplete="off">
+            </div>
+
+            <div class="filters">
+                <button class="filtro-produto ativo" data-categoria="Todos" type="button">Todos</button>
+                <button class="filtro-produto" data-categoria="Celular e Proteção" type="button">Celular</button>
+                <button class="filtro-produto" data-categoria="Cabos e Carregadores" type="button">Cabos</button>
+                <button class="filtro-produto" data-categoria="Áudio" type="button">Áudio</button>
+                <button class="filtro-produto" data-categoria="Energia" type="button">Energia</button>
+                <button class="filtro-produto" data-categoria="Informática" type="button">Informática</button>
+                <button class="filtro-produto" data-categoria="Gamer" type="button">Gamer</button>
+            </div>
+
+            <div id="products"></div>
+        </section>
+
+        <section id="acompanharPedido" class="tracking-section">
+            <div class="tracking-box">
+                <div class="tracking-title-row">
+                    <div>
+                        <div class="section-tag">ACOMPANHAMENTO</div>
+                        <h2>Acompanhar pedido</h2>
+                        <p style="color:#777;font-size:12px;margin-top:7px;">Consulte seu pedido pelo número recebido após a compra.</p>
+                    </div>
+                    <span class="tracking-mini-note">🟢 Atualização automática</span>
+                </div>
+
+                <div class="tracking-form">
+                    <input id="numeroPedidoConsulta" type="text" placeholder="Ex: TS-123456">
+                    <button type="button" onclick="consultarPedido()">🔎 Acompanhar</button>
+                </div>
+
+                <div id="resultadoPedido" class="tracking-result-wrap"></div>
+                <div id="timelinePedido" class="timeline-pedido"></div>
+                <div id="ultimaAtualizacaoPedido" style="margin-top:15px;color:#777;font-size:10px;">🟢 Acompanhamento automático ativado.</div>
+            </div>
+        </section>
+    </main>
+
+    <footer>© 2026 <strong>TECHSHOP</strong> — Todos os direitos reservados.</footer>
 </div>
+
+<!-- TOAST -->
+<div id="cartToast" role="status" aria-live="polite" style="position:fixed;right:22px;bottom:22px;z-index:10000;min-width:290px;max-width:min(380px,calc(100vw - 30px));display:flex;align-items:center;gap:10px;padding:13px 15px;border:1px solid rgba(255,115,0,.35);border-radius:14px;background:rgba(18,18,18,.97);box-shadow:0 18px 50px rgba(0,0,0,.45);color:#fff;opacity:0;pointer-events:none;transform:translateY(14px);transition:.22s ease;">
+    <div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:rgba(255,115,0,.12);color:var(--orange);font-weight:900;">✓</div>
+    <div><strong id="cartToastTitle">Produto adicionado</strong><small id="cartToastText" style="display:block;margin-top:2px;color:#999;font-size:11px;">O item foi colocado no carrinho.</small></div>
+</div>
+
+<!-- CARRINHO -->
+<div id="cartModal" class="modal" aria-hidden="true">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div><h2>🛒 Seu carrinho</h2><span style="display:block;margin-top:4px;color:#777;font-size:11px;">Revise seus produtos antes de pagar</span></div>
+            <button class="close-modal" type="button" aria-label="Fechar carrinho" onclick="fecharCarrinho()">×</button>
+        </div>
+
+        <div id="cartItems"></div>
+
+        <div id="cartSummaryBox" class="cart-summary-box" style="display:none;">
+            <div class="cart-summary-line"><span>Itens</span><strong id="cartItemsSummary">0</strong></div>
+            <div class="cart-summary-line total"><span>Total</span><strong id="cartTotal">R$ 0,00</strong></div>
+        </div>
+
+        <div class="cart-drawer-actions">
+            <button class="cart-secondary-button" type="button" onclick="fecharCarrinho()">Continuar comprando</button>
+            <button id="cartCheckoutButton" class="checkout-button" type="button" onclick="abrirCheckout()">Finalizar pedido →</button>
+        </div>
+    </div>
+</div>
+
+<!-- CHECKOUT -->
+<div id="checkoutModal" class="modal">
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h2>📦 Finalizar pedido</h2>
+            <button class="close-modal" type="button" onclick="fecharCheckout()">×</button>
+        </div>
+
+        <form class="checkout-form" onsubmit="finalizarPedido(event)">
+            <div class="field"><label>Nome</label><input id="nome" type="text" readonly></div>
+            <div class="field"><label>E-mail</label><input id="email" type="email" readonly></div>
+            <div class="field"><label>Telefone</label><input id="telefone" type="text" required></div>
+            <div class="field"><label>CPF <span style="color:#ffb14d;font-size:10px;">OBRIGATÓRIO</span></label><input id="cpf" type="text" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" autocomplete="off" required><small style="display:block;margin-top:6px;color:#858c98;font-size:10px;">Necessário para identificar o pagamento com segurança.</small></div>
+            <div class="field"><label>CEP</label><input id="cep" type="text" placeholder="00000-000" required></div>
+            <div class="field"><label>Bairro</label><input id="bairro" type="text" placeholder="Seu bairro" autocomplete="address-level3" required></div>
+            <div class="field checkout-full"><label>Endereço</label><input id="endereco" type="text" placeholder="Rua, avenida..." autocomplete="street-address" required></div>
+            <div class="field"><label>Número</label><input id="numero" type="text" required></div>
+            <div class="field"><label>Cidade</label><input id="cidade" type="text" required></div>
+            <div class="field"><label>Estado</label><input id="estado" type="text" maxlength="2" placeholder="SP" required></div>
+
+            <div class="delivery-options checkout-full">
+                <div class="delivery-title">🚚 Forma de entrega</div>
+
+                <label class="delivery-option">
+                    <input type="radio" name="tipoEntrega" value="normal" checked>
+                    <span class="delivery-option-content">
+                        <strong>📦 Entrega normal</strong>
+                        <small id="textoFreteNormal">🎁 Frete grátis na primeira compra</small>
+                    </span>
+                </label>
+
+                <label class="delivery-option">
+                    <input type="radio" name="tipoEntrega" value="rapida">
+                    <span class="delivery-option-content">
+                        <strong>⚡ Entrega rápida</strong>
+                        <small id="textoFreteRapida">+ R$ 10,00</small>
+                    </span>
+                </label>
+            </div>
+
+            <div id="checkoutResumo" class="checkout-summary checkout-full"></div>
+
+            <button id="finalizarBtn" class="checkout-button checkout-full" type="submit">Gerar pagamento Pix →</button>
+        </form>
+    </div>
+</div>
+
+<!-- PIX -->
+<div id="pixModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>💳 Pagamento Pix</h2>
+            <button class="close-modal" type="button" onclick="fecharPix()">×</button>
+        </div>
+        <div id="pixResultado"></div>
+    </div>
+</div>
+
+<!-- SOBRE A LOJA -->
+<div id="infoLojaModal" class="modal" aria-hidden="true" onclick="fecharInfoLojaFora(event)">
+    <div class="modal-content info-modal-content">
+        <div class="modal-header">
+            <div><span class="info-kicker">TECHSHOP</span><h2>Sobre a loja</h2></div>
+            <button class="close-modal" type="button" aria-label="Fechar" onclick="fecharInfoLoja()">×</button>
+        </div>
+        <div class="info-grid">
+            <div class="info-highlight"><div class="info-icon">⚡</div><h3>Tecnologia no seu dia a dia</h3><p>Uma loja focada em acessórios, informática, áudio, energia e produtos gamer para facilitar suas compras.</p></div>
+            <div class="info-item"><strong>🛒 Compra simples</strong><span>Escolha seus produtos, coloque no carrinho e finalize o pedido.</span></div>
+            <div class="info-item"><strong>💳 Pix</strong><span>Pagamento integrado ao checkout da TechShop.</span></div>
+            <div class="info-item"><strong>📦 Acompanhe o pedido</strong><span>Consulte o andamento do seu pedido pela loja.</span></div>
+            <div class="info-item"><strong>👤 Área do cliente</strong><span>Consulte seus dados e pedidos após entrar na sua conta.</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- SUPORTE -->
+<div id="suporteModal" class="modal" aria-hidden="true" onclick="fecharSuporteFora(event)">
+    <div class="modal-content support-modal-content">
+        <div class="modal-header">
+            <div><span class="info-kicker">ATENDIMENTO</span><h2>Suporte TechShop</h2></div>
+            <button class="close-modal" type="button" aria-label="Fechar" onclick="fecharSuporte()">×</button>
+        </div>
+        <div class="support-card">
+            <div class="support-icon">💬</div>
+            <div><h3>Fale com a gente pelo WhatsApp</h3><p>Atendimento pelo número <strong>(19) 97154-4914</strong>.</p></div>
+        </div>
+        <a class="whatsapp-button" href="https://wa.me/5519971544914?text=Ol%C3%A1%2C%20preciso%20de%20suporte%20na%20TechShop." target="_blank" rel="noopener noreferrer">💬 Abrir WhatsApp</a>
+        <div class="support-help"><strong>Precisa de ajuda com:</strong> pedido, pagamento, conta ou acompanhamento? Envie uma mensagem no WhatsApp e informe o número do pedido, quando houver.</div>
+    </div>
+</div>
+
+<!-- CONTA -->
+<div id="accountModal" class="modal" aria-hidden="true" onclick="fecharModalAoClicarFora(event)">
+    <div class="modal-content account-modal-content">
+        <div class="modal-header account-modal-header">
+            <div><span class="account-kicker">ÁREA DO CLIENTE</span><h2>👤 Minha conta</h2></div>
+            <button class="close-modal" type="button" aria-label="Fechar conta" onclick="fecharModal('accountModal')">×</button>
+        </div>
+        <div id="accountContent" class="account-content">
+            <div class="account-loading"><div><div class="account-loading-spinner"></div><p>Carregando sua conta...</p></div></div>
+        </div>
+    </div>
+</div>
+
+<!-- FUNÇÕES DE UI -->
+<script>
+function abrirInfoLoja(){const el=document.getElementById('infoLojaModal');if(!el)return;el.classList.add('active');el.style.display='flex';el.setAttribute('aria-hidden','false')}
+function fecharInfoLoja(){const el=document.getElementById('infoLojaModal');if(!el)return;el.classList.remove('active');el.style.display='none';el.setAttribute('aria-hidden','true')}
+function fecharInfoLojaFora(e){if(e.target===e.currentTarget)fecharInfoLoja()}
+function abrirSuporte(){const el=document.getElementById('suporteModal');if(!el)return;el.classList.add('active');el.style.display='flex';el.setAttribute('aria-hidden','false')}
+function fecharSuporte(){const el=document.getElementById('suporteModal');if(!el)return;el.classList.remove('active');el.style.display='none';el.setAttribute('aria-hidden','true')}
+function fecharSuporteFora(e){if(e.target===e.currentTarget)fecharSuporte()}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){fecharInfoLoja();fecharSuporte();}})
+</script>
+
+<script src="script.js"></script>
+</body>
+</html>
