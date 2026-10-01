@@ -1,23 +1,20 @@
-TECHSHOP - FIX V4
+TECHSHOP — LOGIN FIX V6
 
-Este pacote elimina a mistura entre Netlify Functions moderno e o handler Lambda legado.
-A Function agora recebe Request/Context do runtime moderno e adapta internamente para o
-serverless-http/Express existente. Isso permite que os recursos Netlify, incluindo Blobs,
-sejam inicializados no runtime moderno sem precisar de connectLambda() no handler.
+Problema corrigido:
+Netlify Blobs estava usando consistency: "strong" sem uncachedEdgeURL, causando:
+"Netlify Blobs has failed to perform a read using strong consistency because the environment has not been configured with a 'uncachedEdgeURL' property".
 
-Arquivos para substituir:
-- server.js
-- netlify/functions/api.mjs
+Esta versão usa consistency: "eventual", que é o modo suportado sem esse campo, e faz uma atualização forçada dos dados antes de concluir que um e-mail não existe.
 
-Remover do projeto:
-- netlify/functions/api.js
+Arquivos:
+- server.js (substituir o atual)
+- api.mjs (apenas referência; mantenha o seu netlify/functions/api.mjs atual, se já for igual)
 
-Nao precisa alterar package.json, package-lock, .env, techshop.html, script.js ou painel.
+Não altere .env.
+Não altere techshop.html/script.js/painel nesta correção.
 
-Teste primeiro:
-https://rad-malasada-9dec4e.netlify.app/api/status
-
-Resposta esperada:
-{"online":true,"servidor":"TECHSHOP","porta":"serverless","produtos":17}
-
-Depois teste a loja.
+Depois do deploy, teste:
+1) /api/status
+2) criar conta
+3) sair
+4) entrar novamente

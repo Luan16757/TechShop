@@ -134,7 +134,7 @@ async function prepararContextoBlobs() {
     ).trim();
 
     if (!encoded) {
-        return false;
+        return null;
     }
 
     try {
@@ -146,7 +146,7 @@ async function prepararContextoBlobs() {
         );
 
         if (!contexto || !contexto.siteID || !contexto.token) {
-            return false;
+            return null;
         }
 
         const { setEnvironmentContext } =
@@ -154,7 +154,7 @@ async function prepararContextoBlobs() {
 
         setEnvironmentContext(contexto);
 
-        return true;
+        return contexto;
 
     } catch (erro) {
 
@@ -163,34 +163,39 @@ async function prepararContextoBlobs() {
             erro?.message || erro
         );
 
-        return false;
+        return null;
     }
 }
 
 async function obterNetlifyStore() {
 
-    await prepararContextoBlobs();
+    const contexto = await prepararContextoBlobs();
 
     const { getStore } =
         await import("@netlify/blobs");
 
-    // Em Netlify Functions com serverless-http (Lambda compatibility),
-    // o contexto é inicializado em netlify/functions/api.js com connectLambda(event).
-    // Mantemos suporte opcional a credenciais explícitas via variáveis de ambiente.
     const siteID = String(process.env.NETLIFY_SITE_ID || "").trim();
     const token = String(process.env.NETLIFY_AUTH_TOKEN || "").trim();
 
+    // A leitura strong exige que o runtime forneça uncachedEdgeURL.
+    // Neste projeto esse campo não está disponível no contexto atual do Netlify,
+    // então usar strong faz a própria API lançar:
+    // "environment has not been configured with a 'uncachedEdgeURL' property".
+    // Usamos eventual, que é o modo padrão e suportado pelo runtime atual.
+    // As variáveis explícitas continuam sendo aceitas quando configuradas.
+    const opcoes = {
+        consistency: "eventual"
+    };
+
     if (siteID && token) {
-        return getStore("techshop-data", {
-            consistency: "strong",
-            siteID,
-            token
-        });
+        opcoes.siteID = siteID;
+        opcoes.token = token;
     }
 
-    return getStore("techshop-data", {
-        consistency: "strong"
-    });
+    // Mantém o contexto fornecido pelo Netlify para que o store saiba o site correto.
+    void contexto;
+
+    return getStore("techshop-data", opcoes);
 }
 
 async function carregarDadosNetlify(forcar = false) {
@@ -939,7 +944,7 @@ app.post(
 
 app.post(
     "/api/cliente/login",
-    (req, res) => {
+    async (req, res) => {
 
         try {
 
@@ -954,14 +959,31 @@ app.post(
                     []
                 );
 
-            const usuario =
-                usuarios.find(
-                    u =>
-                        u.email ===
-                        String(email)
-                            .trim()
-                            .toLowerCase()
-                );
+            const emailNormalizado = String(email || "")
+                .trim()
+                .toLowerCase();
+
+            let usuario = usuarios.find(
+                u => u.email === emailNormalizado
+            );
+
+            // Após um cadastro, outra invocação pode ainda enxergar a versão
+            // anterior do Blob por alguns instantes. Recarregamos uma vez para
+            // reduzir esse intervalo sem depender de strong consistency.
+            if (!usuario && IS_NETLIFY) {
+                try {
+                    await carregarDadosNetlify(true);
+                    const usuariosAtualizados = lerJSON(usuariosFile, []);
+                    usuario = usuariosAtualizados.find(
+                        u => u.email === emailNormalizado
+                    );
+                } catch (erro) {
+                    console.error(
+                        "Falha ao atualizar usuários antes do login:",
+                        erro?.message || erro
+                    );
+                }
+            }
 
             if (
                 !usuario ||
