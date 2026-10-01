@@ -264,8 +264,14 @@ function imagemFallback(img) {
    LOGIN / LOJA
    ========================================================= */
 
+/* =========================================================
+   AUTENTICAÇÃO DO CLIENTE
+========================================================= */
+
 function liberarLoja() {
-    if (authScreen) authScreen.style.display = "none";
+    if (authScreen) {
+        authScreen.style.display = "none";
+    }
 
     if (siteContent) {
         siteContent.style.display = "block";
@@ -276,7 +282,9 @@ function liberarLoja() {
 }
 
 function bloquearLoja() {
-    if (authScreen) authScreen.style.display = "flex";
+    if (authScreen) {
+        authScreen.style.display = "flex";
+    }
 
     if (siteContent) {
         siteContent.style.display = "none";
@@ -291,88 +299,137 @@ function mostrarMensagem(elemento, mensagem, sucesso = false) {
 
     elemento.textContent = mensagem;
     elemento.style.display = "block";
-    elemento.style.color = sucesso ? "#22c55e" : "#ff5555";
+    elemento.style.color =
+        sucesso ? "#22c55e" : "#ff5555";
 }
+
+/* =========================================================
+   VERIFICAR SESSÃO
+========================================================= */
 
 async function verificarCliente() {
     try {
-        const resposta = await fetch("/api/cliente/me", {
-            credentials: "include",
-            cache: "no-store"
-        });
+        const resposta = await fetch(
+            "/api/cliente/me",
+            {
+                method: "GET",
+                credentials: "include",
+                cache: "no-store",
+                headers: {
+                    "Accept": "application/json",
+                    "Cache-Control": "no-cache"
+                }
+            }
+        );
 
-        if (!resposta.ok) {
+        const texto = await resposta.text();
+
+        console.log(
+            "CLIENTE/ME STATUS:",
+            resposta.status
+        );
+
+        console.log(
+            "CLIENTE/ME RESPOSTA:",
+            texto
+        );
+
+        let dados = {};
+
+        try {
+            dados = texto
+                ? JSON.parse(texto)
+                : {};
+        } catch (erro) {
+            console.error(
+                "Resposta inválida da API /cliente/me:",
+                texto
+            );
+
+            clienteAtual = null;
             bloquearLoja();
             return;
         }
 
-        const dados = await resposta.json();
+        if (!resposta.ok) {
+            clienteAtual = null;
+            bloquearLoja();
+            return;
+        }
 
-        if (dados.autenticado || dados.logado) {
-            clienteAtual = dados.usuario || dados.cliente || null;
+        const usuario =
+            dados.usuario ||
+            dados.cliente ||
+            dados.user ||
+            null;
+
+        if (
+            dados.autenticado === true ||
+            dados.logado === true ||
+            usuario
+        ) {
+            clienteAtual = usuario;
 
             liberarLoja();
             atualizarInterfaceCliente();
-            await carregarProdutos();
-        } else {
-            clienteAtual = null;
-            bloquearLoja();
+
+            try {
+                await carregarProdutos();
+            } catch (erroProdutos) {
+                console.error(
+                    "Erro ao carregar produtos:",
+                    erroProdutos
+                );
+            }
+
+            return;
         }
+
+        clienteAtual = null;
+        bloquearLoja();
+
     } catch (erro) {
-        console.error("Erro ao verificar cliente:", erro);
+        console.error(
+            "Erro ao verificar cliente:",
+            erro
+        );
+
+        clienteAtual = null;
         bloquearLoja();
     }
 }
 
-function mostrarLogin() {
-    const login = document.getElementById("loginForm");
-    const cadastro = document.getElementById("cadastroForm");
-    const tabLogin = document.getElementById("tabLogin");
-    const tabCadastro = document.getElementById("tabCadastro");
-
-    login?.classList.add("active");
-    cadastro?.classList.remove("active");
-    tabLogin?.classList.add("active");
-    tabCadastro?.classList.remove("active");
-}
-
-function mostrarCadastro() {
-    const login = document.getElementById("loginForm");
-    const cadastro = document.getElementById("cadastroForm");
-    const tabLogin = document.getElementById("tabLogin");
-    const tabCadastro = document.getElementById("tabCadastro");
-
-    login?.classList.remove("active");
-    cadastro?.classList.add("active");
-    tabLogin?.classList.remove("active");
-    tabCadastro?.classList.add("active");
-
-    const msg = document.getElementById("cadastroMessage");
-    if (msg) {
-        msg.textContent = "";
-        msg.style.display = "none";
-    }
-}
-
-window.criarConta = fazerCadastro;
-window.fazerCadastro = fazerCadastro;
-
 /* =========================================================
    LOGIN
-   ========================================================= */
+========================================================= */
 
 async function fazerLogin(event) {
     event?.preventDefault();
 
-    const email = document.getElementById("loginEmail")?.value.trim();
-    const senha = document.getElementById("loginSenha")?.value || "";
+    const email =
+        document
+            .getElementById("loginEmail")
+            ?.value
+            .trim() || "";
+
+    const senha =
+        document
+            .getElementById("loginSenha")
+            ?.value || "";
 
     if (!email || !senha) {
-        mostrarMensagem(loginMessage, "Preencha e-mail e senha.");
+        mostrarMensagem(
+            loginMessage,
+            "Preencha e-mail e senha."
+        );
+
         return;
     }
 
-    const botao = document.getElementById("loginButton");
+    const botao =
+        document.getElementById(
+            "loginButton"
+        );
 
     if (botao) {
         botao.disabled = true;
@@ -380,51 +437,98 @@ async function fazerLogin(event) {
     }
 
     try {
-        const resposta = await fetch("/api/cliente/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            credentials: "include",
-            body: JSON.stringify({
-                email,
-                senha
-            })
-        });
+        console.log(
+            "TECHSHOP → tentando login:",
+            email
+        );
 
-        const texto = await resposta.text();
+        const resposta = await fetch(
+            "/api/cliente/login",
+            {
+                method: "POST",
 
-        console.log("STATUS LOGIN:", resposta.status);
-        console.log("RESPOSTA LOGIN:", texto);
+                credentials: "include",
+
+                headers: {
+                    "Content-Type":
+                        "application/json",
+
+                    "Accept":
+                        "application/json"
+                },
+
+                body: JSON.stringify({
+                    email,
+                    senha
+                })
+            }
+        );
+
+        const texto =
+            await resposta.text();
+
+        console.log(
+            "LOGIN → STATUS:",
+            resposta.status
+        );
+
+        console.log(
+            "LOGIN → RESPOSTA:",
+            texto
+        );
 
         let dados = {};
 
-        try {
-            dados = texto ? JSON.parse(texto) : {};
-        } catch {
-            console.error("A API não retornou JSON.");
+        if (texto) {
+            try {
+                dados = JSON.parse(texto);
+            } catch (erro) {
+                console.error(
+                    "LOGIN → servidor não retornou JSON:",
+                    texto
+                );
+
+                throw new Error(
+                    "O servidor não retornou uma resposta válida. Verifique a API do Netlify."
+                );
+            }
         }
 
         if (!resposta.ok) {
-            mostrarMensagem(
-                loginMessage,
+            throw new Error(
                 dados.erro ||
                 dados.mensagem ||
-                `Erro no servidor (${resposta.status}).`
+                dados.error ||
+                `Erro no login. HTTP ${resposta.status}.`
             );
-            return;
         }
 
-        clienteAtual = dados.usuario || dados.cliente || null;
+        const usuario =
+            dados.usuario ||
+            dados.cliente ||
+            dados.user ||
+            null;
 
-        if (!clienteAtual) {
-            mostrarMensagem(
-                loginMessage,
-                "Login respondeu, mas não retornou os dados do usuário."
+        if (
+            !usuario ||
+            typeof usuario !== "object"
+        ) {
+            console.error(
+                "LOGIN → resposta completa:",
+                dados
             );
-            return;
+
+            throw new Error(
+                "O servidor aceitou o login, mas não retornou os dados do cliente."
+            );
         }
+
+        clienteAtual = usuario;
+
+        console.log(
+            "LOGIN → cliente autenticado:",
+            clienteAtual
+        );
 
         mostrarMensagem(
             loginMessage,
@@ -433,129 +537,207 @@ async function fazerLogin(event) {
         );
 
         liberarLoja();
+
         atualizarInterfaceCliente();
-        await carregarProdutos();
+
+        /*
+         * Produtos não podem fazer o login parecer
+         * que falhou.
+         */
+        try {
+            await carregarProdutos();
+        } catch (erroProdutos) {
+            console.error(
+                "Erro ao carregar produtos depois do login:",
+                erroProdutos
+            );
+        }
 
     } catch (erro) {
-        console.error("ERRO LOGIN:", erro);
+        console.error(
+            "ERRO LOGIN:",
+            erro
+        );
 
         mostrarMensagem(
             loginMessage,
-            "Não foi possível conectar à API de login."
+            erro.message ||
+            "Não foi possível realizar o login."
         );
 
     } finally {
         if (botao) {
             botao.disabled = false;
-            botao.textContent = "Entrar na TECHSHOP →";
+            botao.textContent =
+                "Entrar na TECHSHOP →";
         }
     }
 }
+
 /* =========================================================
-   CADASTRO
-   ========================================================= */
+   MOSTRAR LOGIN
+========================================================= */
 
-async function fazerCadastro(event) {
-    event?.preventDefault();
-
-    const nome = document.getElementById("cadastroNome")?.value.trim();
-    const email = document.getElementById("cadastroEmail")?.value.trim();
-    const telefone = document.getElementById("cadastroTelefone")?.value.trim();
-    const cpf = document.getElementById("cadastroCpf")?.value.trim();
-    const senha = document.getElementById("cadastroSenha")?.value || "";
-
-    if (!nome || !email || !telefone || !cpf || !senha) {
-        mostrarMensagem(cadastroMessage, "Preencha todos os campos.");
-        return;
+function mostrarLogin() {
+    if (cadastroForm) {
+        cadastroForm.style.display = "none";
     }
 
-    if (senha.length < 6) {
-        mostrarMensagem(
-            cadastroMessage,
-            "A senha precisa ter pelo menos 6 caracteres."
-        );
-        return;
+    if (loginForm) {
+        loginForm.style.display = "block";
     }
 
-    const botao = document.getElementById("cadastroButton");
-
-    if (botao) {
-        botao.disabled = true;
-        botao.textContent = "Criando conta...";
+    if (loginMessage) {
+        loginMessage.style.display = "none";
+        loginMessage.textContent = "";
     }
 
-    try {
-        const resposta = await fetch("/api/cliente/cadastro", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({
-                nome,
-                email,
-                telefone,
-                cpf,
-                senha
-            })
-        });
-
-        const dados = await resposta.json().catch(() => ({}));
-
-        if (!resposta.ok) {
-            mostrarMensagem(
-                cadastroMessage,
-                dados.erro ||
-                dados.mensagem ||
-                "Não foi possível criar sua conta."
-            );
-            return;
-        }
-
-        clienteAtual = dados.usuario || dados.cliente || null;
-
-        mostrarMensagem(
-            cadastroMessage,
-            "Conta criada com sucesso!",
-            true
+    const email =
+        document.getElementById(
+            "loginEmail"
         );
 
-        liberarLoja();
-        atualizarInterfaceCliente();
-        await carregarProdutos();
-    } catch (erro) {
-        console.error(erro);
-        mostrarMensagem(
-            cadastroMessage,
-            "Erro ao conectar com o servidor."
+    if (email) {
+        setTimeout(
+            () => email.focus(),
+            50
         );
-    } finally {
-        if (botao) {
-            botao.disabled = false;
-            botao.textContent = "Criar conta";
-        }
+    }
+}
+
+/* =========================================================
+   MOSTRAR CADASTRO
+========================================================= */
+
+function mostrarCadastro() {
+    if (loginForm) {
+        loginForm.style.display = "none";
+    }
+
+    if (cadastroForm) {
+        cadastroForm.style.display = "block";
+    }
+
+    if (cadastroMessage) {
+        cadastroMessage.style.display = "none";
+        cadastroMessage.textContent = "";
+    }
+
+    const nome =
+        document.getElementById(
+            "cadastroNome"
+        );
+
+    if (nome) {
+        setTimeout(
+            () => nome.focus(),
+            50
+        );
     }
 }
 
 /* =========================================================
    LOGOUT
-   ========================================================= */
+========================================================= */
 
 async function fazerLogout() {
     try {
-        await fetch("/api/cliente/logout", {
-            method: "POST",
-            credentials: "include"
-        });
+        const resposta =
+            await fetch(
+                "/api/cliente/logout",
+                {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Accept":
+                            "application/json"
+                    }
+                }
+            );
+
+        console.log(
+            "LOGOUT STATUS:",
+            resposta.status
+        );
+
     } catch (erro) {
-        console.error("Erro no logout:", erro);
+        console.error(
+            "Erro ao fazer logout:",
+            erro
+        );
     }
 
     clienteAtual = null;
     carrinho = [];
+
     salvarCarrinho();
-    bloquearLoja();
-    atualizarInterfaceCliente();
     atualizarCarrinhoInterface();
+
+    bloquearLoja();
+    mostrarLogin();
+
+    const loginEmail =
+        document.getElementById(
+            "loginEmail"
+        );
+
+    const loginSenha =
+        document.getElementById(
+            "loginSenha"
+        );
+
+    if (loginEmail) {
+        loginEmail.value = "";
+    }
+
+    if (loginSenha) {
+        loginSenha.value = "";
+    }
 }
+
+/* =========================================================
+   INTERFACE DO CLIENTE
+========================================================= */
+
+function atualizarInterfaceCliente() {
+    const elemento =
+        document.getElementById(
+            "accountButtonText"
+        );
+
+    if (!elemento) return;
+
+    if (!clienteAtual) {
+        elemento.textContent =
+            "Minha conta";
+
+        return;
+    }
+
+    const nome =
+        clienteAtual.nome ||
+        clienteAtual.name ||
+        "Minha conta";
+
+    const primeiroNome =
+        String(nome)
+            .trim()
+            .split(/\s+/)[0];
+
+    elemento.textContent =
+        primeiroNome || "Minha conta";
+}
+
+/* =========================================================
+   EXPOR FUNÇÕES PARA O HTML
+========================================================= */
+
+window.fazerLogin = fazerLogin;
+window.fazerLogout = fazerLogout;
+window.mostrarLogin = mostrarLogin;
+window.mostrarCadastro = mostrarCadastro;
+window.liberarLoja = liberarLoja;
+window.bloquearLoja = bloquearLoja;
 
 /* =========================================================
    INTERFACE DO CLIENTE
