@@ -1582,33 +1582,7 @@ async function finalizarPedido(event) {
         }
 
         fecharCheckout();
-
-        const modal = document.getElementById("pixModal");
-        if (modal) modal.style.display = "flex";
-
-        const qr = document.getElementById("pixQrCode");
-        if (qr && dados.qr_code_base64) {
-            qr.src = dados.qr_code_base64.startsWith("data:")
-                ? dados.qr_code_base64
-                : "data:image/png;base64," + dados.qr_code_base64;
-        }
-
-        const copia = document.getElementById("pixCopiaCola");
-        if (copia) {
-            copia.value = dados.qr_code || dados.pix_copia_e_cola || "";
-        }
-
-        const valor = document.getElementById("pixValor");
-        if (valor) {
-            valor.textContent = dinheiro(
-                dados.valor || calcularTotalCarrinho()
-            );
-        }
-
-        const numeroPedido = document.getElementById("pixNumeroPedido");
-        if (numeroPedido) {
-            numeroPedido.textContent = dados.pedido?.numero || dados.numero || "";
-        }
+        renderizarPix(dados);
 
         carrinho = [];
         salvarCarrinho();
@@ -1698,78 +1672,7 @@ async function gerarPix() {
 
         fecharCheckout();
 
-        const modal =
-            document.getElementById(
-                "pixModal"
-            );
-
-        if (modal) {
-            modal.style.display = "flex";
-        }
-
-        const qr =
-            document.getElementById(
-                "pixQrCode"
-            );
-
-        if (
-            qr &&
-            dados.qr_code_base64
-        ) {
-
-            qr.src =
-                dados.qr_code_base64
-                    .startsWith("data:")
-                    ? dados.qr_code_base64
-                    : "data:image/png;base64," +
-                      dados.qr_code_base64;
-        }
-
-        const copia =
-            document.getElementById(
-                "pixCopiaCola"
-            );
-
-        if (copia) {
-
-            copia.value =
-                dados.qr_code ||
-                dados.pix_copia_e_cola ||
-                "";
-        }
-
-        const valor =
-            document.getElementById(
-                "pixValor"
-            );
-
-        if (valor) {
-
-            valor.textContent =
-                dinheiro(
-                    dados.valor ||
-                    calcularTotalCarrinho()
-                );
-        }
-
-        /*
-         * Pedido criado pelo backend
-         */
-        if (dados.pedido) {
-
-            const numero =
-                document.getElementById(
-                    "pixNumeroPedido"
-                );
-
-            if (numero) {
-
-                numero.textContent =
-                    dados.pedido.numero ||
-                    dados.pedido.id ||
-                    "";
-            }
-        }
+        renderizarPix(dados);
 
         /*
          * Limpa carrinho depois de gerar
@@ -1801,6 +1704,81 @@ async function gerarPix() {
     }
 }
 
+
+function renderizarPix(dados = {}) {
+    const modal = document.getElementById("pixModal");
+    const resultado = document.getElementById("pixResultado");
+    if (!modal || !resultado) return;
+
+    const qrData = String(dados.qr_code_base64 || "").trim();
+    const qrSrc = qrData
+        ? (qrData.startsWith("data:") ? qrData : `data:image/png;base64,${qrData}`)
+        : "";
+
+    const codigo = String(
+        dados.pix_copia_e_cola ||
+        dados.qr_code ||
+        dados.pedido?.pagamento?.qrCode ||
+        ""
+    ).trim();
+
+    const valor = dinheiro(dados.valor || calcularTotalCarrinho());
+    const numero = dados.pedido?.numero || dados.numero || "";
+
+    resultado.innerHTML = `
+        <div class="pix-panel">
+            <div class="pix-success">✓</div>
+            <div>
+                <h3 class="pix-title">Pix gerado com sucesso</h3>
+                <p class="pix-subtitle">Escaneie o QR Code ou use o código Pix copia e cola para concluir o pagamento.</p>
+            </div>
+
+            <div class="pix-value">
+                <span>VALOR DO PEDIDO</span>
+                <strong id="pixValor">${valor}</strong>
+            </div>
+
+            <div class="pix-layout">
+                <div class="pix-qr-box">
+                    <div class="pix-qr">
+                        ${qrSrc
+                            ? `<img id="pixQrCode" src="${qrSrc}" alt="QR Code Pix">`
+                            : `<div style="height:100%;display:grid;place-items:center;color:#555;font-weight:700;font-size:13px;padding:20px;">QR Code indisponível. Use o código Pix copia e cola.</div>`
+                        }
+                    </div>
+                </div>
+
+                <div class="pix-side">
+                    <div class="pix-copy-card">
+                        <span class="pix-copy-label">Código Pix copia e cola</span>
+                        <div class="pix-copy">
+                            <input id="pixCopiaCola" type="text" readonly value="${escaparAtributo(codigo)}" aria-label="Código Pix copia e cola">
+                            <button type="button" onclick="copiarPix()">📋 Copiar</button>
+                        </div>
+                    </div>
+
+                    <div class="pix-help">
+                        Abra o app do seu banco, escolha Pix e escaneie o QR Code. Também pode copiar o código acima.
+                    </div>
+
+                    <div class="pix-order">Pedido: <strong id="pixNumeroPedido">${escaparHTML(numero)}</strong></div>
+
+                    <button type="button" class="pix-close-action" onclick="fecharPix()">Fechar</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    modal.style.display = "flex";
+}
+
+function escaparAtributo(valor = "") {
+    return String(valor)
+        .replace(/&/g, "&amp;")
+        .replace(/\"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+}
 
 /* =========================================================
    FECHAR PIX
@@ -1845,26 +1823,29 @@ async function copiarPix() {
     }
 
     try {
+        if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(codigo);
+        } else {
+            campo.removeAttribute("readonly");
+            campo.focus();
+            campo.select();
+            document.execCommand("copy");
+            campo.setAttribute("readonly", "readonly");
+        }
 
-        await navigator.clipboard.writeText(
-            codigo
-        );
-
-        alert(
-            "Código Pix copiado!"
-        );
-
+        alert("Código Pix copiado!");
     } catch (erro) {
-
-        campo.select();
-
-        document.execCommand(
-            "copy"
-        );
-
-        alert(
-            "Código Pix copiado!"
-        );
+        try {
+            campo.removeAttribute("readonly");
+            campo.focus();
+            campo.select();
+            campo.setSelectionRange(0, campo.value.length);
+            document.execCommand("copy");
+            campo.setAttribute("readonly", "readonly");
+            alert("Código Pix copiado!");
+        } catch {
+            alert("Não foi possível copiar automaticamente. Selecione o código e copie manualmente.");
+        }
     }
 }
 

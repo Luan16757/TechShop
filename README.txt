@@ -1,10 +1,15 @@
-TECHSHOP — CPF NO CHECKOUT
+TECHSHOP — PIX / QR CODE FIX
 
-Arquivos:
-- techshop.html: adiciona CPF ao finalizar pedido e máscara.
-- script.js: envia CPF no /api/pix e valida 11 dígitos.
-- server.js: aceita CPF informado no checkout, usa no Mercado Pago e salva no pedido.
-- netlify/functions/api.mjs: runtime atual do projeto, mantido da correção V6.
+Correções:
+- Modal Pix agora cria e exibe corretamente o QR Code.
+- Código Pix copia e cola sempre aparece no checkout quando retornado pelo Mercado Pago.
+- Botão Copiar funciona em PC e celular com fallback.
+- Layout responsivo do Pix para desktop e celular.
+- Backend retorna também pix_copia_e_cola e usa fallbacks para os campos do Mercado Pago.
 
-Substitua esses arquivos no projeto e publique pelo GitHub Desktop.
-Não substitua .env.
+Substitua:
+- techshop.html
+- script.js
+- server.js
+
+Não substitua o .env.

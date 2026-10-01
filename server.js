@@ -2004,12 +2004,16 @@ app.post(
                     qrCode:
                         pagamento.point_of_interaction
                             ?.transaction_data
-                            ?.qr_code || "",
+                            ?.qr_code ||
+                        pagamento.qr_code ||
+                        "",
 
                     qrCodeBase64:
                         pagamento.point_of_interaction
                             ?.transaction_data
-                            ?.qr_code_base64 || "",
+                            ?.qr_code_base64 ||
+                        pagamento.qr_code_base64 ||
+                        "",
 
                     ticketUrl:
                         pagamento.point_of_interaction
@@ -2081,6 +2085,9 @@ app.post(
                     pagamento.id,
 
                 qr_code:
+                    pedido.pagamento.qrCode,
+
+                pix_copia_e_cola:
                     pedido.pagamento.qrCode,
 
                 qr_code_base64:
