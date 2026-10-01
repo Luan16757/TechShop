@@ -72,10 +72,23 @@ function obterIdProduto(produto, indiceFallback = 0) {
         produto?.id ??
         produto?._id ??
         produto?.codigo ??
-        produto?.slug ??
-        `produto-${indiceFallback}`;
+        produto?.slug;
 
-    return String(valor);
+    if (valor !== undefined && valor !== null && String(valor).trim() !== "") {
+        return String(valor);
+    }
+
+    const nome = normalizarTexto(
+        produto?.nome ||
+        produto?.name ||
+        ""
+    );
+
+    if (nome) {
+        return `nome:${nome}`;
+    }
+
+    return `produto-${indiceFallback}`;
 }
 
 function formatarCPF(valor = "") {
@@ -647,7 +660,7 @@ function renderizarProdutos(lista = produtos) {
     }
 
     container.innerHTML = lista.map(produto => {
-        const id = obterIdProduto(produto, lista.indexOf(produto));
+        const id = obterIdProduto(produto, produtos.indexOf(produto));
         const nome = produto.nome || produto.name || "Produto";
         const preco = Number(produto.preco ?? produto.price ?? 0);
         const categoria =
@@ -1073,8 +1086,10 @@ function atualizarCarrinhoInterface() {
 
                         <button
                             type="button"
-                            aria-label="Diminuir"
-                            onclick="diminuirQuantidade(${Number(item.id)})"
+                            class="cart-action"
+                            data-cart-action="decrease"
+                            data-cart-id="${escaparAtributo(item.id)}"
+                            aria-label="Diminuir quantidade"
                         >
                             −
                         </button>
@@ -1085,17 +1100,20 @@ function atualizarCarrinhoInterface() {
 
                         <button
                             type="button"
-                            aria-label="Aumentar"
-                            onclick="aumentarQuantidade(${Number(item.id)})"
+                            class="cart-action"
+                            data-cart-action="increase"
+                            data-cart-id="${escaparAtributo(item.id)}"
+                            aria-label="Aumentar quantidade"
                         >
                             +
                         </button>
 
                         <button
                             type="button"
-                            class="cart-remove"
-                            aria-label="Remover"
-                            onclick="removerDoCarrinho(${Number(item.id)})"
+                            class="cart-remove cart-action"
+                            data-cart-action="remove"
+                            data-cart-id="${escaparAtributo(item.id)}"
+                            aria-label="Remover produto"
                         >
                             🗑
                         </button>
@@ -2782,11 +2800,36 @@ document.addEventListener(
         if (!document.body.dataset.techshopCartClickBound) {
             document.body.dataset.techshopCartClickBound = "1";
             document.body.addEventListener("click", event => {
-                const botao = event.target.closest(".buy-btn[data-produto-id]");
-                if (!botao) return;
+                const botaoProduto = event.target.closest(".buy-btn[data-produto-id]");
+
+                if (botaoProduto) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    adicionarCarrinho(botaoProduto.dataset.produtoId);
+                    return;
+                }
+
+                const botaoCarrinho = event.target.closest("[data-cart-action][data-cart-id]");
+
+                if (!botaoCarrinho) return;
+
                 event.preventDefault();
                 event.stopPropagation();
-                adicionarCarrinho(botao.dataset.produtoId);
+
+                const id = botaoCarrinho.dataset.cartId;
+                const acao = botaoCarrinho.dataset.cartAction;
+
+                if (acao === "increase") {
+                    aumentarQuantidade(id);
+                } else if (acao === "decrease") {
+                    diminuirQuantidade(id);
+                } else if (acao === "remove") {
+                    removerDoCarrinho(id);
+                    mostrarToastCarrinho(
+                        "🗑 Produto removido",
+                        "O item foi removido do carrinho."
+                    );
+                }
             });
         }
 
