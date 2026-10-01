@@ -2752,6 +2752,200 @@
 
 </style>
 
+
+<style id="techshop-layout-v2">
+    /* =====================================================
+       TECHSHOP V2 — ORGANIZAÇÃO PC + CELULAR
+    ===================================================== */
+    html { scroll-behavior: smooth; }
+    body { background: #07090d; }
+    body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background:
+            radial-gradient(circle at 15% 0%, rgba(255,115,0,.08), transparent 30%),
+            radial-gradient(circle at 85% 10%, rgba(255,155,0,.05), transparent 24%);
+        z-index: -1;
+    }
+
+    header {
+        background: rgba(7,9,13,.88);
+        border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    .header-inner { max-width: 1320px; min-height: 74px; }
+    .logo { letter-spacing: -.5px; }
+    .main-nav {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px;
+        border: 1px solid rgba(255,255,255,.06);
+        background: rgba(255,255,255,.025);
+        border-radius: 14px;
+    }
+    .main-nav a, .nav-link-button {
+        border: 0;
+        background: transparent;
+        color: #aeb3bc;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 800;
+        padding: 10px 12px;
+        border-radius: 10px;
+        white-space: nowrap;
+        transition: .2s ease;
+    }
+    .main-nav a:hover, .nav-link-button:hover {
+        color: #fff;
+        background: rgba(255,115,0,.10);
+    }
+    .header-button {
+        background: #10131a;
+        border-color: rgba(255,255,255,.08);
+    }
+    .hero {
+        max-width: 1320px;
+        padding: 76px 20px 48px;
+        gap: 52px;
+    }
+    .hero > div:first-child { max-width: 700px; }
+    .hero-tag {
+        display: inline-flex;
+        padding: 7px 10px;
+        border: 1px solid rgba(255,115,0,.25);
+        background: rgba(255,115,0,.07);
+        border-radius: 999px;
+    }
+    .hero h1 { letter-spacing: -2px; }
+    .hero p { font-size: 16px; max-width: 620px; }
+    .hero-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 24px;
+        flex-wrap: wrap;
+    }
+    .hero-primary, .hero-secondary {
+        min-height: 46px;
+        padding: 0 18px;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 900;
+        text-decoration: none;
+    }
+    .hero-primary { background: var(--orange); color: #fff; border: 1px solid var(--orange); }
+    .hero-secondary { background: #11151c; color: #fff; border: 1px solid rgba(255,255,255,.10); }
+    .hero-box {
+        min-height: 320px;
+        position: relative;
+        overflow: hidden;
+        background:
+            radial-gradient(circle at 50% 42%, rgba(255,115,0,.22), transparent 34%),
+            linear-gradient(145deg, #121720, #0a0c10);
+    }
+    .hero-box::before, .hero-box::after {
+        content: ""; position: absolute; border-radius: 50%; border: 1px solid rgba(255,115,0,.14);
+    }
+    .hero-box::before { width: 240px; height: 240px; }
+    .hero-box::after { width: 340px; height: 340px; }
+
+    .benefits { max-width: 1320px; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .benefit {
+        background: linear-gradient(145deg, #11151b, #0c0f14);
+        border-color: rgba(255,255,255,.07);
+        box-shadow: 0 12px 30px rgba(0,0,0,.16);
+    }
+    .products-section { max-width: 1320px; padding-top: 44px; }
+    .section-head h2 { letter-spacing: -.8px; }
+    .search-box input { background: #0d1117; border-color: rgba(255,255,255,.08); }
+    #products { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+    .product-card {
+        background: linear-gradient(160deg, #11151b, #0b0e13);
+        border-color: rgba(255,255,255,.07);
+        box-shadow: 0 12px 30px rgba(0,0,0,.12);
+    }
+    .product-card:hover {
+        border-color: rgba(255,115,0,.45);
+        box-shadow: 0 18px 40px rgba(0,0,0,.25);
+    }
+
+    .info-modal-content, .support-modal-content { max-width: 720px; }
+    .info-kicker { color: var(--orange); font-size: 11px; font-weight: 900; letter-spacing: 1.5px; }
+    .info-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+    .info-highlight, .info-item {
+        background: #0d1117;
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 16px;
+        padding: 18px;
+    }
+    .info-highlight { grid-column: 1 / -1; background: linear-gradient(145deg, rgba(255,115,0,.12), #0d1117 55%); }
+    .info-icon, .support-icon {
+        width: 42px; height: 42px; border-radius: 12px;
+        display: grid; place-items: center;
+        background: rgba(255,115,0,.10);
+        border: 1px solid rgba(255,115,0,.22);
+        margin-bottom: 12px; font-size: 20px;
+    }
+    .info-highlight h3, .info-item strong, .support-card h3 { display: block; margin-bottom: 7px; }
+    .info-highlight p, .info-item span, .support-card p, .support-help { color: #8e96a3; line-height: 1.65; font-size: 13px; }
+    .support-card { display: flex; gap: 14px; align-items: center; padding: 18px; border: 1px solid rgba(255,255,255,.07); border-radius: 16px; background: #0d1117; }
+    .support-icon { margin: 0; flex: 0 0 auto; }
+    .whatsapp-button {
+        display: flex; align-items: center; justify-content: center;
+        min-height: 48px; margin-top: 14px;
+        border-radius: 12px;
+        text-decoration: none; font-size: 13px; font-weight: 900; color: #fff;
+        background: #1b8f57; border: 1px solid rgba(255,255,255,.12);
+    }
+    .support-help { margin-top: 13px; padding: 13px 14px; border-radius: 12px; background: rgba(255,255,255,.025); }
+
+    @media (max-width: 1050px) {
+        .header-inner { gap: 12px; }
+        .main-nav { overflow-x: auto; max-width: 55vw; scrollbar-width: none; }
+        .main-nav::-webkit-scrollbar { display: none; }
+        #products { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 760px) {
+        .header-inner { min-height: 68px; padding: 8px 12px; flex-wrap: wrap; }
+        .logo { font-size: 20px; }
+        .main-nav {
+            order: 3; width: 100%; max-width: none;
+            justify-content: flex-start;
+            padding: 3px;
+        }
+        .main-nav a, .nav-link-button { padding: 8px 10px; font-size: 11px; }
+        .header-actions { margin-left: auto; }
+        .header-button { height: 38px; padding: 0 10px; }
+        #accountButtonText { display: none; }
+        .hero { grid-template-columns: 1fr; padding: 42px 14px 30px; gap: 18px; }
+        .hero h1 { font-size: clamp(33px, 10vw, 48px); letter-spacing: -1.5px; }
+        .hero p { font-size: 14px; }
+        .hero-box { min-height: 180px; }
+        .benefits { grid-template-columns: 1fr 1fr; padding: 0 14px 28px; gap: 10px; }
+        .benefit { padding: 14px; }
+        .products-section { padding: 28px 14px 60px; }
+        .section-head { align-items: flex-start; flex-direction: column; }
+        #products { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+        .info-grid { grid-template-columns: 1fr; }
+        .info-highlight { grid-column: auto; }
+    }
+
+    @media (max-width: 430px) {
+        .header-inner { padding-left: 10px; padding-right: 10px; }
+        .hero-actions { display: grid; grid-template-columns: 1fr 1fr; }
+        .hero-primary, .hero-secondary { width: 100%; padding: 0 10px; }
+        .benefits { grid-template-columns: 1fr 1fr; }
+        #products { gap: 9px; }
+        .main-nav { gap: 2px; }
+        .main-nav a, .nav-link-button { font-size: 10px; padding: 8px 8px; }
+    }
+</style>
+
 </head>
 
 
@@ -3004,19 +3198,17 @@
             </div>
 
 
-            <nav>
+            <nav class="main-nav" aria-label="Navegação principal">
 
-                <a href="#inicio">
-                    Início
-                </a>
+                <a href="#inicio">Início</a>
 
-                <a href="#produtos">
-                    Produtos
-                </a>
+                <a href="#produtos">Produtos</a>
 
-                <a href="#acompanharPedido">
-                    Pedidos
-                </a>
+                <a href="#acompanharPedido">Pedidos</a>
+
+                <button class="nav-link-button" type="button" onclick="abrirInfoLoja()">Sobre a loja</button>
+
+                <button class="nav-link-button" type="button" onclick="abrirSuporte()">Suporte</button>
 
             </nav>
 
@@ -3074,6 +3266,11 @@
                     acessórios, produtos gamer,
                     áudio e muito mais.
                 </p>
+
+                <div class="hero-actions">
+                    <a class="hero-primary" href="#produtos">Ver produtos</a>
+                    <button class="hero-secondary" type="button" onclick="abrirSuporte()">Falar com suporte</button>
+                </div>
 
             </div>
 
@@ -3628,6 +3825,67 @@
 
 
 <!-- =====================================================
+     MODAL SOBRE A LOJA
+===================================================== -->
+
+<div id="infoLojaModal" class="modal info-modal" aria-hidden="true" onclick="fecharInfoLojaFora(event)">
+    <div class="modal-content info-modal-content">
+        <div class="modal-header">
+            <div>
+                <span class="info-kicker">TECHSHOP</span>
+                <h2>Sobre a loja</h2>
+            </div>
+            <button class="close-modal" type="button" aria-label="Fechar" onclick="fecharInfoLoja()">×</button>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-highlight">
+                <div class="info-icon">⚡</div>
+                <h3>Tecnologia no seu dia a dia</h3>
+                <p>Uma loja focada em acessórios, informática, áudio, energia e produtos gamer para facilitar suas compras.</p>
+            </div>
+            <div class="info-item"><strong>🛒 Compra simples</strong><span>Escolha seus produtos, coloque no carrinho e finalize o pedido.</span></div>
+            <div class="info-item"><strong>💳 Pix</strong><span>Pagamento integrado ao checkout da TechShop.</span></div>
+            <div class="info-item"><strong>📦 Acompanhe o pedido</strong><span>Consulte o andamento do seu pedido pela loja.</span></div>
+            <div class="info-item"><strong>👤 Área do cliente</strong><span>Consulte seus dados e pedidos após entrar na sua conta.</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- =====================================================
+     MODAL SUPORTE
+===================================================== -->
+
+<div id="suporteModal" class="modal info-modal" aria-hidden="true" onclick="fecharSuporteFora(event)">
+    <div class="modal-content support-modal-content">
+        <div class="modal-header">
+            <div>
+                <span class="info-kicker">ATENDIMENTO</span>
+                <h2>Suporte TechShop</h2>
+            </div>
+            <button class="close-modal" type="button" aria-label="Fechar" onclick="fecharSuporte()">×</button>
+        </div>
+
+        <div class="support-card">
+            <div class="support-icon">💬</div>
+            <div>
+                <h3>Fale com a gente pelo WhatsApp</h3>
+                <p>Atendimento pelo número <strong>(19) 97154-4914</strong>.</p>
+            </div>
+        </div>
+
+        <a class="whatsapp-button" href="https://wa.me/5519971544914?text=Ol%C3%A1%2C%20preciso%20de%20suporte%20na%20TechShop." target="_blank" rel="noopener noreferrer">
+            💬 Abrir WhatsApp
+        </a>
+
+        <div class="support-help">
+            <strong>Precisa de ajuda com:</strong> pedido, pagamento, conta ou acompanhamento? Envie uma mensagem no WhatsApp e informe o número do pedido, quando houver.
+        </div>
+    </div>
+</div>
+
+
+<!-- =====================================================
      MODAL CONTA
 ===================================================== -->
 
@@ -3661,6 +3919,41 @@
         </div>
     </div>
 </div>
+
+
+<script>
+function abrirInfoLoja(){
+    const el=document.getElementById('infoLojaModal');
+    if(!el) return;
+    el.classList.add('active');
+    el.setAttribute('aria-hidden','false');
+    document.body.classList.add('modal-open');
+}
+function fecharInfoLoja(){
+    const el=document.getElementById('infoLojaModal');
+    if(!el) return;
+    el.classList.remove('active');
+    el.setAttribute('aria-hidden','true');
+    if(!document.querySelector('.modal.active')) document.body.classList.remove('modal-open');
+}
+function fecharInfoLojaFora(e){ if(e.target===e.currentTarget) fecharInfoLoja(); }
+function abrirSuporte(){
+    const el=document.getElementById('suporteModal');
+    if(!el) return;
+    el.classList.add('active');
+    el.setAttribute('aria-hidden','false');
+    document.body.classList.add('modal-open');
+}
+function fecharSuporte(){
+    const el=document.getElementById('suporteModal');
+    if(!el) return;
+    el.classList.remove('active');
+    el.setAttribute('aria-hidden','true');
+    if(!document.querySelector('.modal.active')) document.body.classList.remove('modal-open');
+}
+function fecharSuporteFora(e){ if(e.target===e.currentTarget) fecharSuporte(); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ fecharInfoLoja(); fecharSuporte(); } });
+</script>
 
 <script src="script.js"></script>
 

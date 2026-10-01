@@ -1,15 +1,6 @@
-TECHSHOP - LAYOUT RESPONSIVO + VER SENHA
+TECHSHOP V2
 
-Substitua somente:
-- techshop.html
-- script.js
+Atualização apenas da loja: novo layout responsivo PC/celular, abas Sobre a loja e Suporte, e link direto para WhatsApp (19) 97154-4914.
 
-Nao substitua server.js, .env, admin.html ou arquivos do Netlify.
-
-Alteracoes:
-- Layout separado para PC, notebook/tablet e celular.
-- Header compacto no celular.
-- Hero, beneficios e cards de produtos responsivos.
-- Carrinho e modais preservados.
-- Tela de login/cadastro centralizada e responsiva.
-- Botao de mostrar/ocultar senha no login e no cadastro.
+Substituir: techshop.html e script.js.
+Não substituir server.js, .env ou netlify/functions.
