@@ -542,6 +542,41 @@ function atualizarInterfaceCliente() {
    PRODUTOS
    ========================================================= */
 
+function garantirProdutosIphone11(lista) {
+    const base = Array.isArray(lista) ? [...lista] : [];
+
+    const novosProdutos = [
+        {
+            id: "iphone-11-tela-incell",
+            nome: "Tela Para Iphone 11 A2111 A2221 A2223 Display/touch Incell",
+            preco: 130,
+            categoria: "Celular e Proteção",
+            descricao: "Tela Incell para iPhone 11, compatível com os modelos A2111, A2221 e A2223. Peça indicada para reposição do display e touch.",
+            imagem: "/imagens/tela-iphone-11-incell.webp"
+        },
+        {
+            id: "iphone-11-bateria-wefix",
+            nome: "Flex Bateria Iphone 11 3110mah Wefix Oficial",
+            preco: 150,
+            categoria: "Celular e Proteção",
+            descricao: "Flex de bateria Wefix Oficial para iPhone 11 com capacidade de 3110mAh, indicado para reposição da peça e manutenção do aparelho.",
+            imagem: "https://http2.mlstatic.com/D_Q_NP_605979-MLB116841807748_092026-R-flex-bateria-iphone-11-3110mah-wefix-oficial-garantia-1-ano.webp"
+        }
+    ];
+
+    for (const novo of novosProdutos) {
+        const jaExiste = base.some(produto => {
+            const nome = normalizarTexto(produto?.nome || produto?.name || "");
+            return nome === normalizarTexto(novo.nome) ||
+                   String(produto?.id ?? produto?._id ?? produto?.codigo ?? "") === novo.id;
+        });
+
+        if (!jaExiste) base.push(novo);
+    }
+
+    return base;
+}
+
 async function carregarProdutos() {
     if (!productsContainer) return;
 
@@ -563,16 +598,19 @@ async function carregarProdutos() {
 
         const dados = await resposta.json();
 
+        let listaProdutos;
+
         if (Array.isArray(dados)) {
-            produtos = dados;
+            listaProdutos = dados;
         } else if (Array.isArray(dados.produtos)) {
-            produtos = dados.produtos;
+            listaProdutos = dados.produtos;
         } else if (Array.isArray(dados.products)) {
-            produtos = dados.products;
+            listaProdutos = dados.products;
         } else {
-            produtos = [];
+            listaProdutos = [];
         }
 
+        produtos = garantirProdutosIphone11(listaProdutos);
         renderizarProdutos(produtos);
     } catch (erro) {
         console.error(erro);
