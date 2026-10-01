@@ -2808,334 +2808,6 @@
 </style>
 
 
-        /* =================================================
-           LOGIN PRO — ANIMAÇÕES + PROTEÇÃO
-        ================================================= */
-        #authScreen {
-            overflow: hidden;
-            isolation: isolate;
-            background:
-                radial-gradient(circle at 50% 100%, rgba(255,115,0,.10), transparent 36%),
-                radial-gradient(circle at 15% 15%, rgba(255,115,0,.12), transparent 28%),
-                #06070a;
-        }
-
-        .auth-bg-grid,
-        .auth-orb,
-        .auth-orb-2,
-        .auth-particles {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-        }
-
-        .auth-bg-grid {
-            opacity: .32;
-            background-image:
-                linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
-            background-size: 38px 38px;
-            mask-image: radial-gradient(circle at center, black 25%, transparent 85%);
-            animation: techGrid 18s linear infinite;
-        }
-
-        .auth-orb::before,
-        .auth-orb::after,
-        .auth-orb-2::before,
-        .auth-orb-2::after {
-            content: "";
-            position: absolute;
-            border-radius: 999px;
-            filter: blur(2px);
-        }
-
-        .auth-orb::before {
-            width: 260px;
-            height: 260px;
-            left: -80px;
-            top: 8%;
-            background: radial-gradient(circle, rgba(255,115,0,.20), transparent 68%);
-            animation: orbFloat 8s ease-in-out infinite;
-        }
-
-        .auth-orb::after {
-            width: 360px;
-            height: 360px;
-            right: -140px;
-            bottom: -80px;
-            background: radial-gradient(circle, rgba(255,177,66,.14), transparent 70%);
-            animation: orbFloat 11s ease-in-out infinite reverse;
-        }
-
-        .auth-orb-2::before {
-            width: 170px;
-            height: 170px;
-            right: 20%;
-            top: -60px;
-            background: radial-gradient(circle, rgba(255,255,255,.055), transparent 72%);
-            animation: orbPulse 6s ease-in-out infinite;
-        }
-
-        .auth-orb-2::after {
-            width: 130px;
-            height: 130px;
-            left: 18%;
-            bottom: 2%;
-            background: radial-gradient(circle, rgba(255,115,0,.10), transparent 70%);
-            animation: orbPulse 5s ease-in-out infinite reverse;
-        }
-
-        .auth-particles {
-            opacity: .6;
-            background-image:
-                radial-gradient(circle, rgba(255,255,255,.75) 0 1px, transparent 1.5px),
-                radial-gradient(circle, rgba(255,115,0,.85) 0 1px, transparent 1.5px);
-            background-size: 110px 110px, 170px 170px;
-            background-position: 0 0, 60px 40px;
-            animation: particlesDrift 24s linear infinite;
-        }
-
-        .auth-box {
-            position: relative;
-            z-index: 2;
-            overflow: hidden;
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            background: linear-gradient(145deg, rgba(17,17,17,.94), rgba(9,10,12,.92));
-            border-color: rgba(255,255,255,.08);
-            box-shadow:
-                0 28px 90px rgba(0,0,0,.56),
-                0 0 0 1px rgba(255,115,0,.025),
-                0 0 65px rgba(255,115,0,.06);
-            animation: authCardIn .75s cubic-bezier(.22,.84,.3,1) both;
-        }
-
-        .auth-box::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            border-radius: inherit;
-            padding: 1px;
-            background: linear-gradient(120deg, rgba(255,115,0,.42), transparent 30%, transparent 70%, rgba(255,180,76,.18));
-            -webkit-mask:
-                linear-gradient(#000 0 0) content-box,
-                linear-gradient(#000 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            opacity: .8;
-        }
-
-        .auth-logo {
-            animation: authLogoIn .9s .12s both;
-        }
-
-        .auth-logo h1 span {
-            text-shadow: 0 0 24px rgba(255,115,0,.38);
-        }
-
-        .auth-tabs {
-            position: relative;
-        }
-
-        .auth-tabs::after {
-            content: "";
-            position: absolute;
-            left: 5px;
-            top: 5px;
-            bottom: 5px;
-            width: calc(50% - 5px);
-            border-radius: 9px;
-            background: rgba(255,115,0,.12);
-            border: 1px solid rgba(255,115,0,.28);
-            pointer-events: none;
-            transition: transform .28s ease;
-        }
-
-        .auth-tabs:has(#tabCadastro.active)::after {
-            transform: translateX(100%);
-        }
-
-        .auth-tabs button {
-            position: relative;
-            z-index: 1;
-            transition: color .2s ease, transform .2s ease;
-        }
-
-        .auth-tabs button:active {
-            transform: scale(.97);
-        }
-
-        .auth-submit {
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 12px 30px rgba(255,115,0,.18);
-            transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
-        }
-
-        .auth-submit::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -130%;
-            width: 70%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,.28), transparent);
-            transform: skewX(-20deg);
-            animation: buttonShine 3.4s ease-in-out infinite;
-        }
-
-        .auth-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 16px 36px rgba(255,115,0,.25);
-            filter: brightness(1.04);
-        }
-
-        .auth-submit:active {
-            transform: translateY(0) scale(.99);
-        }
-
-        .auth-trust,
-        .auth-contact,
-        .auth-copyright,
-        .auth-legal {
-            animation: authFadeUp .65s both;
-        }
-
-        .auth-trust { animation-delay: .28s; }
-        .auth-legal { animation-delay: .34s; }
-        .auth-contact { animation-delay: .40s; }
-        .auth-copyright { animation-delay: .46s; }
-
-        .auth-security-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .auth-security-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            min-height: 42px;
-            padding: 9px 10px;
-            border: 1px solid rgba(255,255,255,.06);
-            background: rgba(255,255,255,.025);
-            border-radius: 12px;
-            color: #bfc4cc;
-            font-size: 11px;
-            font-weight: 800;
-        }
-
-        .auth-security-badge .dot {
-            width: 8px;
-            height: 8px;
-            flex: 0 0 auto;
-            border-radius: 50%;
-            background: #ff8c22;
-            box-shadow: 0 0 12px rgba(255,115,0,.8);
-            animation: statusPulse 1.8s ease-in-out infinite;
-        }
-
-        .auth-security-badge strong {
-            display: block;
-            color: #fff;
-            font-size: 11px;
-            margin-bottom: 2px;
-        }
-
-        .auth-24h {
-            margin-top: 10px;
-            display: flex;
-            justify-content: center;
-            gap: 7px;
-            align-items: center;
-            color: #aeb4bd;
-            font-size: 11px;
-        }
-
-        .auth-24h strong {
-            color: #fff;
-        }
-
-        @keyframes authCardIn {
-            from { opacity: 0; transform: translateY(24px) scale(.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        @keyframes authLogoIn {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes authFadeUp {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes buttonShine {
-            0%, 60%, 100% { left: -130%; }
-            22% { left: 150%; }
-        }
-
-        @keyframes techGrid {
-            from { transform: translate3d(0,0,0); }
-            to { transform: translate3d(38px,38px,0); }
-        }
-
-        @keyframes orbFloat {
-            0%, 100% { transform: translate3d(0,0,0) scale(1); }
-            50% { transform: translate3d(18px,-15px,0) scale(1.06); }
-        }
-
-        @keyframes orbPulse {
-            0%, 100% { transform: scale(.92); opacity: .55; }
-            50% { transform: scale(1.08); opacity: .95; }
-        }
-
-        @keyframes particlesDrift {
-            from { background-position: 0 0, 60px 40px; }
-            to { background-position: 0 520px, 360px 620px; }
-        }
-
-        @keyframes statusPulse {
-            0%, 100% { transform: scale(.85); opacity: .65; }
-            50% { transform: scale(1.25); opacity: 1; }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .auth-bg-grid,
-            .auth-particles,
-            .auth-orb::before,
-            .auth-orb::after,
-            .auth-orb-2::before,
-            .auth-orb-2::after,
-            .auth-box,
-            .auth-logo,
-            .auth-trust,
-            .auth-legal,
-            .auth-contact,
-            .auth-copyright,
-            .auth-submit::before,
-            .auth-security-badge .dot {
-                animation: none !important;
-            }
-            .auth-tabs::after {
-                transition: none;
-            }
-        }
-
-        @media (max-width: 500px) {
-            .auth-security-row {
-                grid-template-columns: 1fr;
-            }
-            .auth-box {
-                padding: 22px 17px;
-                border-radius: 19px;
-            }
-        }
-
 <style id="techshop-layout-v2">
     /* =====================================================
        TECHSHOP V2 — ORGANIZAÇÃO PC + CELULAR
@@ -3327,6 +2999,210 @@
         .main-nav { gap: 2px; }
         .main-nav a, .nav-link-button { font-size: 10px; padding: 8px 8px; }
     }
+
+
+/* =================================================
+   LOGIN PRO — ANIMAÇÕES + PROTEÇÃO
+================================================= */
+#authScreen {
+    overflow: hidden;
+    isolation: isolate;
+    background:
+        radial-gradient(circle at 50% 100%, rgba(255,115,0,.10), transparent 36%),
+        radial-gradient(circle at 15% 15%, rgba(255,115,0,.12), transparent 28%),
+        #06070a;
+}
+.auth-bg-grid, .auth-orb, .auth-orb-2, .auth-particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+.auth-bg-grid {
+    opacity: .32;
+    background-image:
+        linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
+    background-size: 38px 38px;
+    mask-image: radial-gradient(circle at center, black 25%, transparent 85%);
+    -webkit-mask-image: radial-gradient(circle at center, black 25%, transparent 85%);
+    animation: techGrid 18s linear infinite;
+}
+.auth-orb::before, .auth-orb::after, .auth-orb-2::before, .auth-orb-2::after {
+    content: "";
+    position: absolute;
+    border-radius: 999px;
+    filter: blur(2px);
+}
+.auth-orb::before {
+    width: 260px; height: 260px; left: -80px; top: 8%;
+    background: radial-gradient(circle, rgba(255,115,0,.20), transparent 68%);
+    animation: orbFloat 8s ease-in-out infinite;
+}
+.auth-orb::after {
+    width: 360px; height: 360px; right: -140px; bottom: -80px;
+    background: radial-gradient(circle, rgba(255,177,66,.14), transparent 70%);
+    animation: orbFloat 11s ease-in-out infinite reverse;
+}
+.auth-orb-2::before {
+    width: 170px; height: 170px; right: 20%; top: -60px;
+    background: radial-gradient(circle, rgba(255,255,255,.055), transparent 72%);
+    animation: orbPulse 6s ease-in-out infinite;
+}
+.auth-orb-2::after {
+    width: 130px; height: 130px; left: 18%; bottom: 2%;
+    background: radial-gradient(circle, rgba(255,115,0,.10), transparent 70%);
+    animation: orbPulse 5s ease-in-out infinite reverse;
+}
+.auth-particles {
+    opacity: .6;
+    background-image:
+        radial-gradient(circle, rgba(255,255,255,.75) 0 1px, transparent 1.5px),
+        radial-gradient(circle, rgba(255,115,0,.85) 0 1px, transparent 1.5px);
+    background-size: 110px 110px, 170px 170px;
+    background-position: 0 0, 60px 40px;
+    animation: particlesDrift 24s linear infinite;
+}
+.auth-box {
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    background: linear-gradient(145deg, rgba(17,17,17,.94), rgba(9,10,12,.92));
+    border-color: rgba(255,255,255,.08);
+    box-shadow:
+        0 28px 90px rgba(0,0,0,.56),
+        0 0 0 1px rgba(255,115,0,.025),
+        0 0 65px rgba(255,115,0,.06);
+    animation: authCardIn .75s cubic-bezier(.22,.84,.3,1) both;
+}
+.auth-box::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(120deg, rgba(255,115,0,.42), transparent 30%, transparent 70%, rgba(255,180,76,.18));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: .8;
+}
+.auth-logo { animation: authLogoIn .9s .12s both; }
+.auth-logo h1 span { text-shadow: 0 0 24px rgba(255,115,0,.38); }
+.auth-tabs { position: relative; }
+.auth-tabs::after {
+    content: "";
+    position: absolute;
+    left: 5px; top: 5px; bottom: 5px;
+    width: calc(50% - 5px);
+    border-radius: 9px;
+    background: rgba(255,115,0,.12);
+    border: 1px solid rgba(255,115,0,.28);
+    pointer-events: none;
+    transition: transform .28s ease;
+}
+.auth-tabs:has(#tabCadastro.active)::after { transform: translateX(100%); }
+.auth-tabs button {
+    position: relative;
+    z-index: 1;
+    transition: color .2s ease, transform .2s ease, background .2s ease;
+}
+.auth-tabs button.active { background: transparent; color: #fff; }
+.auth-tabs button:active { transform: scale(.97); }
+.auth-submit {
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(255,115,0,.18);
+    transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+}
+.auth-submit::before {
+    content: "";
+    position: absolute;
+    top: 0; left: -130%;
+    width: 70%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.28), transparent);
+    transform: skewX(-20deg);
+    animation: buttonShine 3.4s ease-in-out infinite;
+}
+.auth-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 36px rgba(255,115,0,.25);
+    filter: brightness(1.04);
+}
+.auth-submit:active { transform: translateY(0) scale(.99); }
+.auth-trust, .auth-contact, .auth-copyright, .auth-legal, .auth-security-row, .auth-24h {
+    animation: authFadeUp .65s both;
+}
+.auth-trust { animation-delay: .28s; }
+.auth-legal { animation-delay: .34s; }
+.auth-contact { animation-delay: .40s; }
+.auth-copyright { animation-delay: .46s; }
+.auth-security-row { animation-delay: .24s; }
+.auth-24h { animation-delay: .42s; }
+.auth-security-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 10px;
+}
+.auth-security-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 9px 10px;
+    border: 1px solid rgba(255,255,255,.06);
+    background: rgba(255,255,255,.025);
+    border-radius: 12px;
+    color: #bfc4cc;
+    font-size: 11px;
+    font-weight: 800;
+}
+.auth-security-badge .dot {
+    width: 8px; height: 8px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: #ff8c22;
+    box-shadow: 0 0 12px rgba(255,115,0,.8);
+    animation: statusPulse 1.8s ease-in-out infinite;
+}
+.auth-security-badge strong {
+    display: block;
+    color: #fff;
+    font-size: 11px;
+    margin-bottom: 2px;
+}
+.auth-24h {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+    align-items: center;
+    color: #aeb4bd;
+    font-size: 11px;
+}
+.auth-24h strong { color: #fff; }
+@keyframes authCardIn { from { opacity: 0; transform: translateY(24px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes authLogoIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes authFadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes buttonShine { 0%, 60%, 100% { left: -130%; } 22% { left: 150%; } }
+@keyframes techGrid { from { transform: translate3d(0,0,0); } to { transform: translate3d(38px,38px,0); } }
+@keyframes orbFloat { 0%, 100% { transform: translate3d(0,0,0) scale(1); } 50% { transform: translate3d(18px,-15px,0) scale(1.06); } }
+@keyframes orbPulse { 0%, 100% { transform: scale(.92); opacity: .55; } 50% { transform: scale(1.08); opacity: .95; } }
+@keyframes particlesDrift { from { background-position: 0 0, 60px 40px; } to { background-position: 0 520px, 360px 620px; } }
+@keyframes statusPulse { 0%, 100% { transform: scale(.85); opacity: .65; } 50% { transform: scale(1.25); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+    .auth-bg-grid, .auth-particles, .auth-orb::before, .auth-orb::after, .auth-orb-2::before, .auth-orb-2::after,
+    .auth-box, .auth-logo, .auth-trust, .auth-legal, .auth-contact, .auth-copyright, .auth-security-row,
+    .auth-24h, .auth-submit::before, .auth-security-badge .dot { animation: none !important; }
+    .auth-tabs::after { transition: none; }
+}
+@media (max-width: 500px) {
+    .auth-security-row { grid-template-columns: 1fr; }
+    .auth-box { padding: 22px 17px; border-radius: 19px; }
+}
 </style>
 
 </head>
@@ -3341,10 +3217,10 @@
 
 <section id="authScreen">
 
-    <div class="auth-bg-grid"></div>
-    <div class="auth-orb"></div>
-    <div class="auth-orb-2"></div>
-    <div class="auth-particles"></div>
+    <div class="auth-bg-grid" aria-hidden="true"></div>
+    <div class="auth-orb" aria-hidden="true"></div>
+    <div class="auth-orb-2" aria-hidden="true"></div>
+    <div class="auth-particles" aria-hidden="true"></div>
 
     <div class="auth-box">
 
@@ -3450,6 +3326,21 @@
 
         <!-- CADASTRO -->
 
+        <div class="auth-security-row">
+            <div class="auth-security-badge">
+                <span class="dot" aria-hidden="true"></span>
+                <span><strong>Proteção ativa</strong>sessão monitorada</span>
+            </div>
+            <div class="auth-security-badge">
+                <span class="dot" aria-hidden="true"></span>
+                <span><strong>Anti-tamper</strong>integridade da página</span>
+            </div>
+        </div>
+
+        <div class="auth-24h">
+            🛡️ <span><strong>Suporte 24h</strong> e atendimento seguro</span>
+        </div>
+
         <div class="auth-trust">
 
             <div class="auth-trust-title">
@@ -3469,27 +3360,6 @@
 
         <div class="auth-contact">
             Suporte: <strong>(19) 97154-4914</strong>
-        </div>
-
-        <div class="auth-24h">
-            🕐 <strong>Suporte 24 horas</strong> • atendimento online para sua conta e pedidos
-        </div>
-
-        <div class="auth-security-row">
-            <div class="auth-security-badge">
-                <span class="dot"></span>
-                <div>
-                    <strong>Proteção ativa</strong>
-                    Anti-tamper e validação da sessão
-                </div>
-            </div>
-            <div class="auth-security-badge">
-                <span class="dot"></span>
-                <div>
-                    <strong>Conta protegida</strong>
-                    Autenticação segura da TECHSHOP
-                </div>
-            </div>
         </div>
 
         <div class="auth-copyright">
@@ -4388,52 +4258,6 @@ function fecharSuporte(){
 }
 function fecharSuporteFora(e){ if(e.target===e.currentTarget) fecharSuporte(); }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ fecharInfoLoja(); fecharSuporte(); } });
-</script>
-
-<script>
-/* =========================================================
-   TECHSHOP — CAMADA BÁSICA ANTI-TAMPER DO FRONT-END
-   Observação: a autenticação real continua sendo validada no servidor.
-========================================================= */
-(function(){
-    const auth = document.getElementById('authScreen');
-    if (!auth) return;
-
-    let protegido = true;
-    let ultimoAviso = 0;
-
-    function sinalizarProtecao(){
-        const agora = Date.now();
-        if (agora - ultimoAviso < 2500) return;
-        ultimoAviso = agora;
-        const box = auth.querySelector('.auth-box');
-        if (!box) return;
-        box.animate(
-            [
-                { transform: 'scale(1)' },
-                { transform: 'scale(1.008)' },
-                { transform: 'scale(1)' }
-            ],
-            { duration: 280, easing: 'ease-out' }
-        );
-    }
-
-    const observer = new MutationObserver(function(mutations){
-        if (!protegido) return;
-        const alteracaoSensivel = mutations.some(m =>
-            m.type === 'childList' ||
-            (m.type === 'attributes' && ['class','style','hidden'].includes(m.attributeName))
-        );
-        if (alteracaoSensivel) sinalizarProtecao();
-    });
-
-    observer.observe(auth, { subtree: true, childList: true, attributes: true });
-
-    window.addEventListener('beforeunload', function(){
-        protegido = false;
-        observer.disconnect();
-    });
-})();
 </script>
 
 <script src="script.js"></script>
