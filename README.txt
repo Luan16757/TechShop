@@ -1,5 +1,3 @@
-TECHSHOP - catálogo de peças
-
-Foram adicionadas 13 peças de reposição como fallback caso não existam no /api/produtos.
-Os 13 preços novos usam o valor anunciado no Mercado Livre como referência e somam R$ 30,00.
-Os dois produtos de iPhone 11 que já existiam na loja foram mantidos nos preços atuais da TECHSHOP.
+TECHSHOP - catálogo expandido de peças para iPhone.
+Inclui telas e baterias para os principais modelos de iPhone do catálogo, com imagens de referência e descrições de compatibilidade.
+As imagens são de referência de peças/reposição; confirmar modelo exato antes da compra e instalação.

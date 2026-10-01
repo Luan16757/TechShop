@@ -692,6 +692,671 @@ function garantirProdutosIphone11(lista) {
             descricao: "Bateria de reposição para iPhone XR com capacidade de 2942mAh, indicada para recuperação da autonomia do aparelho. Confira o modelo e faça a instalação com técnico especializado.",
             imagem: "https://www.bunnings.com.au/dj/images/1086174.jpg"
         }
+,
+{
+        "id": "iphone-6-tela",
+        "nome": "Tela Display iPhone 6 LCD/OLED Touch",
+        "preco": 79.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 6, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://cdn.store-factory.com/www.lapommediscount.com/content/product_9572860hd.jpg?v=1558625251"
+},
+{
+        "id": "iphone-6-bateria",
+        "nome": "Bateria de Reposição iPhone 6",
+        "preco": 74.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 6, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://i.ebayimg.com/images/g/cuMAAOSwIylZ1cR9/s-l500.jpg"
+},
+{
+        "id": "iphone-6-plus-tela",
+        "nome": "Tela Display iPhone 6 Plus LCD/OLED Touch",
+        "preco": 89.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 6 Plus, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://cdn.store-factory.com/www.lapommediscount.com/content/product_9572860hd.jpg?v=1558625251"
+},
+{
+        "id": "iphone-6-plus-bateria",
+        "nome": "Bateria de Reposição iPhone 6 Plus",
+        "preco": 79.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 6 Plus, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://i.ebayimg.com/images/g/cuMAAOSwIylZ1cR9/s-l500.jpg"
+},
+{
+        "id": "iphone-6s-tela",
+        "nome": "Tela Display iPhone 6s LCD/OLED Touch",
+        "preco": 79.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 6s, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://cdn.store-factory.com/www.lapommediscount.com/content/product_9572860hd.jpg?v=1558625251"
+},
+{
+        "id": "iphone-6s-bateria",
+        "nome": "Bateria de Reposição iPhone 6s",
+        "preco": 74.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 6s, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://i.ebayimg.com/images/g/cuMAAOSwIylZ1cR9/s-l500.jpg"
+},
+{
+        "id": "iphone-6s-plus-tela",
+        "nome": "Tela Display iPhone 6s Plus LCD/OLED Touch",
+        "preco": 89.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 6s Plus, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://cdn.store-factory.com/www.lapommediscount.com/content/product_9572860hd.jpg?v=1558625251"
+},
+{
+        "id": "iphone-6s-plus-bateria",
+        "nome": "Bateria de Reposição iPhone 6s Plus",
+        "preco": 79.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 6s Plus, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://i.ebayimg.com/images/g/cuMAAOSwIylZ1cR9/s-l500.jpg"
+},
+{
+        "id": "iphone-7-tela",
+        "nome": "Tela Display iPhone 7 LCD/OLED Touch",
+        "preco": 87.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 7, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://cdn.store-factory.com/www.lapommediscount.com/content/product_9572860hd.jpg?v=1558625251"
+},
+{
+        "id": "iphone-7-bateria",
+        "nome": "Bateria de Reposição iPhone 7",
+        "preco": 79.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 7, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://i.ebayimg.com/images/g/cuMAAOSwIylZ1cR9/s-l500.jpg"
+},
+{
+        "id": "iphone-7-plus-tela",
+        "nome": "Tela Display iPhone 7 Plus LCD/OLED Touch",
+        "preco": 97.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 7 Plus, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://cdn.store-factory.com/www.lapommediscount.com/content/product_9572860hd.jpg?v=1558625251"
+},
+{
+        "id": "iphone-7-plus-bateria",
+        "nome": "Bateria de Reposição iPhone 7 Plus",
+        "preco": 89.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 7 Plus, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://i.ebayimg.com/images/g/cuMAAOSwIylZ1cR9/s-l500.jpg"
+},
+{
+        "id": "iphone-8-tela",
+        "nome": "Tela Display iPhone 8 LCD/OLED Touch",
+        "preco": 94.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 8, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://cdn.store-factory.com/www.lapommediscount.com/content/product_9572860hd.jpg?v=1558625251"
+},
+{
+        "id": "iphone-8-bateria",
+        "nome": "Bateria de Reposição iPhone 8",
+        "preco": 79.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 8, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://i.ebayimg.com/images/g/cuMAAOSwIylZ1cR9/s-l500.jpg"
+},
+{
+        "id": "iphone-8-plus-tela",
+        "nome": "Tela Display iPhone 8 Plus LCD/OLED Touch",
+        "preco": 104.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 8 Plus, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://cdn.store-factory.com/www.lapommediscount.com/content/product_9572860hd.jpg?v=1558625251"
+},
+{
+        "id": "iphone-8-plus-bateria",
+        "nome": "Bateria de Reposição iPhone 8 Plus",
+        "preco": 89.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 8 Plus, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://i.ebayimg.com/images/g/cuMAAOSwIylZ1cR9/s-l500.jpg"
+},
+{
+        "id": "iphone-x-tela",
+        "nome": "Tela Display iPhone X LCD/OLED Touch",
+        "preco": 129.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone X, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://www.cellspare.com/image/cache/data/Apple/LCD/2018/apple-iphone-x-lcd-screen-display-replacement-main-1000x1000w.jpg"
+},
+{
+        "id": "iphone-x-bateria",
+        "nome": "Bateria de Reposição iPhone X",
+        "preco": 89.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone X, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://i.ebayimg.com/images/g/cuMAAOSwIylZ1cR9/s-l500.jpg"
+},
+{
+        "id": "iphone-xs-tela",
+        "nome": "Tela Display iPhone XS LCD/OLED Touch",
+        "preco": 139.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone XS, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://www.cellspare.com/image/cache/data/Apple/LCD/2018/apple-iphone-x-lcd-screen-display-replacement-main-1000x1000w.jpg"
+},
+{
+        "id": "iphone-xs-bateria",
+        "nome": "Bateria de Reposição iPhone XS",
+        "preco": 99.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone XS, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://i.ebayimg.com/images/g/cuMAAOSwIylZ1cR9/s-l500.jpg"
+},
+{
+        "id": "iphone-xs-max-tela",
+        "nome": "Tela Display iPhone XS Max LCD/OLED Touch",
+        "preco": 159.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone XS Max, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://www.cellspare.com/image/cache/data/Apple/LCD/2018/apple-iphone-x-lcd-screen-display-replacement-main-1000x1000w.jpg"
+},
+{
+        "id": "iphone-xs-max-bateria",
+        "nome": "Bateria de Reposição iPhone XS Max",
+        "preco": 109.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone XS Max, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://i.ebayimg.com/images/g/cuMAAOSwIylZ1cR9/s-l500.jpg"
+},
+{
+        "id": "iphone-xr-tela",
+        "nome": "Tela Display iPhone XR LCD Touch",
+        "preco": 120.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal LCD com touch compatível com iPhone XR. Peça de reposição indicada para aparelho com vidro ou touch danificado. Confira o modelo antes da compra e teste imagem e toque antes da instalação.",
+        "imagem": "https://media.takealot.com/covers_images/6a58dbfa44334bd5b8461db65700c3ed/s-zoom.file"
+},
+{
+        "id": "iphone-se-2-gera-o-tela",
+        "nome": "Tela Display iPhone SE (2ª geração) LCD/OLED Touch",
+        "preco": 99.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone SE (2ª geração), com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://cdn.store-factory.com/www.lapommediscount.com/content/product_9572860hd.jpg?v=1558625251"
+},
+{
+        "id": "iphone-se-2-gera-o-bateria",
+        "nome": "Bateria de Reposição iPhone SE (2ª geração)",
+        "preco": 84.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone SE (2ª geração), indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://i.ebayimg.com/images/g/cuMAAOSwIylZ1cR9/s-l500.jpg"
+},
+{
+        "id": "iphone-11-pro-tela",
+        "nome": "Tela Display iPhone 11 Pro LCD/OLED Touch",
+        "preco": 179.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 11 Pro, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://www.cellspare.com/image/cache/data/Apple/LCD/2018/apple-iphone-x-lcd-screen-display-replacement-main-1000x1000w.jpg"
+},
+{
+        "id": "iphone-11-pro-bateria",
+        "nome": "Bateria de Reposição iPhone 11 Pro",
+        "preco": 109.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 11 Pro, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://m.media-amazon.com/images/I/61bonpkDI-L.jpg"
+},
+{
+        "id": "iphone-11-pro-max-tela",
+        "nome": "Tela Display iPhone 11 Pro Max LCD/OLED Touch",
+        "preco": 199.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 11 Pro Max, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://www.cellspare.com/image/cache/data/Apple/LCD/2018/apple-iphone-x-lcd-screen-display-replacement-main-1000x1000w.jpg"
+},
+{
+        "id": "iphone-11-pro-max-bateria",
+        "nome": "Bateria de Reposição iPhone 11 Pro Max",
+        "preco": 119.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 11 Pro Max, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://m.media-amazon.com/images/I/61bonpkDI-L.jpg"
+},
+{
+        "id": "iphone-12-mini-tela",
+        "nome": "Tela Display iPhone 12 mini LCD/OLED Touch",
+        "preco": 159.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 12 mini, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://media.takealot.com/covers_images/6a58dbfa44334bd5b8461db65700c3ed/s-zoom.file"
+},
+{
+        "id": "iphone-12-mini-bateria",
+        "nome": "Bateria de Reposição iPhone 12 mini",
+        "preco": 119.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 12 mini, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://idocstore.cl/cdn/shop/files/omHkTZBWqhfHDFbU_1597x1198.jpg?v=1734472150"
+},
+{
+        "id": "iphone-12-tela",
+        "nome": "Tela Display iPhone 12 LCD/OLED Touch",
+        "preco": 169.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 12, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://media.takealot.com/covers_images/6a58dbfa44334bd5b8461db65700c3ed/s-zoom.file"
+},
+{
+        "id": "iphone-12-bateria",
+        "nome": "Bateria de Reposição iPhone 12",
+        "preco": 129.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 12, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://idocstore.cl/cdn/shop/files/omHkTZBWqhfHDFbU_1597x1198.jpg?v=1734472150"
+},
+{
+        "id": "iphone-12-pro-tela",
+        "nome": "Tela Display iPhone 12 Pro LCD/OLED Touch",
+        "preco": 189.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 12 Pro, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://media.takealot.com/covers_images/6a58dbfa44334bd5b8461db65700c3ed/s-zoom.file"
+},
+{
+        "id": "iphone-12-pro-bateria",
+        "nome": "Bateria de Reposição iPhone 12 Pro",
+        "preco": 129.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 12 Pro, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://idocstore.cl/cdn/shop/files/omHkTZBWqhfHDFbU_1597x1198.jpg?v=1734472150"
+},
+{
+        "id": "iphone-12-pro-max-tela",
+        "nome": "Tela Display iPhone 12 Pro Max LCD/OLED Touch",
+        "preco": 209.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 12 Pro Max, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://media.takealot.com/covers_images/6a58dbfa44334bd5b8461db65700c3ed/s-zoom.file"
+},
+{
+        "id": "iphone-12-pro-max-bateria",
+        "nome": "Bateria de Reposição iPhone 12 Pro Max",
+        "preco": 139.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 12 Pro Max, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://idocstore.cl/cdn/shop/files/omHkTZBWqhfHDFbU_1597x1198.jpg?v=1734472150"
+},
+{
+        "id": "iphone-13-mini-tela",
+        "nome": "Tela Display iPhone 13 mini LCD/OLED Touch",
+        "preco": 189.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 13 mini, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://media.takealot.com/covers_images/6a58dbfa44334bd5b8461db65700c3ed/s-zoom.file"
+},
+{
+        "id": "iphone-13-mini-bateria",
+        "nome": "Bateria de Reposição iPhone 13 mini",
+        "preco": 139.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 13 mini, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://idocstore.cl/cdn/shop/files/omHkTZBWqhfHDFbU_1597x1198.jpg?v=1734472150"
+},
+{
+        "id": "iphone-13-tela",
+        "nome": "Tela Display iPhone 13 LCD/OLED Touch",
+        "preco": 199.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 13, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://media.takealot.com/covers_images/6a58dbfa44334bd5b8461db65700c3ed/s-zoom.file"
+},
+{
+        "id": "iphone-13-bateria",
+        "nome": "Bateria de Reposição iPhone 13",
+        "preco": 149.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 13, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://idocstore.cl/cdn/shop/files/omHkTZBWqhfHDFbU_1597x1198.jpg?v=1734472150"
+},
+{
+        "id": "iphone-13-pro-tela",
+        "nome": "Tela Display iPhone 13 Pro LCD/OLED Touch",
+        "preco": 249.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 13 Pro, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://media.takealot.com/covers_images/6a58dbfa44334bd5b8461db65700c3ed/s-zoom.file"
+},
+{
+        "id": "iphone-13-pro-bateria",
+        "nome": "Bateria de Reposição iPhone 13 Pro",
+        "preco": 159.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 13 Pro, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://idocstore.cl/cdn/shop/files/omHkTZBWqhfHDFbU_1597x1198.jpg?v=1734472150"
+},
+{
+        "id": "iphone-13-pro-max-tela",
+        "nome": "Tela Display iPhone 13 Pro Max LCD/OLED Touch",
+        "preco": 269.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 13 Pro Max, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://media.takealot.com/covers_images/6a58dbfa44334bd5b8461db65700c3ed/s-zoom.file"
+},
+{
+        "id": "iphone-13-pro-max-bateria",
+        "nome": "Bateria de Reposição iPhone 13 Pro Max",
+        "preco": 169.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 13 Pro Max, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://idocstore.cl/cdn/shop/files/omHkTZBWqhfHDFbU_1597x1198.jpg?v=1734472150"
+},
+{
+        "id": "iphone-se-3-gera-o-tela",
+        "nome": "Tela Display iPhone SE (3ª geração) LCD/OLED Touch",
+        "preco": 109.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone SE (3ª geração), com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://cdn.store-factory.com/www.lapommediscount.com/content/product_9572860hd.jpg?v=1558625251"
+},
+{
+        "id": "iphone-se-3-gera-o-bateria",
+        "nome": "Bateria de Reposição iPhone SE (3ª geração)",
+        "preco": 99.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone SE (3ª geração), indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://i.ebayimg.com/images/g/cuMAAOSwIylZ1cR9/s-l500.jpg"
+},
+{
+        "id": "iphone-14-tela",
+        "nome": "Tela Display iPhone 14 LCD/OLED Touch",
+        "preco": 219.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 14, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://www.mytrendyphone.nl/images/iPhone-15-LCD-Display-Black-Original-Quality-12102023-01-p.webp"
+},
+{
+        "id": "iphone-14-bateria",
+        "nome": "Bateria de Reposição iPhone 14",
+        "preco": 169.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 14, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://idocstore.cl/cdn/shop/files/omHkTZBWqhfHDFbU_1597x1198.jpg?v=1734472150"
+},
+{
+        "id": "iphone-14-plus-tela",
+        "nome": "Tela Display iPhone 14 Plus LCD/OLED Touch",
+        "preco": 239.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 14 Plus, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://www.mytrendyphone.nl/images/iPhone-15-LCD-Display-Black-Original-Quality-12102023-01-p.webp"
+},
+{
+        "id": "iphone-14-plus-bateria",
+        "nome": "Bateria de Reposição iPhone 14 Plus",
+        "preco": 179.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 14 Plus, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://idocstore.cl/cdn/shop/files/omHkTZBWqhfHDFbU_1597x1198.jpg?v=1734472150"
+},
+{
+        "id": "iphone-14-pro-tela",
+        "nome": "Tela Display iPhone 14 Pro LCD/OLED Touch",
+        "preco": 299.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 14 Pro, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://www.mytrendyphone.nl/images/iPhone-15-LCD-Display-Black-Original-Quality-12102023-01-p.webp"
+},
+{
+        "id": "iphone-14-pro-bateria",
+        "nome": "Bateria de Reposição iPhone 14 Pro",
+        "preco": 189.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 14 Pro, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://idocstore.cl/cdn/shop/files/omHkTZBWqhfHDFbU_1597x1198.jpg?v=1734472150"
+},
+{
+        "id": "iphone-14-pro-max-tela",
+        "nome": "Tela Display iPhone 14 Pro Max LCD/OLED Touch",
+        "preco": 329.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 14 Pro Max, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://www.mytrendyphone.nl/images/iPhone-15-LCD-Display-Black-Original-Quality-12102023-01-p.webp"
+},
+{
+        "id": "iphone-14-pro-max-bateria",
+        "nome": "Bateria de Reposição iPhone 14 Pro Max",
+        "preco": 199.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 14 Pro Max, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://idocstore.cl/cdn/shop/files/omHkTZBWqhfHDFbU_1597x1198.jpg?v=1734472150"
+},
+{
+        "id": "iphone-15-tela",
+        "nome": "Tela Display iPhone 15 LCD/OLED Touch",
+        "preco": 239.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 15, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://www.mytrendyphone.nl/images/iPhone-15-LCD-Display-Black-Original-Quality-12102023-01-p.webp"
+},
+{
+        "id": "iphone-15-bateria",
+        "nome": "Bateria de Reposição iPhone 15",
+        "preco": 189.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 15, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://idocstore.cl/cdn/shop/files/omHkTZBWqhfHDFbU_1597x1198.jpg?v=1734472150"
+},
+{
+        "id": "iphone-15-plus-tela",
+        "nome": "Tela Display iPhone 15 Plus LCD/OLED Touch",
+        "preco": 259.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 15 Plus, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://www.mytrendyphone.nl/images/iPhone-15-LCD-Display-Black-Original-Quality-12102023-01-p.webp"
+},
+{
+        "id": "iphone-15-plus-bateria",
+        "nome": "Bateria de Reposição iPhone 15 Plus",
+        "preco": 199.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 15 Plus, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://idocstore.cl/cdn/shop/files/omHkTZBWqhfHDFbU_1597x1198.jpg?v=1734472150"
+},
+{
+        "id": "iphone-15-pro-tela",
+        "nome": "Tela Display iPhone 15 Pro LCD/OLED Touch",
+        "preco": 319.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 15 Pro, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://www.macfactory.in/cdn/shop/files/1729949804-671cf06c2ac3f_1200x1200_crop_center.webp?v=1750746833"
+},
+{
+        "id": "iphone-15-pro-bateria",
+        "nome": "Bateria de Reposição iPhone 15 Pro",
+        "preco": 219.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 15 Pro, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://idocstore.cl/cdn/shop/files/omHkTZBWqhfHDFbU_1597x1198.jpg?v=1734472150"
+},
+{
+        "id": "iphone-15-pro-max-tela",
+        "nome": "Tela Display iPhone 15 Pro Max LCD/OLED Touch",
+        "preco": 349.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 15 Pro Max, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://www.macfactory.in/cdn/shop/files/1729949804-671cf06c2ac3f_1200x1200_crop_center.webp?v=1750746833"
+},
+{
+        "id": "iphone-15-pro-max-bateria",
+        "nome": "Bateria de Reposição iPhone 15 Pro Max",
+        "preco": 229.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 15 Pro Max, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://idocstore.cl/cdn/shop/files/omHkTZBWqhfHDFbU_1597x1198.jpg?v=1734472150"
+},
+{
+        "id": "iphone-16e-tela",
+        "nome": "Tela Display iPhone 16e LCD/OLED Touch",
+        "preco": 249.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 16e, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://lcd-phone.com/126776-large_default/iphone-16-pro-max-screen-service-pack-661-44955.jpg"
+},
+{
+        "id": "iphone-16e-bateria",
+        "nome": "Bateria de Reposição iPhone 16e",
+        "preco": 219.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 16e, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://idocstore.cl/cdn/shop/files/omHkTZBWqhfHDFbU_1597x1198.jpg?v=1734472150"
+},
+{
+        "id": "iphone-16-tela",
+        "nome": "Tela Display iPhone 16 LCD/OLED Touch",
+        "preco": 279.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 16, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://www.mytrendyphone.nl/images/iPhone-15-LCD-Display-Black-Original-Quality-12102023-01-p.webp"
+},
+{
+        "id": "iphone-16-bateria",
+        "nome": "Bateria de Reposição iPhone 16",
+        "preco": 229.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 16, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://idocstore.cl/cdn/shop/files/omHkTZBWqhfHDFbU_1597x1198.jpg?v=1734472150"
+},
+{
+        "id": "iphone-16-plus-tela",
+        "nome": "Tela Display iPhone 16 Plus LCD/OLED Touch",
+        "preco": 299.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 16 Plus, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://www.mytrendyphone.nl/images/iPhone-15-LCD-Display-Black-Original-Quality-12102023-01-p.webp"
+},
+{
+        "id": "iphone-16-plus-bateria",
+        "nome": "Bateria de Reposição iPhone 16 Plus",
+        "preco": 239.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 16 Plus, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://idocstore.cl/cdn/shop/files/omHkTZBWqhfHDFbU_1597x1198.jpg?v=1734472150"
+},
+{
+        "id": "iphone-16-pro-tela",
+        "nome": "Tela Display iPhone 16 Pro LCD/OLED Touch",
+        "preco": 349.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 16 Pro, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://lcd-phone.com/126776-large_default/iphone-16-pro-max-screen-service-pack-661-44955.jpg"
+},
+{
+        "id": "iphone-16-pro-bateria",
+        "nome": "Bateria de Reposição iPhone 16 Pro",
+        "preco": 249.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 16 Pro, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://idocstore.cl/cdn/shop/files/omHkTZBWqhfHDFbU_1597x1198.jpg?v=1734472150"
+},
+{
+        "id": "iphone-16-pro-max-tela",
+        "nome": "Tela Display iPhone 16 Pro Max LCD/OLED Touch",
+        "preco": 379.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 16 Pro Max, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://lcd-phone.com/126776-large_default/iphone-16-pro-max-screen-service-pack-661-44955.jpg"
+},
+{
+        "id": "iphone-16-pro-max-bateria",
+        "nome": "Bateria de Reposição iPhone 16 Pro Max",
+        "preco": 269.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 16 Pro Max, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://idocstore.cl/cdn/shop/files/omHkTZBWqhfHDFbU_1597x1198.jpg?v=1734472150"
+},
+{
+        "id": "iphone-17e-tela",
+        "nome": "Tela Display iPhone 17e LCD/OLED Touch",
+        "preco": 399.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 17e, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://screenshelf.ie/cdn/shop/files/s-l1600_7202396b-c2cd-4193-9045-f58f6b7e59ac.webp?v=1770931142&width=1946"
+},
+{
+        "id": "iphone-17e-bateria",
+        "nome": "Bateria de Reposição iPhone 17e",
+        "preco": 279.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 17e, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://idocstore.cl/cdn/shop/files/omHkTZBWqhfHDFbU_1597x1198.jpg?v=1734472150"
+},
+{
+        "id": "iphone-17-tela",
+        "nome": "Tela Display iPhone 17 LCD/OLED Touch",
+        "preco": 429.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 17, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://screenshelf.ie/cdn/shop/files/s-l1600_7202396b7e59ac.webp?v=1770931142&width=1946"
+},
+{
+        "id": "iphone-17-bateria",
+        "nome": "Bateria de Reposição iPhone 17",
+        "preco": 289.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 17, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://idocstore.cl/cdn/shop/files/omHkTZBWqhfHDFbU_1597x1198.jpg?v=1734472150"
+},
+{
+        "id": "iphone-air-tela",
+        "nome": "Tela Display iPhone Air LCD/OLED Touch",
+        "preco": 479.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone Air, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://www.vopmart.com/media/catalog/product/cache/ee14c5ab36c97d39d331f867fa3bee63/i/p/iphone_air_original_xdr_oled_screen_2.jpg"
+},
+{
+        "id": "iphone-air-bateria",
+        "nome": "Bateria de Reposição iPhone Air",
+        "preco": 299.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone Air, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://idocstore.cl/cdn/shop/files/omHkTZBWqhfHDFbU_1597x1198.jpg?v=1734472150"
+},
+{
+        "id": "iphone-17-pro-tela",
+        "nome": "Tela Display iPhone 17 Pro LCD/OLED Touch",
+        "preco": 529.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 17 Pro, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://image.pushauction.com/0/0/87ed1798-a055-4c80-998c-c9e29dbf2385/8b3fbbfd-6094-463e-80a5-283ee5f4462d.jpg"
+},
+{
+        "id": "iphone-17-pro-bateria",
+        "nome": "Bateria de Reposição iPhone 17 Pro",
+        "preco": 329.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 17 Pro, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://guide-images.cdn.ifixit.com/igi/bmsEFqK5vNPSxtdd.full"
+},
+{
+        "id": "iphone-17-pro-max-tela",
+        "nome": "Tela Display iPhone 17 Pro Max LCD/OLED Touch",
+        "preco": 579.99,
+        "categoria": "Peças iPhone",
+        "descricao": "Display frontal de reposição para iPhone 17 Pro Max, com touch integrado e construção compatível com a geração do aparelho. Indicado para substituição de tela quebrada, trincada ou com falhas de imagem/toque. Confirme o modelo exato antes da compra e teste a peça antes da instalação.",
+        "imagem": "https://image.pushauction.com/0/0/87ed1798-a055-4c80-998c-c9e29dbf2385/8b3fbbfd-6094-463e-80a5-283ee5f4462d.jpg"
+},
+{
+        "id": "iphone-17-pro-max-bateria",
+        "nome": "Bateria de Reposição iPhone 17 Pro Max",
+        "preco": 349.9,
+        "categoria": "Peças iPhone",
+        "descricao": "Bateria de reposição compatível com iPhone 17 Pro Max, indicada para aparelhos com autonomia reduzida, desligamentos ou desgaste da bateria. A instalação deve ser feita por técnico qualificado e a compatibilidade deve ser conferida pelo modelo do aparelho.",
+        "imagem": "https://guide-images.cdn.ifixit.com/igi/bmsEFqK5vNPSxtdd.full"
+}
     ];
 
     for (const novo of novosProdutos) {
@@ -702,6 +1367,13 @@ function garantirProdutosIphone11(lista) {
         });
 
         if (!jaExiste) base.push(novo);
+    }
+
+    for (const produto of base) {
+        const id = String(produto?.id ?? produto?._id ?? produto?.codigo ?? "");
+        if (id.startsWith("iphone-") && !id.startsWith("iphone-kit")) {
+            produto.categoria = "Peças iPhone";
+        }
     }
 
     return base;
