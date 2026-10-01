@@ -1,11 +1,11 @@
-TECHSHOP - BARRA FIXA
+TECHSHOP — CHECKOUT BAIRRO + RESUMO PRO
 
-Alteração:
-- Cabeçalho/navegação agora fica FIXO no topo durante toda a rolagem.
-- Logo TECHSHOP, Início, Produtos, Pedidos, Sobre a loja, Suporte, Conta e Carrinho permanecem no mesmo lugar.
-- Adicionado espaçamento superior para o conteúdo não ficar escondido atrás da barra.
-- Links por âncora recebem margem de rolagem para não parar atrás do cabeçalho.
-
-Instalação:
 Substitua somente o arquivo techshop.html.
-Não altere server.js, script.js ou .env.
+
+Alterações:
+- Campo obrigatório Bairro no finalizar pedido.
+- Resumo do pedido com visual mais profissional.
+- Destaque do total e aviso de pagamento via Pix.
+- Responsivo para celular.
+
+Não substitua server.js, script.js ou .env com este pacote.

@@ -3568,6 +3568,157 @@ header::after{
 }
 </style>
 
+
+<style id="techshop-checkout-pro">
+/* =====================================================
+   CHECKOUT PRO — BAIRRO + RESUMO
+===================================================== */
+.checkout-form .field:has(#bairro) input,
+.checkout-form .field:has(#cidade) input,
+.checkout-form .field:has(#estado) input,
+.checkout-form .field:has(#numero) input,
+.checkout-form .field:has(#cep) input {
+    transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+
+.checkout-form .field:has(#bairro) input:focus,
+.checkout-form .field:has(#cidade) input:focus,
+.checkout-form .field:has(#estado) input:focus,
+.checkout-form .field:has(#numero) input:focus,
+.checkout-form .field:has(#cep) input:focus {
+    border-color: rgba(255,115,0,.9);
+    box-shadow: 0 0 0 3px rgba(255,115,0,.10), 0 8px 24px rgba(0,0,0,.18);
+    transform: translateY(-1px);
+}
+
+#checkoutResumo {
+    position: relative;
+    overflow: hidden;
+    margin-top: 20px;
+    padding: 0 !important;
+    background: linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.018)) !important;
+    border: 1px solid rgba(255,255,255,.08) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 18px 40px rgba(0,0,0,.25);
+}
+
+#checkoutResumo::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at 100% 0%, rgba(255,115,0,.12), transparent 34%);
+}
+
+.resumo-checkout {
+    position: relative;
+    padding: 18px;
+}
+
+.resumo-checkout h3 {
+    margin: 0 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 16px;
+    color: #fff;
+}
+
+.resumo-checkout h3::before {
+    content: "🧾";
+    font-size: 18px;
+}
+
+.resumo-checkout::after {
+    content: "🔒 Pagamento seguro via Pix";
+    display: inline-flex;
+    align-items: center;
+    margin-top: 14px;
+    padding: 8px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.07);
+    background: rgba(255,255,255,.025);
+    color: #9ea4ad;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.resumo-item {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 11px 0 !important;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+    color: #d6d9de !important;
+}
+
+.resumo-item:last-of-type {
+    border-bottom: 0;
+}
+
+.resumo-item span {
+    min-width: 0;
+    color: #c7ccd3 !important;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.resumo-item strong {
+    flex: 0 0 auto;
+    color: #fff !important;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.resumo-total {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 12px;
+    padding: 15px 0 0;
+    border-top: 1px solid rgba(255,255,255,.10);
+}
+
+.resumo-total span {
+    color: #8f96a0;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+}
+
+.resumo-total strong {
+    color: #ff8a21;
+    font-size: 22px;
+    line-height: 1;
+    text-shadow: 0 0 18px rgba(255,115,0,.18);
+}
+
+@media (max-width: 700px) {
+    .checkout-form {
+        grid-template-columns: 1fr !important;
+    }
+
+    .checkout-form .checkout-full {
+        grid-column: 1 / -1;
+    }
+
+    #checkoutResumo {
+        border-radius: 15px !important;
+    }
+
+    .resumo-checkout {
+        padding: 15px;
+    }
+
+    .resumo-total strong {
+        font-size: 19px;
+    }
+}
+</style>
+
 </head>
 
 
@@ -4363,6 +4514,23 @@ header::after{
                     id="cep"
                     type="text"
                     placeholder="00000-000"
+                    required
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Bairro
+                </label>
+
+                <input
+                    id="bairro"
+                    type="text"
+                    placeholder="Seu bairro"
+                    autocomplete="address-level3"
                     required
                 >
 
