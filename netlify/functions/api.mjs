@@ -1,57 +1,30 @@
 import serverless from "serverless-http";
 import app from "../../server.js";
 
-// Adaptador equivalente ao @netlify/aws-lambda-compat, mantido localmente
-// para não adicionar nenhuma dependência nova ao projeto.
-function shouldBase64Encode(contentType = "") {
-  if (!contentType) return true;
-  const normalized = contentType.split(";")[0].trim().toLowerCase();
-  const textTypes = new Set([
-    "application/csp-report",
-    "application/graphql",
-    "application/json",
-    "application/javascript",
-    "application/x-www-form-urlencoded",
-    "application/x-ndjson",
-    "application/xml",
-  ]);
-  if (normalized.startsWith("text/")) return false;
-  if (normalized.endsWith("+json") || normalized.endsWith("+xml")) return false;
-  return !textTypes.has(normalized);
-}
+const lambdaHandler = serverless(app);
 
-async function requestToLambdaEvent(request) {
+function toLambdaEvent(request) {
   const url = new URL(request.url);
   const headers = {};
   const multiValueHeaders = {};
 
   request.headers.forEach((value, key) => {
     headers[key] = value;
-    multiValueHeaders[key] = value.split(",").map((v) => v.trim());
+    multiValueHeaders[key] = [value];
   });
 
   const queryStringParameters = {};
   const multiValueQueryStringParameters = {};
+
   url.searchParams.forEach((value, key) => {
     queryStringParameters[key] = value;
-    (multiValueQueryStringParameters[key] ||= []).push(value);
+    if (!multiValueQueryStringParameters[key]) {
+      multiValueQueryStringParameters[key] = [];
+    }
+    multiValueQueryStringParameters[key].push(value);
   });
 
-  let body = null;
-  let isBase64Encoded = false;
-
-  if (request.body) {
-    const contentType = request.headers.get("content-type") || "";
-    if (shouldBase64Encode(contentType)) {
-      const buffer = Buffer.from(await request.arrayBuffer());
-      body = buffer.toString("base64");
-      isBase64Encoded = true;
-    } else {
-      body = await request.text();
-    }
-  }
-
-  return {
+  return request.arrayBuffer().then((buffer) => ({
     rawUrl: url.toString(),
     rawQuery: url.search.replace(/^\?/, ""),
     path: url.pathname,
@@ -59,83 +32,82 @@ async function requestToLambdaEvent(request) {
     headers,
     multiValueHeaders,
     queryStringParameters:
-      Object.keys(queryStringParameters).length ? queryStringParameters : null,
+      Object.keys(queryStringParameters).length
+        ? queryStringParameters
+        : null,
     multiValueQueryStringParameters:
       Object.keys(multiValueQueryStringParameters).length
         ? multiValueQueryStringParameters
         : null,
-    body,
-    isBase64Encoded,
-  };
+    body: buffer.byteLength
+      ? Buffer.from(buffer).toString("base64")
+      : null,
+    isBase64Encoded: Boolean(buffer.byteLength),
+  }));
 }
 
-function modernContextToLambdaContext(context) {
+function toLambdaContext(context) {
   return {
-    awsRequestId: context.requestId,
-    callbackWaitsForEmptyEventLoop: true,
-    functionName: "",
-    functionVersion: "",
-    invokedFunctionArn: "",
-    memoryLimitInMB: "",
-    logGroupName: "",
-    logStreamName: "",
+    awsRequestId: context?.requestId || "netlify-modern",
+    callbackWaitsForEmptyEventLoop: false,
     getRemainingTimeInMillis: () => 0,
-    done: () => {
-      throw new Error("context.done() não é suportado no Netlify Functions moderno.");
-    },
-    fail: () => {
-      throw new Error("context.fail() não é suportado no Netlify Functions moderno.");
-    },
-    succeed: () => {
-      throw new Error("context.succeed() não é suportado no Netlify Functions moderno.");
-    },
   };
 }
 
-function lambdaResultToResponse(result) {
-  const headers = new Headers();
+function toResponse(result) {
+  const responseHeaders = new Headers();
 
   if (result?.headers) {
     for (const [name, value] of Object.entries(result.headers)) {
-      headers.set(name, String(value));
+      const values = Array.isArray(value) ? value : [value];
+      for (const item of values) {
+        responseHeaders.append(name, String(item));
+      }
     }
   }
 
   if (result?.multiValueHeaders) {
     for (const [name, values] of Object.entries(result.multiValueHeaders)) {
-      for (const value of values) {
-        headers.append(name, String(value));
+      for (const value of values || []) {
+        responseHeaders.append(name, String(value));
       }
     }
   }
 
   let body = null;
+
   if (result?.body != null) {
-    if (result.isBase64Encoded) {
-      body = Buffer.from(result.body, "base64");
-    } else {
-      body = result.body;
-    }
+    body = result.isBase64Encoded
+      ? Buffer.from(result.body, "base64")
+      : result.body;
   }
 
   return new Response(body, {
     status: Number(result?.statusCode || 200),
-    headers,
+    headers: responseHeaders,
   });
 }
 
-const lambdaHandler = serverless(app);
-
 export default async function handler(request, context) {
   try {
-    const event = await requestToLambdaEvent(request);
-    const lambdaContext = modernContextToLambdaContext(context);
-    const result = await lambdaHandler(event, lambdaContext);
-    return lambdaResultToResponse(result);
+    const event = await toLambdaEvent(request);
+    const result = await lambdaHandler(
+      event,
+      toLambdaContext(context)
+    );
+
+    return toResponse(result);
   } catch (error) {
-    console.error("TECHSHOP API ERROR:", error?.stack || error);
+    console.error(
+      "TECHSHOP API ERROR:",
+      error?.stack || error
+    );
+
     return Response.json(
-      { erro: "Erro interno da API.", detalhe: error?.message || String(error) },
+      {
+        erro: "Erro interno da API.",
+        detalhe: error?.message || String(error),
+      },
       { status: 500 }
     );
   }

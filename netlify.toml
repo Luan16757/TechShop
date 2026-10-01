@@ -6,7 +6,6 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
   external_node_modules = ["express"]
-  included_files = ["usuarios.json", "pedidos.json"]
 
 [[redirects]]
   from = "/api/*"
@@ -18,3 +17,4 @@
   from = "/admin"
   to = "/admin.html"
   status = 200
+  force = true

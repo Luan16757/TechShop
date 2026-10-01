@@ -129,26 +129,30 @@ function lerJSONLocal(arquivo, valorInicial) {
 
 async function obterNetlifyStore() {
 
-    const { getStore } =
-        await import("@netlify/blobs");
+    const { getStore } = await import("@netlify/blobs");
 
-    // Em Netlify Functions com serverless-http (Lambda compatibility),
-    // o contexto é inicializado em netlify/functions/api.js com connectLambda(event).
-    // Mantemos suporte opcional a credenciais explícitas via variáveis de ambiente.
+    /*
+     * Em Functions modernas, o Netlify injeta automaticamente o contexto
+     * necessário para o Blobs. Só usamos siteID/token explícitos quando
+     * o usuário os configurou no ambiente.
+     */
     const siteID = String(process.env.NETLIFY_SITE_ID || "").trim();
-    const token = String(process.env.NETLIFY_AUTH_TOKEN || "").trim();
+    const token = String(
+        process.env.NETLIFY_AUTH_TOKEN ||
+        process.env.NETLIFY_BLOBS_TOKEN ||
+        ""
+    ).trim();
+
+    const opcoes = {
+        consistency: "strong"
+    };
 
     if (siteID && token) {
-        return getStore("techshop-data", {
-            consistency: "strong",
-            siteID,
-            token
-        });
+        opcoes.siteID = siteID;
+        opcoes.token = token;
     }
 
-    return getStore("techshop-data", {
-        consistency: "strong"
-    });
+    return getStore("techshop-data", opcoes);
 }
 
 async function carregarDadosNetlify(forcar = false) {
@@ -161,28 +165,30 @@ async function carregarDadosNetlify(forcar = false) {
 
         dadosNetlifyPromise = (async () => {
 
-            const store =
-                await obterNetlifyStore();
+            const store = await obterNetlifyStore();
 
-            let usuarios =
-                await store.get(
-                    USUARIOS_KEY,
-                    { type: "json" }
-                );
+            let usuarios = await store.get(
+                USUARIOS_KEY,
+                {
+                    type: "json",
+                    consistency: "strong"
+                }
+            );
 
-            let pedidos =
-                await store.get(
-                    PEDIDOS_KEY,
-                    { type: "json" }
-                );
+            let pedidos = await store.get(
+                PEDIDOS_KEY,
+                {
+                    type: "json",
+                    consistency: "strong"
+                }
+            );
 
             if (!Array.isArray(usuarios)) {
 
-                usuarios =
-                    lerJSONLocal(
-                        usuariosFile,
-                        []
-                    );
+                usuarios = lerJSONLocal(
+                    usuariosFile,
+                    []
+                );
 
                 await store.setJSON(
                     USUARIOS_KEY,
@@ -192,11 +198,10 @@ async function carregarDadosNetlify(forcar = false) {
 
             if (!Array.isArray(pedidos)) {
 
-                pedidos =
-                    lerJSONLocal(
-                        pedidosFile,
-                        []
-                    );
+                pedidos = lerJSONLocal(
+                    pedidosFile,
+                    []
+                );
 
                 await store.setJSON(
                     PEDIDOS_KEY,
@@ -207,7 +212,15 @@ async function carregarDadosNetlify(forcar = false) {
             usuariosCache = usuarios;
             pedidosCache = pedidos;
 
-        })();
+        })().catch((erro) => {
+
+            // Permite uma nova tentativa em outra requisição quando
+            // uma chamada transitória ao Blobs falhar.
+            dadosNetlifyPromise = null;
+            usuariosCache = null;
+            pedidosCache = null;
+            throw erro;
+        });
     }
 
     await dadosNetlifyPromise;

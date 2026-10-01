@@ -1,23 +1,26 @@
-TECHSHOP - FIX V4
+TECHSHOP - FIX NETLIFY V5
 
-Este pacote elimina a mistura entre Netlify Functions moderno e o handler Lambda legado.
-A Function agora recebe Request/Context do runtime moderno e adapta internamente para o
-serverless-http/Express existente. Isso permite que os recursos Netlify, incluindo Blobs,
-sejam inicializados no runtime moderno sem precisar de connectLambda() no handler.
+O problema desta versão é tratado de forma limpa:
+1. Apenas UMA Function existe: netlify/functions/api.mjs
+2. O antigo netlify/functions/api.js deve ser APAGADO do projeto.
+3. A Function usa a API moderna de Request/Response da Netlify.
+4. O Express continua sendo usado internamente por serverless-http.
+5. Cookies Set-Cookie em array são preservados corretamente.
+6. O Netlify Blobs usa o contexto automático da Function moderna.
+7. A inicialização do Blobs permite nova tentativa quando ocorrer erro transitório.
 
-Arquivos para substituir:
-- server.js
-- netlify/functions/api.mjs
+IMPORTANTE:
+- Substitua a pasta inteira netlify/functions pelo conteúdo deste ZIP.
+- Não deixe api.js junto com api.mjs.
+- Substitua server.js pelo deste ZIP.
+- Mantenha seu .env fora do Git.
+- Faça commit e push e aguarde Published.
 
-Remover do projeto:
-- netlify/functions/api.js
-
-Nao precisa alterar package.json, package-lock, .env, techshop.html, script.js ou painel.
-
-Teste primeiro:
+Teste:
 https://rad-malasada-9dec4e.netlify.app/api/status
+https://rad-malasada-9dec4e.netlify.app/api/produtos
 
-Resposta esperada:
-{"online":true,"servidor":"TECHSHOP","porta":"serverless","produtos":17}
-
-Depois teste a loja.
+Depois teste:
+- criar conta
+- sair
+- entrar
