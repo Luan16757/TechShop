@@ -36,9 +36,14 @@ const ADMIN_USER = process.env.ADMIN_USER || "admin";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "123456";
 const MP_ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN || "";
 
+// Em produção, prefira definir SESSION_SECRET no Netlify.
+// Como fallback seguro para este projeto, usamos o MP_ACCESS_TOKEN
+// (que já é secreto e fica somente no ambiente do servidor).
 const SESSION_SECRET =
     process.env.SESSION_SECRET ||
-    (IS_NETLIFY ? "" : "techshop-local-session-secret");
+    (IS_NETLIFY
+        ? (process.env.MP_ACCESS_TOKEN || "")
+        : "techshop-local-session-secret");
 
 const USUARIOS_KEY = "usuarios-v2";
 const PEDIDOS_KEY = "pedidos-v2";
@@ -738,7 +743,9 @@ app.get(
             online: true,
             servidor: "TECHSHOP",
             porta: IS_NETLIFY ? "serverless" : PORT,
-            produtos: produtos.length
+            produtos: produtos.length,
+            armazenamento: IS_NETLIFY ? "netlify-blobs" : "arquivo-local",
+            sessaoConfigurada: Boolean(SESSION_SECRET)
         });
 
     }
