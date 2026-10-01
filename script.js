@@ -2671,6 +2671,17 @@ async function finalizarPedido(event) {
         return;
     }
 
+    const nome =
+        document.getElementById("nome")?.value.trim() ||
+        clienteAtual?.nome ||
+        clienteAtual?.name ||
+        "";
+
+    const email =
+        document.getElementById("email")?.value.trim() ||
+        clienteAtual?.email ||
+        "";
+
     const telefone =
         document.getElementById("telefone")?.value.trim() || "";
 
@@ -2700,6 +2711,8 @@ async function finalizarPedido(event) {
     const cpfNumeros = cpf.replace(/\D/g, "");
 
     if (
+        !nome ||
+        !email ||
         !telefone ||
         !cpf ||
         !cep ||
@@ -2745,6 +2758,12 @@ async function finalizarPedido(event) {
             },
             credentials: "include",
             body: JSON.stringify({
+                cliente: {
+                    nome,
+                    email,
+                    telefone,
+                    cpf: cpfNumeros
+                },
                 itens: carrinho.map(item => ({
                     id: /^\d+$/.test(String(item.id)) ? Number(item.id) : item.id,
                     quantidade: Number(item.quantidade)
@@ -2765,14 +2784,24 @@ async function finalizarPedido(event) {
             })
         });
 
-        const dados = await resposta.json().catch(() => ({}));
+        const textoResposta = await resposta.text();
+        let dados = {};
+        try {
+            dados = textoResposta ? JSON.parse(textoResposta) : {};
+        } catch {
+            dados = {};
+        }
 
         if (!resposta.ok) {
             throw new Error(
                 dados.erro ||
                 dados.mensagem ||
-                "Não foi possível gerar o Pix."
+                `Falha ao gerar Pix (HTTP ${resposta.status}).`
             );
+        }
+
+        if (!dados.qr_code && !dados.qr_code_base64 && !dados.pix_copia_e_cola) {
+            throw new Error("O servidor respondeu sem os dados do Pix. Verifique a configuração do Mercado Pago.");
         }
 
         fecharCheckout();
@@ -2826,6 +2855,12 @@ async function gerarPix() {
             },
             credentials: "include",
             body: JSON.stringify({
+                cliente: {
+                    nome: document.getElementById("nome")?.value.trim() || clienteAtual?.nome || clienteAtual?.name || "",
+                    email: document.getElementById("email")?.value.trim() || clienteAtual?.email || "",
+                    telefone: document.getElementById("telefone")?.value.trim() || "",
+                    cpf: (document.getElementById("cpf")?.value.trim() || "").replace(/\D/g, "")
+                },
                 itens: carrinho.map(item => ({
                     id: /^\d+$/.test(String(item.id)) ? Number(item.id) : item.id,
                     quantidade: Number(item.quantidade)
@@ -2837,14 +2872,24 @@ async function gerarPix() {
             })
         });
 
-        const dados = await resposta.json().catch(() => ({}));
+        const textoResposta = await resposta.text();
+        let dados = {};
+        try {
+            dados = textoResposta ? JSON.parse(textoResposta) : {};
+        } catch {
+            dados = {};
+        }
 
         if (!resposta.ok) {
             throw new Error(
                 dados.erro ||
                 dados.mensagem ||
-                "Erro ao gerar Pix."
+                `Falha ao gerar Pix (HTTP ${resposta.status}).`
             );
+        }
+
+        if (!dados.qr_code && !dados.qr_code_base64 && !dados.pix_copia_e_cola) {
+            throw new Error("O servidor respondeu sem os dados do Pix. Verifique a configuração do Mercado Pago.");
         }
 
         fecharCheckout();
