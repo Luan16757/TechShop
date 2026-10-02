@@ -3363,20 +3363,44 @@ app.post(
                     itens
                 );
 
-            const freteInformado =
-                Number(
-                    entrega.freteInformado
+            /*
+             * O frete nunca deve ser confiado ao navegador.
+             * O cliente pode alterar freteInformado pelo DevTools.
+             * Recalculamos aqui com base no historico real do cliente
+             * e no tipo de entrega selecionado.
+             */
+            const pedidosCliente =
+                lerJSON(
+                    pedidosFile,
+                    []
+                ).filter(
+                    pedido =>
+                        pedido?.usuarioId ===
+                        req.usuario.id
                 );
 
+            const primeiraCompra =
+                pedidosCliente.length === 0;
+
+            const tipoEntrega =
+                String(
+                    entrega.tipoEntrega || "normal"
+                ).toLowerCase() === "rapida"
+                    ? "rapida"
+                    : "normal";
+
+            const freteBase =
+                primeiraCompra
+                    ? 0
+                    : 5;
+
             const frete =
-                Number.isFinite(
-                    freteInformado
-                ) &&
-                freteInformado > 0
-                    ? Number(
-                        freteInformado.toFixed(2)
-                    )
-                    : 0;
+                Number(
+                    (
+                        freteBase +
+                        (tipoEntrega === "rapida" ? 10 : 0)
+                    ).toFixed(2)
+                );
 
             const totalPagamento =
                 Number(
