@@ -2856,6 +2856,58 @@ function atualizarResumoCheckout() {
     `;
 }
 
+function cpfEhValido(cpf) {
+
+    const numero =
+        String(cpf || "")
+            .replace(/\D/g, "");
+
+    if (
+        numero.length !== 11 ||
+        /^(\d)\1{10}$/.test(numero)
+    ) {
+        return false;
+    }
+
+    let soma = 0;
+
+    for (let i = 0; i < 9; i++) {
+        soma += Number(numero[i]) * (10 - i);
+    }
+
+    let primeiroDigito =
+        (soma * 10) % 11;
+
+    if (primeiroDigito === 10) {
+        primeiroDigito = 0;
+    }
+
+    if (
+        primeiroDigito !==
+        Number(numero[9])
+    ) {
+        return false;
+    }
+
+    soma = 0;
+
+    for (let i = 0; i < 10; i++) {
+        soma += Number(numero[i]) * (11 - i);
+    }
+
+    let segundoDigito =
+        (soma * 10) % 11;
+
+    if (segundoDigito === 10) {
+        segundoDigito = 0;
+    }
+
+    return (
+        segundoDigito ===
+        Number(numero[10])
+    );
+}
+
 /* =========================================================
    FINALIZAR PEDIDO / PIX
    ========================================================= */
@@ -2926,9 +2978,9 @@ async function finalizarPedido(event) {
         return;
     }
 
-    if (cpfNumeros.length !== 11) {
+    if (!cpfEhValido(cpfNumeros)) {
         alert(
-            "Digite um CPF válido com 11 números."
+            "Digite um CPF válido para continuar."
         );
         return;
     }
