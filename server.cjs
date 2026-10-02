@@ -3432,26 +3432,96 @@ app.post(
                     }
                 );
 
-            const pagamento =
-                await pagamentoResponse
-                    .json();
+            const textoPagamento =
+                await pagamentoResponse.text();
+
+            let pagamento = {};
+
+            try {
+                pagamento =
+                    textoPagamento
+                        ? JSON.parse(
+                            textoPagamento
+                        )
+                        : {};
+            } catch {
+                pagamento = {
+                    message:
+                        textoPagamento ||
+                        "Resposta inválida do Mercado Pago."
+                };
+            }
 
             if (
                 !pagamentoResponse.ok
             ) {
 
+                const causas =
+                    Array.isArray(
+                        pagamento?.cause
+                    )
+                        ? pagamento.cause
+                            .map(
+                                causa =>
+                                    causa?.description ||
+                                    causa?.code
+                            )
+                            .filter(Boolean)
+                            .join(" | ")
+                        : "";
+
+                const mensagemMercadoPago =
+                    pagamento?.message ||
+                    pagamento?.error ||
+                    causas ||
+                    "Mercado Pago recusou a criação do Pix (HTTP " +
+                    pagamentoResponse.status +
+                    ").";
+
                 console.error(
                     "Erro Mercado Pago:",
+                    {
+                        status:
+                            pagamentoResponse.status,
+                        resposta:
+                            pagamento
+                    }
+                );
+
+                return res.status(502).json({
+
+                    erro:
+                        mensagemMercadoPago,
+
+                    detalhe:
+                        pagamento,
+
+                    statusMercadoPago:
+                        pagamentoResponse.status
+
+                });
+            }
+
+            const transactionData =
+                pagamento
+                    ?.point_of_interaction
+                    ?.transaction_data ||
+                {};
+
+            if (
+                !pagamento?.id ||
+                !transactionData?.qr_code
+            ) {
+
+                console.error(
+                    "Mercado Pago respondeu sem QR Code:",
                     pagamento
                 );
 
-                return res.status(500).json({
+                return res.status(502).json({
 
                     erro:
-                        pagamento?.message ||
-                        pagamento?.error ||
-                        pagamento?.cause?.[0]?.description ||
-                        "Não foi possível gerar o Pix.",
+                        "O Mercado Pago não retornou os dados do QR Code Pix.",
 
                     detalhe:
                         pagamento
@@ -3564,24 +3634,18 @@ app.post(
                         "pix",
 
                     qrCode:
-                        pagamento
-                            .point_of_interaction
-                            ?.transaction_data
-                            ?.qr_code ||
+                        transactionData
+                            .qr_code ||
                         "",
 
                     qrCodeBase64:
-                        pagamento
-                            .point_of_interaction
-                            ?.transaction_data
-                            ?.qr_code_base64 ||
+                        transactionData
+                            .qr_code_base64 ||
                         "",
 
                     ticketUrl:
-                        pagamento
-                            .point_of_interaction
-                            ?.transaction_data
-                            ?.ticket_url ||
+                        transactionData
+                            .ticket_url ||
                         ""
 
                 },
