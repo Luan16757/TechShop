@@ -632,6 +632,7 @@ async function fazerCadastro(event) {
 
         if (!resposta.ok) {
             throw new Error(
+                dados.detalhe ||
                 dados.erro ||
                 dados.mensagem ||
                 dados.error ||
