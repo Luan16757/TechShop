@@ -54,7 +54,12 @@ const ADMIN_PASSWORD =
     process.env.ADMIN_PASSWORD || "123456";
 
 const MP_ACCESS_TOKEN =
-    process.env.MP_ACCESS_TOKEN || "";
+    String(
+        process.env.MP_ACCESS_TOKEN ||
+        process.env.MERCADOPAGO_ACCESS_TOKEN ||
+        process.env.MERCADO_PAGO_ACCESS_TOKEN ||
+        ""
+    ).trim();
 
 const WHATSAPP_ACCESS_TOKEN =
     process.env.WHATSAPP_ACCESS_TOKEN || "";
@@ -3330,6 +3335,29 @@ app.post(
                     itens
                 );
 
+            const freteInformado =
+                Number(
+                    entrega.freteInformado
+                );
+
+            const frete =
+                Number.isFinite(
+                    freteInformado
+                ) &&
+                freteInformado > 0
+                    ? Number(
+                        freteInformado.toFixed(2)
+                    )
+                    : 0;
+
+            const totalPagamento =
+                Number(
+                    (
+                        carrinho.total +
+                        frete
+                    ).toFixed(2)
+                );
+
             const numero =
                 gerarNumeroPedido();
 
@@ -3361,7 +3389,7 @@ app.post(
                             JSON.stringify({
 
                                 transaction_amount:
-                                    carrinho.total,
+                                    totalPagamento,
 
                                 description:
                                     `Pedido TECHSHOP ${numero}`,
@@ -3420,6 +3448,9 @@ app.post(
                 return res.status(500).json({
 
                     erro:
+                        pagamento?.message ||
+                        pagamento?.error ||
+                        pagamento?.cause?.[0]?.description ||
                         "Não foi possível gerar o Pix.",
 
                     detalhe:
@@ -3510,7 +3541,13 @@ app.post(
                     carrinho.produtos,
 
                 valorTotal:
+                    totalPagamento,
+
+                subtotalProdutos:
                     carrinho.total,
+
+                frete:
+                    frete,
 
                 status:
                     "Aguardando pagamento",
@@ -3655,7 +3692,7 @@ app.post(
                 numero,
 
                 valor:
-                    carrinho.total,
+                    totalPagamento,
 
                 pedido,
 
