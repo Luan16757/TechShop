@@ -340,11 +340,9 @@ async function carregarDadosNetlify(
                     )
                 ) {
 
-                    usuarios =
-                        lerJSONLocal(
-                            usuariosFile,
-                            []
-                        );
+                    // No Netlify, o filesystem da Function e somente leitura.
+                    // Comecamos o armazenamento do Blobs vazio sem tocar em usuarios.json.
+                    usuarios = [];
 
                     await store.setJSON(
                         USUARIOS_KEY,
@@ -358,11 +356,8 @@ async function carregarDadosNetlify(
                     )
                 ) {
 
-                    pedidos =
-                        lerJSONLocal(
-                            pedidosFile,
-                            []
-                        );
+                    // No Netlify, o filesystem da Function e somente leitura.
+                    pedidos = [];
 
                     await store.setJSON(
                         PEDIDOS_KEY,
