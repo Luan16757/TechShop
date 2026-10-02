@@ -3300,6 +3300,62 @@ async function enviarEmailPagamentoAprovado(
     };
 }
 
+function normalizarCPF(cpf) {
+
+    const numero =
+        String(cpf || "")
+            .replace(/\D/g, "");
+
+    if (
+        numero.length !== 11 ||
+        /^(\d)\1{10}$/.test(numero)
+    ) {
+        return "";
+    }
+
+    let soma = 0;
+
+    for (let i = 0; i < 9; i++) {
+        soma += Number(numero[i]) * (10 - i);
+    }
+
+    let primeiroDigito =
+        (soma * 10) % 11;
+
+    if (primeiroDigito === 10) {
+        primeiroDigito = 0;
+    }
+
+    if (
+        primeiroDigito !==
+        Number(numero[9])
+    ) {
+        return "";
+    }
+
+    soma = 0;
+
+    for (let i = 0; i < 10; i++) {
+        soma += Number(numero[i]) * (11 - i);
+    }
+
+    let segundoDigito =
+        (soma * 10) % 11;
+
+    if (segundoDigito === 10) {
+        segundoDigito = 0;
+    }
+
+    if (
+        segundoDigito !==
+        Number(numero[10])
+    ) {
+        return "";
+    }
+
+    return numero;
+}
+
 /* =========================================================
    MERCADO PAGO PIX
 ========================================================= */
@@ -3364,6 +3420,27 @@ app.post(
             const email =
                 req.usuario.email;
 
+            /*
+             * Prioriza o CPF informado no checkout.
+             * O usuário pode ter um CPF antigo/inválido salvo
+             * no cadastro, então não usamos esse valor cegamente.
+             */
+            const cpfPagamento =
+                normalizarCPF(
+                    req.body?.cliente?.cpf ||
+                    req.body?.entrega?.cpf
+                ) ||
+                normalizarCPF(
+                    req.usuario.cpf
+                );
+
+            if (!cpfPagamento) {
+                return res.status(400).json({
+                    erro:
+                        "CPF inválido. Informe um CPF válido com 11 números para gerar o Pix."
+                });
+            }
+
             const pagamentoResponse =
                 await fetch(
                     "https://api.mercadopago.com/v1/payments",
@@ -3401,26 +3478,15 @@ app.post(
 
                                     email,
 
-                                    ...(req.usuario.cpf
-                                        ? {
+                                    identification: {
 
-                                            identification: {
+                                        type:
+                                            "CPF",
 
-                                                type:
-                                                    "CPF",
+                                        number:
+                                            cpfPagamento
 
-                                                number:
-                                                    String(
-                                                        req.usuario.cpf
-                                                    ).replace(
-                                                        /\D/g,
-                                                        ""
-                                                    )
-
-                                            }
-
-                                        }
-                                        : {})
+                                    }
 
                                 },
 
@@ -3554,7 +3620,7 @@ app.post(
                         req.usuario.telefone,
 
                     cpf:
-                        req.usuario.cpf
+                        cpfPagamento
 
                 },
 
