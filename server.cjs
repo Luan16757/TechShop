@@ -2101,6 +2101,202 @@ app.delete(
 );
 
 /* =========================================================
+   DROPSHIPPING ADMIN
+========================================================= */
+
+app.patch(
+    "/api/pedidos/:numero/dropshipping",
+    exigirAdmin,
+    async (req, res) => {
+
+        try {
+
+            const pedidos =
+                lerJSON(
+                    pedidosFile,
+                    []
+                );
+
+            const indice =
+                pedidos.findIndex(
+                    pedido =>
+                        pedido.numero ===
+                        req.params.numero
+                );
+
+            if (
+                indice === -1
+            ) {
+
+                return res.status(404).json({
+                    erro:
+                        "Pedido não encontrado."
+                });
+            }
+
+            const corpo =
+                req.body || {};
+
+            const pedido =
+                pedidos[indice];
+
+            const statusRecebido =
+                String(
+                    corpo.status ||
+                    ""
+                ).trim();
+
+            const mapaStatus = {
+                Pago:
+                    "Pagamento aprovado",
+                Comprado:
+                    "Preparando pedido",
+                Enviado:
+                    "Enviado",
+                Entregue:
+                    "Entregue",
+                Cancelado:
+                    "Cancelado"
+            };
+
+            const novoStatus =
+                mapaStatus[
+                    statusRecebido
+                ] ||
+                statusRecebido;
+
+            if (
+                novoStatus &&
+                !statusPermitidos.includes(
+                    novoStatus
+                )
+            ) {
+
+                return res.status(400).json({
+                    erro:
+                        "Status inválido."
+                });
+            }
+
+            pedido.dropshipping = {
+
+                ...(pedido.dropshipping || {}),
+
+                fornecedor:
+                    String(
+                        corpo.fornecedor ??
+                        pedido.dropshipping?.fornecedor ??
+                        pedido.fornecedor ??
+                        ""
+                    ).trim(),
+
+                custoFornecedor:
+                    Number(
+                        corpo.custoFornecedor ??
+                        pedido.dropshipping?.custoFornecedor ??
+                        pedido.custoFornecedor ??
+                        0
+                    ),
+
+                linkFornecedor:
+                    String(
+                        corpo.linkFornecedor ??
+                        pedido.dropshipping?.linkFornecedor ??
+                        pedido.linkFornecedor ??
+                        ""
+                    ).trim(),
+
+                codigoFornecedor:
+                    String(
+                        corpo.codigoFornecedor ??
+                        pedido.dropshipping?.codigoFornecedor ??
+                        pedido.codigoFornecedor ??
+                        ""
+                    ).trim(),
+
+                rastreio:
+                    String(
+                        corpo.rastreio ??
+                        pedido.dropshipping?.rastreio ??
+                        pedido.rastreio ??
+                        ""
+                    ).trim(),
+
+                observacao:
+                    String(
+                        corpo.observacao ??
+                        pedido.dropshipping?.observacao ??
+                        pedido.observacao ??
+                        ""
+                    ).trim(),
+
+                atualizadoEm:
+                    new Date().toISOString()
+
+            };
+
+            pedido.fornecedor =
+                pedido.dropshipping.fornecedor;
+
+            pedido.custoFornecedor =
+                pedido.dropshipping.custoFornecedor;
+
+            pedido.linkFornecedor =
+                pedido.dropshipping.linkFornecedor;
+
+            pedido.codigoFornecedor =
+                pedido.dropshipping.codigoFornecedor;
+
+            pedido.rastreio =
+                pedido.dropshipping.rastreio;
+
+            pedido.observacao =
+                pedido.dropshipping.observacao;
+
+            if (novoStatus) {
+
+                registrarHistoricoStatus(
+                    pedido,
+                    novoStatus
+                );
+
+            } else {
+
+                pedido.atualizadoEm =
+                    pedido.dropshipping.atualizadoEm;
+
+            }
+
+            await salvarJSON(
+                pedidosFile,
+                pedidos
+            );
+
+            return res.json({
+                sucesso: true,
+                pedido
+            });
+
+        } catch (erro) {
+
+            console.error(
+                "Erro atualizando dropshipping:",
+                erro?.stack || erro
+            );
+
+            return res.status(500).json({
+                erro:
+                    "Não foi possível atualizar o dropshipping.",
+                detalhe:
+                    erro?.message ||
+                    "Erro interno."
+            });
+        }
+
+    }
+);
+
+/* =========================================================
    PEDIDOS CLIENTE
 ========================================================= */
 
