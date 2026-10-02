@@ -7,7 +7,7 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "build": "node --check server.cjs && node --check netlify/functions/api.cjs && node --check netlify/functions/pix.js && node --check netlify/functions/produtos.js && node --check script.js",
+    "build": "node --check server.cjs && node --check netlify/functions/api.cjs && node --check script.js",
     "start": "node server.cjs"
   },
   "dependencies": {

@@ -15,13 +15,31 @@
   force = true
 
 [[redirects]]
-  from = "/api/produtos"
-  to = "/.netlify/functions/produtos"
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
   status = 200
   force = true
 
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/api/:splat"
-  status = 200
+  from = "/usuarios.json"
+  to = "/techshop.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/pedidos.json"
+  to = "/techshop.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/server.cjs"
+  to = "/techshop.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/netlify/functions/*"
+  to = "/techshop.html"
+  status = 404
   force = true
