@@ -4262,7 +4262,7 @@ if (
                 `Imagens: ${pastaImagens}`
             );
             console.log(
-                `Produtos: ${produtos.length}`
+                `Produtos: ${produtosBase.length + produtosCatalogo.length}`
             );
             console.log(
                 "========================================"
