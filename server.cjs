@@ -298,10 +298,10 @@ async function obterNetlifyStore() {
     void contexto;
 
     netlifyStore =
-        getStore(
-            "techshop-data",
-            opcoes
-        );
+        getStore({
+            name: "techshop-data",
+            ...opcoes
+        });
 
     return netlifyStore;
 }
@@ -1508,13 +1508,29 @@ app.post(
              * O middleware automático foi removido
              * dessa rota. Aqui carregamos os dados.
              */
+            let usuarios = [];
+
             if (IS_NETLIFY) {
 
                 try {
 
-                    await carregarDadosNetlify(
-                        false
-                    );
+                    const store =
+                        await obterNetlifyStore();
+
+                    usuarios =
+                        await store.get(
+                            USUARIOS_KEY,
+                            {
+                                type: "json",
+                                consistency: "strong"
+                            }
+                        );
+
+                    if (!Array.isArray(usuarios)) {
+                        usuarios = [];
+                    }
+
+                    usuariosCache = usuarios;
 
                 } catch (erro) {
 
@@ -1534,13 +1550,16 @@ app.post(
 
                     });
                 }
-            }
 
-            let usuarios =
-                lerJSON(
-                    usuariosFile,
-                    []
-                );
+            } else {
+
+                usuarios =
+                    lerJSON(
+                        usuariosFile,
+                        []
+                    );
+
+            }
 
             let usuario =
                 usuarios.find(
@@ -1552,46 +1571,6 @@ app.post(
                             .toLowerCase() ===
                         emailNormalizado
                 );
-
-            /*
-             * Segunda tentativa.
-             */
-            if (
-                !usuario &&
-                IS_NETLIFY
-            ) {
-
-                try {
-
-                    await carregarDadosNetlify(
-                        true
-                    );
-
-                    usuarios =
-                        lerJSON(
-                            usuariosFile,
-                            []
-                        );
-
-                    usuario =
-                        usuarios.find(
-                            u =>
-                                String(
-                                    u.email || ""
-                                )
-                                    .trim()
-                                    .toLowerCase() ===
-                                emailNormalizado
-                        );
-
-                } catch (erro) {
-
-                    console.error(
-                        "ERRO AO ATUALIZAR USUÁRIOS:",
-                        erro?.stack || erro
-                    );
-                }
-            }
 
             if (!usuario) {
 
