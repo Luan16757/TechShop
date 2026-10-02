@@ -171,7 +171,8 @@ async function clienteMeNoNetlify(event) {
         getStore(
             "techshop-data",
             {
-                consistency: "eventual"
+                // A sessão deve encontrar imediatamente o usuário recém-cadastrado.
+                consistency: "strong"
             }
         );
 
@@ -179,7 +180,8 @@ async function clienteMeNoNetlify(event) {
         await store.get(
             "usuarios",
             {
-                type: "json"
+                type: "json",
+                consistency: "strong"
             }
         );
 
