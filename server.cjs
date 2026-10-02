@@ -275,7 +275,8 @@ async function obterNetlifyStore() {
         ).trim();
 
     const opcoes = {
-        consistency: "eventual"
+        // Login/cadastro precisam enxergar imediatamente o último usuário salvo.
+        consistency: "strong"
     };
 
     /*
@@ -332,7 +333,8 @@ async function carregarDadosNetlify(
                     await store.get(
                         USUARIOS_KEY,
                         {
-                            type: "json"
+                            type: "json",
+                            consistency: "strong"
                         }
                     );
 
@@ -340,7 +342,8 @@ async function carregarDadosNetlify(
                     await store.get(
                         PEDIDOS_KEY,
                         {
-                            type: "json"
+                            type: "json",
+                            consistency: "strong"
                         }
                     );
 
