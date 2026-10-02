@@ -2,11 +2,6 @@
   publish = "."
   functions = "netlify/functions"
 
-<<<<<<< HEAD
-[functions]
-  node_bundler = "esbuild"
-
-=======
 [build.environment]
   NODE_VERSION = "22.12.0"
 
@@ -16,13 +11,6 @@
 [[redirects]]
   from = "/"
   to = "/techshop.html"
-  status = 200
-  force = true
-
->>>>>>> de5a94810f9dd0cfa1670a68e14af3efd4d80830
-[[redirects]]
-  from = "/api/pix"
-  to = "/.netlify/functions/pix"
   status = 200
   force = true
 
