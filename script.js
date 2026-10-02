@@ -700,17 +700,16 @@ async function fazerLogout() {
 ========================================================= */
 
 function atualizarInterfaceCliente() {
-    const elemento =
+    const botao =
         document.getElementById(
             "accountButtonText"
         );
 
-    if (!elemento) return;
+    if (!botao) return;
 
     if (!clienteAtual) {
-        elemento.textContent =
+        botao.textContent =
             "Minha conta";
-
         return;
     }
 
@@ -722,11 +721,16 @@ function atualizarInterfaceCliente() {
     const primeiroNome =
         String(nome)
             .trim()
-            .split(/\s+/)[0];
+            .split(/\s+/)[0] ||
+        "Minha conta";
 
-    elemento.textContent =
-        primeiroNome || "Minha conta";
+    botao.textContent =
+        primeiroNome.length > 16
+            ? "Minha conta"
+            : primeiroNome;
 }
+
+
 
 /* =========================================================
    EXPOR FUNÇÕES PARA O HTML
@@ -743,24 +747,7 @@ window.bloquearLoja = bloquearLoja;
    INTERFACE DO CLIENTE
    ========================================================= */
 
-function atualizarInterfaceCliente() {
-    const botao = document.getElementById("accountButtonText");
 
-    if (!clienteAtual) {
-        if (botao) botao.textContent = "Conta";
-        return;
-    }
-
-    const nome = clienteAtual.nome || clienteAtual.name || "Cliente";
-
-    if (botao) {
-        const primeiroNome =
-            String(nome).trim().split(/\s+/)[0] || "Conta";
-
-        botao.textContent =
-            primeiroNome.length > 16 ? "Minha conta" : primeiroNome;
-    }
-}
 
 /* =========================================================
    PRODUTOS
