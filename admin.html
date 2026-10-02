@@ -1737,10 +1737,10 @@ async function atualizarStatus(
                 }
             );
 
-        if (!resposta.ok) {
+        if (!dados?.sucesso) {
 
             throw new Error(
-                dados.erro ||
+                dados?.erro ||
                 "Não foi possível atualizar."
             );
         }
