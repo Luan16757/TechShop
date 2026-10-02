@@ -15,12 +15,6 @@
   force = true
 
 [[redirects]]
-  from = "/api/produtos"
-  to = "/.netlify/functions/produtos"
-  status = 200
-  force = true
-
-[[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api/:splat"
   status = 200
