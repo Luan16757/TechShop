@@ -2,25 +2,6 @@ const serverless = require("serverless-http");
 
 const app = require("../../server.cjs");
 
-let connectLambdaPromise = null;
-
-async function prepararBlobs(event) {
-    if (!connectLambdaPromise) {
-        connectLambdaPromise = import("@netlify/blobs")
-            .then(({ connectLambda }) => connectLambda)
-            .catch((erro) => {
-                connectLambdaPromise = null;
-                throw erro;
-            });
-    }
-
-    const connectLambda = await connectLambdaPromise;
-
-    if (event && typeof connectLambda === "function") {
-        connectLambda(event);
-    }
-}
-
 function obterCookie(event, nome) {
     const cookieHeader =
         event?.headers?.cookie ||
@@ -167,10 +148,7 @@ async function clienteMeNoNetlify(event) {
     const { getStore } =
         await import("@netlify/blobs");
 
-    const store = getStore({
-        name: "techshop-data",
-        consistency: "strong"
-    });
+    const store = getStore("techshop-data");
 
     const usuarios =
         await store.get(
@@ -212,8 +190,6 @@ const handlerExpress = serverless(app);
 
 exports.handler = async (event, context) => {
     try {
-        await prepararBlobs(event);
-
         const caminho =
             caminhoEvento(event);
 
