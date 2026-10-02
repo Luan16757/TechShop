@@ -3,16 +3,28 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "build": "node --check server.cjs && node --check netlify/functions/api.cjs && node --check netlify/functions/pix.js && node --check netlify/functions/produtos.js",
     "start": "node server.cjs"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@neondatabase/serverless": "^1.1.0",
     "@netlify/blobs": "^10.3.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "serverless-http": "^3.2.0"
+=======
+    "@netlify/blobs": "^11.1.2",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.4",
+    "express": "^5.2.1",
+    "mercadopago": "^3.6.1",
+    "serverless-http": "^4.0.0"
+>>>>>>> de5a94810f9dd0cfa1670a68e14af3efd4d80830
   }
 }
