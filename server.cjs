@@ -721,45 +721,24 @@ const produtosBase = [
 let produtosCatalogo = [];
 
 try {
-    const produtosDataFile =
-        path.join(
-            __dirname,
-            "data",
-            "produtos.json"
-        );
+    /*
+     * Importacao estatica para que o esbuild inclua o catalogo
+     * dentro da Netlify Function. O acesso via fs pode falhar
+     * no ambiente empacotado da Function.
+     */
+    const produtosJsonBundled =
+        require("./data/produtos.json");
 
-    if (fs.existsSync(produtosDataFile)) {
-        const dados =
-            JSON.parse(
-                fs.readFileSync(
-                    produtosDataFile,
-                    "utf8"
-                )
-            );
-
-        if (Array.isArray(dados)) {
-            produtosCatalogo = dados;
-        }
+    if (Array.isArray(produtosJsonBundled)) {
+        produtosCatalogo =
+            produtosJsonBundled;
     }
 } catch (erro) {
     console.error(
-        "Erro carregando data/produtos.json:",
+        "Erro carregando catalogo de produtos:",
         erro?.stack || erro
     );
 }
-
-const produtos = [
-    ...produtosBase,
-    ...produtosCatalogo.filter(
-        produto =>
-            !produtosBase.some(
-                base =>
-                    String(base.id) ===
-                    String(produto?.id)
-            )
-    )
-];
-
 /* =========================================================
    COOKIES
 ========================================================= */
