@@ -19,3 +19,27 @@
   to = "/.netlify/functions/api/:splat"
   status = 200
   force = true
+
+[[redirects]]
+  from = "/usuarios.json"
+  to = "/techshop.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/pedidos.json"
+  to = "/techshop.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/server.cjs"
+  to = "/techshop.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/netlify/functions/*"
+  to = "/techshop.html"
+  status = 404
+  force = true
