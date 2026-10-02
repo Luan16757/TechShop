@@ -2,15 +2,20 @@
   publish = "."
   functions = "netlify/functions"
 
+[functions]
+  node_bundler = "esbuild"
+
 [[redirects]]
   from = "/api/pix"
   to = "/.netlify/functions/pix"
   status = 200
+  force = true
 
 [[redirects]]
   from = "/api/produtos"
   to = "/.netlify/functions/produtos"
   status = 200
+  force = true
 
 [[redirects]]
   from = "/api/*"
