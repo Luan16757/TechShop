@@ -739,6 +739,26 @@ try {
         erro?.stack || erro
     );
 }
+
+/* =========================================================
+   CATALOGO FINAL
+========================================================= */
+
+const idsProdutosBase = new Set(
+    produtosBase.map(produto => String(produto.id))
+);
+
+const produtos = [
+    ...produtosBase,
+    ...produtosCatalogo.filter(produto => {
+        if (!produto || produto.id === undefined || produto.id === null) {
+            return false;
+        }
+
+        return !idsProdutosBase.has(String(produto.id));
+    })
+];
+
 /* =========================================================
    COOKIES
 ========================================================= */
