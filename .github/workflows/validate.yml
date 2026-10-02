@@ -5,9 +5,13 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   validate:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,6 +25,116 @@ jobs:
       - name: Install
         run: npm install
 
+      - name: Corrigir server.cjs
+        shell: python
+        run: |
+          from pathlib import Path
+
+          path = Path("server.cjs")
+          text = path.read_text(encoding="utf-8")
+
+          start = text.find("function exigirCliente(")
+          end = text.find("/* =========================================================\\n   ADMIN", start)
+
+          if start == -1 or end == -1:
+              raise SystemExit("Bloco exigirCliente não encontrado.")
+
+          new_block = '''async function exigirCliente(
+              req,
+              res,
+              next
+          ) {
+              try {
+                  if (IS_NETLIFY) {
+                      await carregarDadosNetlify(false);
+                  }
+
+                  const token =
+                      obterCookie(
+                          req,
+                          "techshop_cliente"
+                      );
+
+                  if (!token) {
+                      return res.status(401).json({
+                          erro: "Cliente não autenticado."
+                      });
+                  }
+
+                  const sessao =
+                      verificarToken(
+                          token,
+                          "cliente"
+                      );
+
+                  if (!sessao?.id) {
+                      return res.status(401).json({
+                          erro: "Sessão expirada."
+                      });
+                  }
+
+                  const usuarios =
+                      lerJSON(
+                          usuariosFile,
+                          []
+                      );
+
+                  const usuario =
+                      usuarios.find(
+                          u =>
+                              String(u.id) ===
+                              String(sessao.id)
+                      );
+
+                  if (!usuario) {
+                      return res.status(401).json({
+                          erro: "Usuário não encontrado."
+                      });
+                  }
+
+                  req.usuario = usuario;
+
+                  return next();
+              } catch (erro) {
+                  console.error(
+                      "Erro autenticando cliente:",
+                      erro?.stack || erro
+                  );
+
+                  return res.status(500).json({
+                      erro: "Não foi possível validar a sessão.",
+                      detalhe: erro?.message || "Erro interno."
+                  });
+              }
+          }
+
+          '''
+
+          path.write_text(text[:start] + new_block + text[end:], encoding="utf-8")
+      
+      - name: Corrigir redirects
+        shell: python
+        run: |
+          from pathlib import Path
+          path = Path("netlify.toml")
+          text = path.read_text(encoding="utf-8")
+          old = '''[[redirects]]
+          from = "/api/pix"
+          to = "/.netlify/functions/pix"
+          status = 200
+          force = true
+
+          '''
+          text = text.replace(old, "")
+          old2 = '''[[redirects]]
+          from = "/api/pix"
+          to = "/.netlify/functions/pix"
+          status = 200
+
+          '''
+          text = text.replace(old2, "")
+          path.write_text(text, encoding="utf-8")
+
       - name: Check JavaScript syntax
         run: |
           node --check server.cjs
@@ -29,46 +143,37 @@ jobs:
           node --check netlify/functions/produtos.js
           node --check script.js
 
-      - name: Check HTML IDs and required files
+      - name: Check required files
         run: |
-          python3 - <<'PY'
-          import re, pathlib, sys
+          test -f techshop.html
+          test -f script.js
+          test -f server.cjs
+          test -f netlify.toml
+          test -f package.json
+          test -f netlify/functions/api.cjs
+          test -f netlify/functions/produtos.js
 
-          html = pathlib.Path("techshop.html").read_text(encoding="utf-8")
-          ids = re.findall(r'\bid=["\']([^"\']+)["\']', html)
+      - name: Commit fixes
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          seen = {}
-          for item in ids:
-              seen[item] = seen.get(item, 0) + 1
+          if git diff --quiet; then
+            echo "Nenhuma alteração necessária."
+            exit 0
+          fi
 
-          dup = sorted(k for k,v in seen.items() if v > 1)
-
-          required = [
-              "techshop.html",
-              "script.js",
-              "server.cjs",
-              "netlify.toml",
-              "package.json",
-              "netlify/functions/api.cjs",
-              "netlify/functions/pix.js",
-              "netlify/functions/produtos.js"
-          ]
-
-          missing = [p for p in required if not pathlib.Path(p).exists()]
-
-          print("IDs duplicados:", dup)
-          print("Arquivos ausentes:", missing)
-
-          if missing:
-              sys.exit(1)
-          PY
+          git add server.cjs netlify.toml
+          git commit -m "Corrige sessao e rota Pix do TechShop"
+          git push
 
       - name: Create project ZIP
         run: |
-          zip -qr TECHSHOP-validado.zip . -x ".git/*" -x "node_modules/*"
+          zip -qr TECHSHOP-corrigido.zip .             -x ".git/*"             -x "node_modules/*"             -x "TECHSHOP-corrigido.zip"
 
       - name: Upload ZIP
         uses: actions/upload-artifact@v4
         with:
-          name: TECHSHOP-validado
-          path: TECHSHOP-validado.zip
+          name: TECHSHOP-corrigido
+          path: TECHSHOP-corrigido.zip
