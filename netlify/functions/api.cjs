@@ -62,18 +62,21 @@ function caminhoEvento(event) {
 
 function verificarTokenCliente(token) {
     try {
+        const emNetlify =
+            process.env.NETLIFY === "true" ||
+            process.env.NETLIFY === "1" ||
+            Boolean(process.env.AWS_LAMBDA_FUNCTION_NAME);
+
         const secret =
             process.env.SESSION_SECRET ||
             (
-                process.env.NETLIFY === "true" ||
-                process.env.NETLIFY === "1" ||
-                process.env.AWS_LAMBDA_FUNCTION_NAME
-            )
-                ? (
-                    process.env.ADMIN_PASSWORD ||
-                    "techshop-netlify-admin-secret"
-                )
-                : "techshop-local-session-secret";
+                emNetlify
+                    ? (
+                        process.env.ADMIN_PASSWORD ||
+                        "techshop-netlify-admin-secret"
+                    )
+                    : "techshop-local-session-secret"
+            );
 
         if (!secret || !token) {
             return null;
