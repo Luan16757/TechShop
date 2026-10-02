@@ -1,0 +1,74 @@
+name: TECHSHOP Validation
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.12.0"
+          cache: "npm"
+
+      - name: Install
+        run: npm install
+
+      - name: Check JavaScript syntax
+        run: |
+          node --check server.cjs
+          node --check netlify/functions/api.cjs
+          node --check netlify/functions/pix.js
+          node --check netlify/functions/produtos.js
+          node --check script.js
+
+      - name: Check HTML IDs and required files
+        run: |
+          python3 - <<'PY'
+          import re, pathlib, sys
+
+          html = pathlib.Path("techshop.html").read_text(encoding="utf-8")
+          ids = re.findall(r'\bid=["\']([^"\']+)["\']', html)
+
+          seen = {}
+          for item in ids:
+              seen[item] = seen.get(item, 0) + 1
+
+          dup = sorted(k for k,v in seen.items() if v > 1)
+
+          required = [
+              "techshop.html",
+              "script.js",
+              "server.cjs",
+              "netlify.toml",
+              "package.json",
+              "netlify/functions/api.cjs",
+              "netlify/functions/pix.js",
+              "netlify/functions/produtos.js"
+          ]
+
+          missing = [p for p in required if not pathlib.Path(p).exists()]
+
+          print("IDs duplicados:", dup)
+          print("Arquivos ausentes:", missing)
+
+          if missing:
+              sys.exit(1)
+          PY
+
+      - name: Create project ZIP
+        run: |
+          zip -qr TECHSHOP-validado.zip . -x ".git/*" -x "node_modules/*"
+
+      - name: Upload ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: TECHSHOP-validado
+          path: TECHSHOP-validado.zip
