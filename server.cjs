@@ -274,10 +274,7 @@ async function obterNetlifyStore() {
             ""
         ).trim();
 
-    const opcoes = {
-        // Login/cadastro precisam enxergar imediatamente o último usuário salvo.
-        consistency: "strong"
-    };
+    const opcoes = {};
 
     /*
      * Se o contexto do Netlify existir,
@@ -331,21 +328,11 @@ async function carregarDadosNetlify(
 
                 let usuarios =
                     await store.get(
-                        USUARIOS_KEY,
-                        {
-                            type: "json",
-                            consistency: "strong"
-                        }
-                    );
+                        USUARIOS_KEY, { type: "json" });
 
                 let pedidos =
                     await store.get(
-                        PEDIDOS_KEY,
-                        {
-                            type: "json",
-                            consistency: "strong"
-                        }
-                    );
+                        PEDIDOS_KEY, { type: "json" });
 
                 if (
                     !Array.isArray(
@@ -1519,12 +1506,7 @@ app.post(
 
                     usuarios =
                         await store.get(
-                            USUARIOS_KEY,
-                            {
-                                type: "json",
-                                consistency: "strong"
-                            }
-                        );
+                            USUARIOS_KEY, { type: "json" });
 
                     if (!Array.isArray(usuarios)) {
                         usuarios = [];
