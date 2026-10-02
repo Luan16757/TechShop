@@ -174,12 +174,7 @@ async function clienteMeNoNetlify(event) {
 
     const usuarios =
         await store.get(
-            "usuarios",
-            {
-                type: "json",
-                consistency: "strong"
-            }
-        );
+            "usuarios", { type: "json" });
 
     const lista =
         Array.isArray(usuarios)
