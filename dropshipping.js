@@ -3,9 +3,7 @@
 
   const STORAGE_KEY = 'techshop_dropshipping_v1';
   const API_CANDIDATES = [
-    '/api/admin/pedidos',
-    '/api/pedidos/admin',
-    '/api/admin/orders'
+    '/api/pedidos'
   ];
 
   let pedidos = [];
@@ -141,8 +139,7 @@
     };
 
     const routes = [
-      `/api/admin/pedidos/${encodeURIComponent(order.numero)}/dropshipping`,
-      `/api/admin/pedido/${encodeURIComponent(order.numero)}/dropshipping`
+      `/api/pedidos/${encodeURIComponent(order.numero)}/dropshipping`
     ];
 
     let lastError = null;
@@ -191,7 +188,7 @@
     const s = String(status || '').toLowerCase();
     if (s.includes('entreg')) return 'entregue';
     if (s.includes('envi')) return 'enviado';
-    if (s.includes('compr')) return 'comprado';
+    if (s.includes('compr') || s.includes('prepar')) return 'comprado';
     if (s.includes('cancel')) return 'cancelado';
     return 'pago';
   }
