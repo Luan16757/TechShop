@@ -570,7 +570,7 @@ app.use(
    PRODUTOS
 ========================================================= */
 
-const produtos = [
+const produtosBase = [
 
     {
         id: 1,
@@ -725,6 +725,49 @@ const produtos = [
         descricao: "Kit com 5 cabos USB Tipo-C."
     }
 
+];
+
+
+let produtosCatalogo = [];
+
+try {
+    const produtosDataFile =
+        path.join(
+            __dirname,
+            "data",
+            "produtos.json"
+        );
+
+    if (fs.existsSync(produtosDataFile)) {
+        const dados =
+            JSON.parse(
+                fs.readFileSync(
+                    produtosDataFile,
+                    "utf8"
+                )
+            );
+
+        if (Array.isArray(dados)) {
+            produtosCatalogo = dados;
+        }
+    }
+} catch (erro) {
+    console.error(
+        "Erro carregando data/produtos.json:",
+        erro?.stack || erro
+    );
+}
+
+const produtos = [
+    ...produtosBase,
+    ...produtosCatalogo.filter(
+        produto =>
+            !produtosBase.some(
+                base =>
+                    String(base.id) ===
+                    String(produto?.id)
+            )
+    )
 ];
 
 /* =========================================================
@@ -2304,8 +2347,8 @@ function calcularCarrinho(
         const produto =
             produtos.find(
                 p =>
-                    Number(p.id) ===
-                    Number(item.id)
+                    String(p.id) ===
+                    String(item?.id ?? "").trim()
             );
 
         if (!produto) {
