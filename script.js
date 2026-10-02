@@ -575,6 +575,109 @@ async function fazerLogin(event) {
 }
 
 /* =========================================================
+   CADASTRO
+========================================================= */
+
+async function fazerCadastro(event) {
+    event?.preventDefault();
+
+    const nome = document.getElementById("cadastroNome")?.value.trim() || "";
+    const email = document.getElementById("cadastroEmail")?.value.trim() || "";
+    const telefone = document.getElementById("cadastroTelefone")?.value.trim() || "";
+    const cpf = document.getElementById("cadastroCpf")?.value.trim() || "";
+    const senha = document.getElementById("cadastroSenha")?.value || "";
+
+    if (!nome || !email || !telefone || !cpf || !senha) {
+        mostrarMensagem(cadastroMessage, "Preencha todos os campos.");
+        return;
+    }
+
+    if (senha.length < 6) {
+        mostrarMensagem(cadastroMessage, "A senha deve ter pelo menos 6 caracteres.");
+        return;
+    }
+
+    const botao = document.getElementById("cadastroButton");
+    if (botao) {
+        botao.disabled = true;
+        botao.textContent = "Criando conta...";
+    }
+
+    try {
+        const resposta = await fetch("/api/cliente/cadastro", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify({
+                nome,
+                email,
+                telefone,
+                cpf,
+                senha
+            })
+        });
+
+        const texto = await resposta.text();
+        let dados = {};
+
+        try {
+            dados = texto ? JSON.parse(texto) : {};
+        } catch {
+            throw new Error("O servidor não retornou uma resposta válida.");
+        }
+
+        if (!resposta.ok) {
+            throw new Error(
+                dados.erro ||
+                dados.mensagem ||
+                dados.error ||
+                "Não foi possível criar a conta."
+            );
+        }
+
+        clienteAtual =
+            dados.usuario ||
+            dados.cliente ||
+            dados.user ||
+            null;
+
+        if (!clienteAtual) {
+            throw new Error("Conta criada, mas os dados do cliente não foram retornados.");
+        }
+
+        mostrarMensagem(
+            cadastroMessage,
+            "Conta criada com sucesso!",
+            true
+        );
+
+        liberarLoja();
+        atualizarInterfaceCliente();
+
+        try {
+            await carregarProdutos();
+        } catch (erroProdutos) {
+            console.error("Erro ao carregar produtos depois do cadastro:", erroProdutos);
+        }
+
+    } catch (erro) {
+        console.error("ERRO CADASTRO:", erro);
+        mostrarMensagem(
+            cadastroMessage,
+            erro.message || "Não foi possível criar a conta."
+        );
+    } finally {
+        if (botao) {
+            botao.disabled = false;
+            botao.textContent = "Criar minha conta →";
+        }
+    }
+}
+
+/* =========================================================
    MOSTRAR LOGIN
 ========================================================= */
 
