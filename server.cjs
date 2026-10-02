@@ -1270,18 +1270,24 @@ app.post(
     "/api/cliente/cadastro",
     async (req, res) => {
 
+        let etapa = "iniciando";
+
         try {
 
             /*
              * Como essa rota foi retirada do middleware
              * automático, carregamos o Blobs aqui.
              */
+            etapa = IS_NETLIFY ? "carregando armazenamento" : "armazenamento local";
+
             if (IS_NETLIFY) {
 
                 await carregarDadosNetlify(
                     false
                 );
             }
+
+            etapa = "lendo dados do cadastro";
 
             const {
                 nome,
@@ -1303,6 +1309,8 @@ app.post(
                         "Preencha nome, e-mail e senha."
                 });
             }
+
+            etapa = "verificando e-mail";
 
             const emailNormalizado =
                 String(email)
@@ -1354,6 +1362,8 @@ app.post(
                 });
             }
 
+            etapa = "criando cliente";
+
             const usuario = {
 
                 id:
@@ -1388,6 +1398,8 @@ app.post(
 
             };
 
+            etapa = "salvando cliente";
+
             usuarios.push(
                 usuario
             );
@@ -1396,6 +1408,8 @@ app.post(
                 usuariosFile,
                 usuarios
             );
+
+            etapa = "criando sessão";
 
             const token =
                 criarToken(
@@ -1448,8 +1462,7 @@ app.post(
                     "Erro ao criar conta.",
 
                 detalhe:
-                    erro?.message ||
-                    "Erro interno."
+                    "Etapa: " + etapa + ". " + (erro?.message || "Erro interno.")
 
             });
         }
