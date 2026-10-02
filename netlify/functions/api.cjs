@@ -167,14 +167,10 @@ async function clienteMeNoNetlify(event) {
     const { getStore } =
         await import("@netlify/blobs");
 
-    const store =
-        getStore(
-            "techshop-data",
-            {
-                // A sessão deve encontrar imediatamente o usuário recém-cadastrado.
-                consistency: "strong"
-            }
-        );
+    const store = getStore({
+        name: "techshop-data",
+        consistency: "strong"
+    });
 
     const usuarios =
         await store.get(
