@@ -1,4 +1,5 @@
 const serverless = require("serverless-http");
+const { connectLambda } = require("@netlify/blobs");
 
 const app = require("../../server.cjs");
 
@@ -189,6 +190,10 @@ async function clienteMeNoNetlify(event) {
 const handlerExpress = serverless(app);
 
 exports.handler = async (event, context) => {
+    // Esta Function usa o modo Lambda/Functions v1. O Blobs precisa
+    // receber o contexto do evento antes de qualquer getStore().
+    connectLambda(event);
+
     try {
         const caminho =
             caminhoEvento(event);
