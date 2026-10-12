@@ -92,13 +92,9 @@ footer{padding:30px 20px;border-top:1px solid #202020;text-align:center;color:#6
 
 
 
-/* CORRECAO POPUP DIA DAS CRIANCAS: fechar e rolagem */
-.childrens-day{max-height:calc(100dvh - 32px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#ff7300 #171717;position:relative;padding-top:58px}
-.childrens-day::-webkit-scrollbar{width:8px}.childrens-day::-webkit-scrollbar-track{background:#171717;border-radius:8px}.childrens-day::-webkit-scrollbar-thumb{background:#ff7300;border-radius:8px}
-.childrens-day .campaign-close{position:sticky;float:right;top:0;z-index:20;margin-top:-43px;margin-right:-18px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;border:1px solid #555;border-radius:50%;background:#202020;color:#fff;font-size:27px;line-height:1;cursor:pointer;box-shadow:0 3px 14px #0008}
-.childrens-day .campaign-close:hover,.childrens-day .campaign-close:focus{background:#ff7300;border-color:#ff7300;outline:2px solid #fff;outline-offset:2px}
-.childrens-day.campaign-dismissed{display:none!important}
-@media(max-width:600px){.childrens-day{max-height:calc(100dvh - 20px);padding:54px 16px 22px}.childrens-day .campaign-close{margin-right:-5px;margin-top:-40px;width:36px;height:36px}}
+/* Campanha exibida como aba normal da loja, nunca como popup */
+#campaignSection{width:100%;}
+#campaignSection[hidden],main#inicio[hidden]{display:none!important;}
 
 /* PRODUTOS DA CAMPANHA */
 .campaign-products{width:min(1200px,calc(100% - 32px));margin:0 auto 42px}
@@ -575,8 +571,27 @@ body{
 <!-- SITE -->
 <div id="siteContent">
     <header>
+  <div class="header-inner">
+            <div class="logo">TECH<span>SHOP</span></div>
+
+            <nav class="main-nav" aria-label="Navegação principal">
+                <a href="#inicio">Início</a>
+                <a href="#produtos">Produtos</a>
+                <a href="#diaDasCriancas" class="nav-promo-link" onclick="abrirAbaCriancas(event)">🎁 Dia das Crianças</a>
+                <a href="#acompanharPedido">Pedidos</a>
+                <button class="nav-link-button" type="button" onclick="abrirInfoLoja()">Sobre a loja</button>
+                <button class="nav-link-button" type="button" onclick="abrirSuporte()">Suporte</button>
+            </nav>
+
+            <div class="header-actions">
+                <button id="accountButton" class="header-button" type="button" onclick="abrirConta()">👤 <span id="accountButtonText">Conta</span></button>
+                <button class="header-button" type="button" onclick="abrirCarrinho()">🛒 <span id="cartCount" style="display:none;">0</span></button>
+            </div>
+        </div>
+    </header>
+
+    <div id="campaignSection" hidden>
               <section id="diaDasCriancas" class="childrens-day" aria-labelledby="childrensDayTitle">
-            <button class="campaign-close" type="button" aria-label="Fechar promoção Dia das Crianças" title="Fechar promoção" onclick="fecharPromocaoCriancas(event)">×</button>
             <div class="campaign-kicker">🎉 CAMPANHA ESPECIAL • 12 DE OUTUBRO</div>
             <h2 id="childrensDayTitle">Dia das Crianças <span>TechShop</span></h2>
             <p>Presentes para surpreender os pequenos! Aproveite os preços especiais da campanha em brinquedos, roupas e presentes.</p>
@@ -607,44 +622,25 @@ body{
               <div class="campaign-product-info"><div class="campaign-product-type">Brinquedo • Movimento</div><h4>Patinete infantil 3 rodas com LED e cesta</h4><div class="campaign-product-price"><span class="campaign-offer-label">PREÇO PROMOCIONAL</span>R$ 119,90</div><p class="campaign-product-note">Cores podem variar conforme disponibilidade.</p><a class="campaign-product-link" href="https://produto.mercadolivre.com.br/MLB-6136595474-patinete-infantil-3-rodas-luz-led-com-cesto-musica-regulavel-_JM" target="_blank" rel="noopener">Consultar produto ↗</a></div>
             </article>
             <article class="campaign-product">
-              <div class="campaign-product-photo"><img src="https://http2.mlstatic.com/D_NQ_NP_2X_649976-MLA74210543450_012024-F.webp" alt="Brinquedo infantil; imagem ilustrativa do Mercado Livre" onerror="this.onerror=null;this.src='patinete-dia-criancas.png'" loading="lazy"></div>
-              <div class="campaign-product-info"><div class="campaign-product-type">Brinquedo educativo</div><h4>Quebra-cabeça infantil colorido</h4><div class="campaign-product-price"><span class="campaign-offer-label">PREÇO PROMOCIONAL</span>R$ 60,64</div><p class="campaign-product-note">Opção para brincar e aprender.</p><a class="campaign-product-link" href="https://lista.mercadolivre.com.br/quebra-cabeca-infantil" target="_blank" rel="noopener">Ver produto no Mercado Livre ↗</a></div>
+              <div class="campaign-product-photo"><img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=600&q=80" alt="Brinquedos infantis coloridos" loading="lazy"></div>
+              <div class="campaign-product-info"><div class="campaign-product-type">Brinquedo educativo</div><h4>Quebra-cabeça infantil colorido</h4><div class="campaign-product-price"><span class="campaign-offer-label">PREÇO PROMOCIONAL</span>R$ 60,64</div><p class="campaign-product-note">Opção para brincar e aprender.</p><a class="campaign-product-link" href="https://www.mercadolivre.com.br/c/brinquedos-e-hobbies" target="_blank" rel="noopener">Ver opções semelhantes ↗</a></div>
             </article>
             <article class="campaign-product">
-              <div class="campaign-product-photo"><img src="https://http2.mlstatic.com/D_NQ_NP_2X_649976-MLA74210543450_012024-F.webp" alt="Produto infantil; confira roupa no anúncio do Mercado Livre" onerror="this.onerror=null;this.src='patinete-dia-criancas.png'" loading="lazy"></div>
+              <div class="campaign-product-photo"><img src="https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?auto=format&fit=crop&w=600&q=80" alt="Roupas infantis" loading="lazy"></div>
               <div class="campaign-product-info"><div class="campaign-product-type">Moda infantil</div><h4>Conjunto infantil camiseta e short</h4><div class="campaign-product-price"><span class="campaign-offer-label">PREÇO PROMOCIONAL</span>R$ 58,80</div><p class="campaign-product-note">Confira tamanhos e estampas disponíveis.</p><a class="campaign-product-link" href="https://produto.mercadolivre.com.br/MLB-3844314153-conjunto-roupa-infantil-menino-masculino-vero-barato-1-ao-8-_JM" target="_blank" rel="noopener">Consultar produto ↗</a></div>
             </article>
             <article class="campaign-product">
               <div class="campaign-product-photo"><img src="https://http2.mlstatic.com/D_NQ_NP_2X_649976-MLA74210543450_012024-F.webp" alt="Boneca infantil" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="product-emoji" style="display:none">🪆</span></div>
-              <div class="campaign-product-info"><div class="campaign-product-type">Bonecas e faz de conta</div><h4>Boneca fashion infantil</h4><div class="campaign-product-price"><span class="campaign-offer-label">PREÇO PROMOCIONAL</span>R$ 79,90</div><p class="campaign-product-note">Modelo ilustrativo; confirme a versão antes da compra.</p><a class="campaign-product-link" href="https://lista.mercadolivre.com.br/boneca-infantil" target="_blank" rel="noopener">Ver produto no Mercado Livre ↗</a></div>
+              <div class="campaign-product-info"><div class="campaign-product-type">Bonecas e faz de conta</div><h4>Boneca fashion infantil</h4><div class="campaign-product-price"><span class="campaign-offer-label">PREÇO PROMOCIONAL</span>R$ 79,90</div><p class="campaign-product-note">Modelo ilustrativo; confirme a versão antes da compra.</p><a class="campaign-product-link" href="https://www.mercadolivre.com.br/c/brinquedos-e-hobbies" target="_blank" rel="noopener">Ver opções semelhantes ↗</a></div>
             </article>
             <article class="campaign-product">
-              <div class="campaign-product-photo"><img src="https://http2.mlstatic.com/D_NQ_NP_2X_649976-MLA74210543450_012024-F.webp" alt="Brinquedo infantil; confira modelos educativos no Mercado Livre" onerror="this.onerror=null;this.src='patinete-dia-criancas.png'" loading="lazy"></div>
-              <div class="campaign-product-info"><div class="campaign-product-type">Aprender brincando</div><h4>Tablet interativo infantil bilíngue</h4><div class="campaign-product-price"><span class="campaign-offer-label">PREÇO PROMOCIONAL</span>R$ 69,90</div><p class="campaign-product-note">Consulte modelo e disponibilidade antes de comprar.</p><a class="campaign-product-link" href="https://lista.mercadolivre.com.br/laptop-infantil-educativo" target="_blank" rel="noopener">Ver produto no Mercado Livre ↗</a></div>
+              <div class="campaign-product-photo"><img src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?auto=format&fit=crop&w=600&q=80" alt="Brinquedo educativo infantil" loading="lazy"></div>
+              <div class="campaign-product-info"><div class="campaign-product-type">Aprender brincando</div><h4>Tablet interativo infantil bilíngue</h4><div class="campaign-product-price"><span class="campaign-offer-label">PREÇO PROMOCIONAL</span>R$ 69,90</div><p class="campaign-product-note">Consulte modelo e disponibilidade antes de comprar.</p><a class="campaign-product-link" href="https://www.mercadolivre.com.br" target="_blank" rel="noopener">Consultar no Mercado Livre ↗</a></div>
             </article>
           </div>
           <p class="campaign-price-note">Preços promocionais da campanha TechShop. Consulte disponibilidade, opções de cores e tamanhos antes de finalizar a compra.</p>
         </section>
-
-
-  <div class="header-inner">
-            <div class="logo">TECH<span>SHOP</span></div>
-
-            <nav class="main-nav" aria-label="Navegação principal">
-                <a href="#inicio">Início</a>
-                <a href="#produtos">Produtos</a>
-                <a href="#diaDasCriancas" class="nav-promo-link">🎁 Dia das Crianças</a>
-                <a href="#acompanharPedido">Pedidos</a>
-                <button class="nav-link-button" type="button" onclick="abrirInfoLoja()">Sobre a loja</button>
-                <button class="nav-link-button" type="button" onclick="abrirSuporte()">Suporte</button>
-            </nav>
-
-            <div class="header-actions">
-                <button id="accountButton" class="header-button" type="button" onclick="abrirConta()">👤 <span id="accountButtonText">Conta</span></button>
-                <button class="header-button" type="button" onclick="abrirCarrinho()">🛒 <span id="cartCount" style="display:none;">0</span></button>
-            </div>
-        </div>
-    </header>
+    </div>
 
     <main id="inicio">
         <section class="hero">
@@ -883,14 +879,17 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){fecharInfoLoja();fe
 <script src="script.js"></script>
 
 <script>
-function fecharPromocaoCriancas(event){
-  if(event){event.preventDefault();event.stopPropagation();}
-  const campanha=document.getElementById('diaDasCriancas');
-  if(campanha){campanha.classList.add('campaign-dismissed');}
-  const produtos=document.querySelector('.campaign-products');
-  if(produtos){produtos.classList.add('campaign-dismissed');}
-  document.body.classList.remove('modal-open','no-scroll');
+function abrirAbaCriancas(event){
+  if(event){event.preventDefault();}
+  const area=document.getElementById('campaignSection');
+  if(!area)return;
+  area.hidden=false;
+  document.querySelector('main#inicio')?.setAttribute('hidden','');
+  area.scrollIntoView({behavior:'smooth',block:'start'});
 }
+// Mantém a campanha fora da tela inicial até o cliente clicar na aba.
+document.getElementById('campaignSection')?.setAttribute('hidden','');
+document.querySelectorAll('.main-nav a[href^="#"]:not(.nav-promo-link)').forEach(link=>link.addEventListener('click',()=>{document.getElementById('campaignSection')?.setAttribute('hidden','');document.querySelector('main#inicio')?.removeAttribute('hidden');}));
 </script>
 </body>
 </html>
