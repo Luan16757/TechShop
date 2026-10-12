@@ -93,7 +93,7 @@ footer{padding:30px 20px;border-top:1px solid #202020;text-align:center;color:#6
 
 
 /* Campanha exibida como aba normal da loja, nunca como popup */
-#campaignSection{width:100%;}
+#campaignSection{width:100%;position:relative;z-index:1;clear:both;}
 #campaignSection[hidden],main#inicio[hidden]{display:none!important;}
 
 /* PRODUTOS DA CAMPANHA */
@@ -879,17 +879,36 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){fecharInfoLoja();fe
 <script src="script.js"></script>
 
 <script>
-function abrirAbaCriancas(event){
-  if(event){event.preventDefault();}
-  const area=document.getElementById('campaignSection');
-  if(!area)return;
-  area.hidden=false;
-  document.querySelector('main#inicio')?.setAttribute('hidden','');
-  area.scrollIntoView({behavior:'smooth',block:'start'});
-}
-// Mantém a campanha fora da tela inicial até o cliente clicar na aba.
-document.getElementById('campaignSection')?.setAttribute('hidden','');
-document.querySelectorAll('.main-nav a[href^="#"]:not(.nav-promo-link)').forEach(link=>link.addEventListener('click',()=>{document.getElementById('campaignSection')?.setAttribute('hidden','');document.querySelector('main#inicio')?.removeAttribute('hidden');}));
+(function(){
+  const area = document.getElementById('campaignSection');
+  const main = document.querySelector('main#inicio');
+  function mostrarLoja(){
+    if(area){ area.hidden = true; area.style.display = 'none'; }
+    if(main){ main.hidden = false; main.style.display = ''; }
+  }
+  window.abrirAbaCriancas = function(event){
+    if(event) event.preventDefault();
+    if(!area || !main) return;
+    // Inline display is intentional: it prevents older stylesheet rules from showing both views.
+    main.hidden = true;
+    main.style.display = 'none';
+    area.hidden = false;
+    area.style.display = 'block';
+    area.scrollIntoView({behavior:'smooth', block:'start'});
+    if(location.hash !== '#diaDasCriancas') history.replaceState(null, '', '#diaDasCriancas');
+  };
+  if(area){ area.hidden = true; area.style.display = 'none'; }
+  document.querySelectorAll('.main-nav a[href^="#"]:not(.nav-promo-link)').forEach(link=>{
+    link.addEventListener('click', function(){ mostrarLoja(); });
+  });
+  // The logo/home/product links should return to the regular store view.
+  document.querySelectorAll('a[href="#inicio"], a[href="#produtos"]').forEach(link=>{
+    link.addEventListener('click', function(){ mostrarLoja(); });
+  });
+  window.addEventListener('hashchange', function(){
+    if(location.hash !== '#diaDasCriancas') mostrarLoja();
+  });
+})();
 </script>
 </body>
 </html>
