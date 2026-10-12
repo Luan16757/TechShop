@@ -1,7 +1,25 @@
 const serverless = require("serverless-http");
-const { connectLambda } = require("@netlify/blobs");
 
 const app = require("../../server.cjs");
+
+let connectLambdaPromise = null;
+
+async function prepararBlobs(event) {
+    if (!connectLambdaPromise) {
+        connectLambdaPromise = import("@netlify/blobs")
+            .then(({ connectLambda }) => connectLambda)
+            .catch((erro) => {
+                connectLambdaPromise = null;
+                throw erro;
+            });
+    }
+
+    const connectLambda = await connectLambdaPromise;
+
+    if (event && typeof connectLambda === "function") {
+        connectLambda(event);
+    }
+}
 
 function obterCookie(event, nome) {
     const cookieHeader =
@@ -149,11 +167,21 @@ async function clienteMeNoNetlify(event) {
     const { getStore } =
         await import("@netlify/blobs");
 
-    const store = getStore("techshop-data");
+    const store =
+        getStore(
+            "techshop-data",
+            {
+                consistency: "eventual"
+            }
+        );
 
     const usuarios =
         await store.get(
-            "usuarios", { type: "json" });
+            "usuarios",
+            {
+                type: "json"
+            }
+        );
 
     const lista =
         Array.isArray(usuarios)
@@ -190,11 +218,9 @@ async function clienteMeNoNetlify(event) {
 const handlerExpress = serverless(app);
 
 exports.handler = async (event, context) => {
-    // Esta Function usa o modo Lambda/Functions v1. O Blobs precisa
-    // receber o contexto do evento antes de qualquer getStore().
-    connectLambda(event);
-
     try {
+        await prepararBlobs(event);
+
         const caminho =
             caminhoEvento(event);
 

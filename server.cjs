@@ -54,12 +54,7 @@ const ADMIN_PASSWORD =
     process.env.ADMIN_PASSWORD || "123456";
 
 const MP_ACCESS_TOKEN =
-    String(
-        process.env.MP_ACCESS_TOKEN ||
-        process.env.MERCADOPAGO_ACCESS_TOKEN ||
-        process.env.MERCADO_PAGO_ACCESS_TOKEN ||
-        ""
-    ).trim();
+    process.env.MP_ACCESS_TOKEN || "";
 
 const WHATSAPP_ACCESS_TOKEN =
     process.env.WHATSAPP_ACCESS_TOKEN || "";
@@ -274,7 +269,9 @@ async function obterNetlifyStore() {
             ""
         ).trim();
 
-    const opcoes = {};
+    const opcoes = {
+        consistency: "eventual"
+    };
 
     /*
      * Se o contexto do Netlify existir,
@@ -295,10 +292,10 @@ async function obterNetlifyStore() {
     void contexto;
 
     netlifyStore =
-        getStore({
-            name: "techshop-data",
-            ...opcoes
-        });
+        getStore(
+            "techshop-data",
+            opcoes
+        );
 
     return netlifyStore;
 }
@@ -328,11 +325,19 @@ async function carregarDadosNetlify(
 
                 let usuarios =
                     await store.get(
-                        USUARIOS_KEY, { type: "json" });
+                        USUARIOS_KEY,
+                        {
+                            type: "json"
+                        }
+                    );
 
                 let pedidos =
                     await store.get(
-                        PEDIDOS_KEY, { type: "json" });
+                        PEDIDOS_KEY,
+                        {
+                            type: "json"
+                        }
+                    );
 
                 if (
                     !Array.isArray(
@@ -340,9 +345,11 @@ async function carregarDadosNetlify(
                     )
                 ) {
 
-                    // No Netlify, o filesystem da Function e somente leitura.
-                    // Comecamos o armazenamento do Blobs vazio sem tocar em usuarios.json.
-                    usuarios = [];
+                    usuarios =
+                        lerJSONLocal(
+                            usuariosFile,
+                            []
+                        );
 
                     await store.setJSON(
                         USUARIOS_KEY,
@@ -356,8 +363,11 @@ async function carregarDadosNetlify(
                     )
                 ) {
 
-                    // No Netlify, o filesystem da Function e somente leitura.
-                    pedidos = [];
+                    pedidos =
+                        lerJSONLocal(
+                            pedidosFile,
+                            []
+                        );
 
                     await store.setJSON(
                         PEDIDOS_KEY,
@@ -721,42 +731,43 @@ const produtosBase = [
 let produtosCatalogo = [];
 
 try {
-    /*
-     * Importacao estatica para que o esbuild inclua o catalogo
-     * dentro da Netlify Function. O acesso via fs pode falhar
-     * no ambiente empacotado da Function.
-     */
-    const produtosJsonBundled =
-        require("./data/produtos.json");
+    const produtosDataFile =
+        path.join(
+            __dirname,
+            "data",
+            "produtos.json"
+        );
 
-    if (Array.isArray(produtosJsonBundled)) {
-        produtosCatalogo =
-            produtosJsonBundled;
+    if (fs.existsSync(produtosDataFile)) {
+        const dados =
+            JSON.parse(
+                fs.readFileSync(
+                    produtosDataFile,
+                    "utf8"
+                )
+            );
+
+        if (Array.isArray(dados)) {
+            produtosCatalogo = dados;
+        }
     }
 } catch (erro) {
     console.error(
-        "Erro carregando catalogo de produtos:",
+        "Erro carregando data/produtos.json:",
         erro?.stack || erro
     );
 }
 
-/* =========================================================
-   CATALOGO FINAL
-========================================================= */
-
-const idsProdutosBase = new Set(
-    produtosBase.map(produto => String(produto.id))
-);
-
 const produtos = [
     ...produtosBase,
-    ...produtosCatalogo.filter(produto => {
-        if (!produto || produto.id === undefined || produto.id === null) {
-            return false;
-        }
-
-        return !idsProdutosBase.has(String(produto.id));
-    })
+    ...produtosCatalogo.filter(
+        produto =>
+            !produtosBase.some(
+                base =>
+                    String(base.id) ===
+                    String(produto?.id)
+            )
+    )
 ];
 
 /* =========================================================
@@ -1264,24 +1275,18 @@ app.post(
     "/api/cliente/cadastro",
     async (req, res) => {
 
-        let etapa = "iniciando";
-
         try {
 
             /*
              * Como essa rota foi retirada do middleware
              * automático, carregamos o Blobs aqui.
              */
-            etapa = IS_NETLIFY ? "carregando armazenamento" : "armazenamento local";
-
             if (IS_NETLIFY) {
 
                 await carregarDadosNetlify(
                     false
                 );
             }
-
-            etapa = "lendo dados do cadastro";
 
             const {
                 nome,
@@ -1303,8 +1308,6 @@ app.post(
                         "Preencha nome, e-mail e senha."
                 });
             }
-
-            etapa = "verificando e-mail";
 
             const emailNormalizado =
                 String(email)
@@ -1356,8 +1359,6 @@ app.post(
                 });
             }
 
-            etapa = "criando cliente";
-
             const usuario = {
 
                 id:
@@ -1392,8 +1393,6 @@ app.post(
 
             };
 
-            etapa = "salvando cliente";
-
             usuarios.push(
                 usuario
             );
@@ -1402,8 +1401,6 @@ app.post(
                 usuariosFile,
                 usuarios
             );
-
-            etapa = "criando sessão";
 
             const token =
                 criarToken(
@@ -1456,7 +1453,8 @@ app.post(
                     "Erro ao criar conta.",
 
                 detalhe:
-                    "Etapa: " + etapa + ". " + (erro?.message || "Erro interno.")
+                    erro?.message ||
+                    "Erro interno."
 
             });
         }
@@ -1502,24 +1500,13 @@ app.post(
              * O middleware automático foi removido
              * dessa rota. Aqui carregamos os dados.
              */
-            let usuarios = [];
-
             if (IS_NETLIFY) {
 
                 try {
 
-                    const store =
-                        await obterNetlifyStore();
-
-                    usuarios =
-                        await store.get(
-                            USUARIOS_KEY, { type: "json" });
-
-                    if (!Array.isArray(usuarios)) {
-                        usuarios = [];
-                    }
-
-                    usuariosCache = usuarios;
+                    await carregarDadosNetlify(
+                        false
+                    );
 
                 } catch (erro) {
 
@@ -1539,16 +1526,13 @@ app.post(
 
                     });
                 }
-
-            } else {
-
-                usuarios =
-                    lerJSON(
-                        usuariosFile,
-                        []
-                    );
-
             }
+
+            let usuarios =
+                lerJSON(
+                    usuariosFile,
+                    []
+                );
 
             let usuario =
                 usuarios.find(
@@ -1560,6 +1544,46 @@ app.post(
                             .toLowerCase() ===
                         emailNormalizado
                 );
+
+            /*
+             * Segunda tentativa.
+             */
+            if (
+                !usuario &&
+                IS_NETLIFY
+            ) {
+
+                try {
+
+                    await carregarDadosNetlify(
+                        true
+                    );
+
+                    usuarios =
+                        lerJSON(
+                            usuariosFile,
+                            []
+                        );
+
+                    usuario =
+                        usuarios.find(
+                            u =>
+                                String(
+                                    u.email || ""
+                                )
+                                    .trim()
+                                    .toLowerCase() ===
+                                emailNormalizado
+                        );
+
+                } catch (erro) {
+
+                    console.error(
+                        "ERRO AO ATUALIZAR USUÁRIOS:",
+                        erro?.stack || erro
+                    );
+                }
+            }
 
             if (!usuario) {
 
@@ -3271,62 +3295,6 @@ async function enviarEmailPagamentoAprovado(
     };
 }
 
-function normalizarCPF(cpf) {
-
-    const numero =
-        String(cpf || "")
-            .replace(/\D/g, "");
-
-    if (
-        numero.length !== 11 ||
-        /^(\d)\1{10}$/.test(numero)
-    ) {
-        return "";
-    }
-
-    let soma = 0;
-
-    for (let i = 0; i < 9; i++) {
-        soma += Number(numero[i]) * (10 - i);
-    }
-
-    let primeiroDigito =
-        (soma * 10) % 11;
-
-    if (primeiroDigito === 10) {
-        primeiroDigito = 0;
-    }
-
-    if (
-        primeiroDigito !==
-        Number(numero[9])
-    ) {
-        return "";
-    }
-
-    soma = 0;
-
-    for (let i = 0; i < 10; i++) {
-        soma += Number(numero[i]) * (11 - i);
-    }
-
-    let segundoDigito =
-        (soma * 10) % 11;
-
-    if (segundoDigito === 10) {
-        segundoDigito = 0;
-    }
-
-    if (
-        segundoDigito !==
-        Number(numero[10])
-    ) {
-        return "";
-    }
-
-    return numero;
-}
-
 /* =========================================================
    MERCADO PAGO PIX
 ========================================================= */
@@ -3362,79 +3330,11 @@ app.post(
                     itens
                 );
 
-            /*
-             * O frete nunca deve ser confiado ao navegador.
-             * O cliente pode alterar freteInformado pelo DevTools.
-             * Recalculamos aqui com base no historico real do cliente
-             * e no tipo de entrega selecionado.
-             */
-            const pedidosCliente =
-                lerJSON(
-                    pedidosFile,
-                    []
-                ).filter(
-                    pedido =>
-                        pedido?.usuarioId ===
-                        req.usuario.id
-                );
-
-            const primeiraCompra =
-                pedidosCliente.length === 0;
-
-            const tipoEntrega =
-                String(
-                    entrega.tipoEntrega || "normal"
-                ).toLowerCase() === "rapida"
-                    ? "rapida"
-                    : "normal";
-
-            const freteBase =
-                primeiraCompra
-                    ? 0
-                    : 5;
-
-            const frete =
-                Number(
-                    (
-                        freteBase +
-                        (tipoEntrega === "rapida" ? 10 : 0)
-                    ).toFixed(2)
-                );
-
-            const totalPagamento =
-                Number(
-                    (
-                        carrinho.total +
-                        frete
-                    ).toFixed(2)
-                );
-
             const numero =
                 gerarNumeroPedido();
 
             const email =
                 req.usuario.email;
-
-            /*
-             * Prioriza o CPF informado no checkout.
-             * O usuário pode ter um CPF antigo/inválido salvo
-             * no cadastro, então não usamos esse valor cegamente.
-             */
-            const cpfPagamento =
-                normalizarCPF(
-                    req.body?.cliente?.cpf ||
-                    req.body?.entrega?.cpf
-                ) ||
-                normalizarCPF(
-                    req.usuario.cpf
-                );
-
-            if (!cpfPagamento) {
-                return res.status(400).json({
-                    erro:
-                        "CPF inválido. Informe um CPF válido com 11 números para gerar o Pix."
-                });
-            }
 
             const pagamentoResponse =
                 await fetch(
@@ -3461,7 +3361,7 @@ app.post(
                             JSON.stringify({
 
                                 transaction_amount:
-                                    totalPagamento,
+                                    carrinho.total,
 
                                 description:
                                     `Pedido TECHSHOP ${numero}`,
@@ -3473,15 +3373,26 @@ app.post(
 
                                     email,
 
-                                    identification: {
+                                    ...(req.usuario.cpf
+                                        ? {
 
-                                        type:
-                                            "CPF",
+                                            identification: {
 
-                                        number:
-                                            cpfPagamento
+                                                type:
+                                                    "CPF",
 
-                                    }
+                                                number:
+                                                    String(
+                                                        req.usuario.cpf
+                                                    ).replace(
+                                                        /\D/g,
+                                                        ""
+                                                    )
+
+                                            }
+
+                                        }
+                                        : {})
 
                                 },
 
@@ -3493,96 +3404,23 @@ app.post(
                     }
                 );
 
-            const textoPagamento =
-                await pagamentoResponse.text();
-
-            let pagamento = {};
-
-            try {
-                pagamento =
-                    textoPagamento
-                        ? JSON.parse(
-                            textoPagamento
-                        )
-                        : {};
-            } catch {
-                pagamento = {
-                    message:
-                        textoPagamento ||
-                        "Resposta inválida do Mercado Pago."
-                };
-            }
+            const pagamento =
+                await pagamentoResponse
+                    .json();
 
             if (
                 !pagamentoResponse.ok
             ) {
 
-                const causas =
-                    Array.isArray(
-                        pagamento?.cause
-                    )
-                        ? pagamento.cause
-                            .map(
-                                causa =>
-                                    causa?.description ||
-                                    causa?.code
-                            )
-                            .filter(Boolean)
-                            .join(" | ")
-                        : "";
-
-                const mensagemMercadoPago =
-                    pagamento?.message ||
-                    pagamento?.error ||
-                    causas ||
-                    "Mercado Pago recusou a criação do Pix (HTTP " +
-                    pagamentoResponse.status +
-                    ").";
-
                 console.error(
                     "Erro Mercado Pago:",
-                    {
-                        status:
-                            pagamentoResponse.status,
-                        resposta:
-                            pagamento
-                    }
-                );
-
-                return res.status(502).json({
-
-                    erro:
-                        mensagemMercadoPago,
-
-                    detalhe:
-                        pagamento,
-
-                    statusMercadoPago:
-                        pagamentoResponse.status
-
-                });
-            }
-
-            const transactionData =
-                pagamento
-                    ?.point_of_interaction
-                    ?.transaction_data ||
-                {};
-
-            if (
-                !pagamento?.id ||
-                !transactionData?.qr_code
-            ) {
-
-                console.error(
-                    "Mercado Pago respondeu sem QR Code:",
                     pagamento
                 );
 
-                return res.status(502).json({
+                return res.status(500).json({
 
                     erro:
-                        "O Mercado Pago não retornou os dados do QR Code Pix.",
+                        "Não foi possível gerar o Pix.",
 
                     detalhe:
                         pagamento
@@ -3615,7 +3453,7 @@ app.post(
                         req.usuario.telefone,
 
                     cpf:
-                        cpfPagamento
+                        req.usuario.cpf
 
                 },
 
@@ -3672,13 +3510,7 @@ app.post(
                     carrinho.produtos,
 
                 valorTotal:
-                    totalPagamento,
-
-                subtotalProdutos:
                     carrinho.total,
-
-                frete:
-                    frete,
 
                 status:
                     "Aguardando pagamento",
@@ -3695,18 +3527,24 @@ app.post(
                         "pix",
 
                     qrCode:
-                        transactionData
-                            .qr_code ||
+                        pagamento
+                            .point_of_interaction
+                            ?.transaction_data
+                            ?.qr_code ||
                         "",
 
                     qrCodeBase64:
-                        transactionData
-                            .qr_code_base64 ||
+                        pagamento
+                            .point_of_interaction
+                            ?.transaction_data
+                            ?.qr_code_base64 ||
                         "",
 
                     ticketUrl:
-                        transactionData
-                            .ticket_url ||
+                        pagamento
+                            .point_of_interaction
+                            ?.transaction_data
+                            ?.ticket_url ||
                         ""
 
                 },
@@ -3817,7 +3655,7 @@ app.post(
                 numero,
 
                 valor:
-                    totalPagamento,
+                    carrinho.total,
 
                 pedido,
 
@@ -4282,7 +4120,7 @@ if (
                 `Imagens: ${pastaImagens}`
             );
             console.log(
-                `Produtos: ${produtosBase.length + produtosCatalogo.length}`
+                `Produtos: ${produtos.length}`
             );
             console.log(
                 "========================================"

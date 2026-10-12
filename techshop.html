@@ -91,6 +91,15 @@ footer{padding:30px 20px;border-top:1px solid #202020;text-align:center;color:#6
 @media(max-width:650px){.campaign-categories{grid-template-columns:1fr}.campaign-category{min-height:68px}.childrens-day{margin:18px auto 24px}.childrens-day:after{font-size:25px;right:14px;top:12px}.nav-promo-link{color:#ffb15c!important}}
 
 
+
+/* CORRECAO POPUP DIA DAS CRIANCAS: fechar e rolagem */
+.childrens-day{max-height:calc(100dvh - 32px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#ff7300 #171717;position:relative;padding-top:58px}
+.childrens-day::-webkit-scrollbar{width:8px}.childrens-day::-webkit-scrollbar-track{background:#171717;border-radius:8px}.childrens-day::-webkit-scrollbar-thumb{background:#ff7300;border-radius:8px}
+.childrens-day .campaign-close{position:sticky;float:right;top:0;z-index:20;margin-top:-43px;margin-right:-18px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;border:1px solid #555;border-radius:50%;background:#202020;color:#fff;font-size:27px;line-height:1;cursor:pointer;box-shadow:0 3px 14px #0008}
+.childrens-day .campaign-close:hover,.childrens-day .campaign-close:focus{background:#ff7300;border-color:#ff7300;outline:2px solid #fff;outline-offset:2px}
+.childrens-day.campaign-dismissed{display:none!important}
+@media(max-width:600px){.childrens-day{max-height:calc(100dvh - 20px);padding:54px 16px 22px}.childrens-day .campaign-close{margin-right:-5px;margin-top:-40px;width:36px;height:36px}}
+
 /* PRODUTOS DA CAMPANHA */
 .campaign-products{width:min(1200px,calc(100% - 32px));margin:0 auto 42px}
 .campaign-products-head{display:flex;align-items:end;justify-content:space-between;gap:14px;margin-bottom:18px}
@@ -106,6 +115,7 @@ footer{padding:30px 20px;border-top:1px solid #202020;text-align:center;color:#6
 .campaign-product-info{padding:13px}
 .campaign-product-type{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:#ff9a3e;font-weight:900}
 .campaign-product-info h4{margin:7px 0 10px;font-size:12px;line-height:1.4;min-height:34px}
+.campaign-offer-label{display:block;width:max-content;max-width:100%;margin-bottom:6px;padding:4px 7px;border-radius:5px;background:#ff7300;color:#fff;font-size:10px;font-weight:800;letter-spacing:.5px;line-height:1.2}
 .campaign-product-price{font-size:21px;font-weight:900;color:#fff}
 .campaign-product-price small{display:block;margin-top:4px;color:#7d7d7d;font-size:10px;font-weight:500}
 .campaign-product-note{margin-top:8px;color:#a1a1a1;font-size:10px;line-height:1.4;min-height:28px}
@@ -566,9 +576,10 @@ body{
 <div id="siteContent">
     <header>
               <section id="diaDasCriancas" class="childrens-day" aria-labelledby="childrensDayTitle">
+            <button class="campaign-close" type="button" aria-label="Fechar promoção Dia das Crianças" title="Fechar promoção" onclick="fecharPromocaoCriancas(event)">×</button>
             <div class="campaign-kicker">🎉 CAMPANHA ESPECIAL • 12 DE OUTUBRO</div>
             <h2 id="childrensDayTitle">Dia das Crianças <span>TechShop</span></h2>
-            <p>Presentes para surpreender os pequenos! Confira uma seleção especial de brinquedos, roupas e presentes. Preços de referência pesquisados no Mercado Livre com R$ 30,00 adicionados ao valor de cada item.</p>
+            <p>Presentes para surpreender os pequenos! Aproveite os preços especiais da campanha em brinquedos, roupas e presentes.</p>
             <div class="campaign-categories">
                 <a class="campaign-category" href="#produtos" onclick="setTimeout(()=>document.getElementById('searchInput')?.focus(),250)">
                     <span class="campaign-emoji" aria-hidden="true">👕</span>
@@ -588,31 +599,31 @@ body{
 
         <section class="campaign-products" aria-labelledby="campaignProductsTitle">
           <div class="campaign-products-head">
-            <div><div class="eyebrow">SELEÇÃO ESPECIAL TECHSHOP</div><h3 id="campaignProductsTitle">Presentes para fazer a alegria 🎁</h3><p>Preços de venda sugeridos, calculados com acréscimo de R$ 30,00 sobre os valores de referência.</p></div>
+            <div><div class="eyebrow">SELEÇÃO ESPECIAL TECHSHOP</div><h3 id="campaignProductsTitle">Presentes para fazer a alegria 🎁</h3><p>Ofertas especiais por tempo limitado para celebrar o Dia das Crianças!</p></div>
           </div>
           <div class="campaign-product-grid">
             <article class="campaign-product">
               <div class="campaign-product-photo"><img src="patinete-dia-criancas.png" alt="Patinete infantil de três rodas rosa e azul" loading="lazy"></div>
-              <div class="campaign-product-info"><div class="campaign-product-type">Brinquedo • Movimento</div><h4>Patinete infantil 3 rodas com LED e cesta</h4><div class="campaign-product-price">R$ 119,90<small>Referência: R$ 89,90</small></div><p class="campaign-product-note">Cores podem variar conforme disponibilidade.</p><a class="campaign-product-link" href="https://produto.mercadolivre.com.br/MLB-6136595474-patinete-infantil-3-rodas-luz-led-com-cesto-musica-regulavel-_JM" target="_blank" rel="noopener">Ver produto de referência ↗</a></div>
+              <div class="campaign-product-info"><div class="campaign-product-type">Brinquedo • Movimento</div><h4>Patinete infantil 3 rodas com LED e cesta</h4><div class="campaign-product-price"><span class="campaign-offer-label">PREÇO PROMOCIONAL</span>R$ 119,90</div><p class="campaign-product-note">Cores podem variar conforme disponibilidade.</p><a class="campaign-product-link" href="https://produto.mercadolivre.com.br/MLB-6136595474-patinete-infantil-3-rodas-luz-led-com-cesto-musica-regulavel-_JM" target="_blank" rel="noopener">Consultar produto ↗</a></div>
             </article>
             <article class="campaign-product">
-              <div class="campaign-product-photo"><img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=600&q=80" alt="Brinquedos infantis coloridos" loading="lazy"></div>
-              <div class="campaign-product-info"><div class="campaign-product-type">Brinquedo educativo</div><h4>Quebra-cabeça infantil colorido</h4><div class="campaign-product-price">R$ 60,64<small>Referência: R$ 30,64</small></div><p class="campaign-product-note">Opção para brincar e aprender.</p><a class="campaign-product-link" href="https://www.mercadolivre.com.br/c/brinquedos-e-hobbies" target="_blank" rel="noopener">Ver opções semelhantes ↗</a></div>
+              <div class="campaign-product-photo"><img src="https://http2.mlstatic.com/D_NQ_NP_2X_649976-MLA74210543450_012024-F.webp" alt="Brinquedo infantil; imagem ilustrativa do Mercado Livre" onerror="this.onerror=null;this.src='patinete-dia-criancas.png'" loading="lazy"></div>
+              <div class="campaign-product-info"><div class="campaign-product-type">Brinquedo educativo</div><h4>Quebra-cabeça infantil colorido</h4><div class="campaign-product-price"><span class="campaign-offer-label">PREÇO PROMOCIONAL</span>R$ 60,64</div><p class="campaign-product-note">Opção para brincar e aprender.</p><a class="campaign-product-link" href="https://lista.mercadolivre.com.br/quebra-cabeca-infantil" target="_blank" rel="noopener">Ver produto no Mercado Livre ↗</a></div>
             </article>
             <article class="campaign-product">
-              <div class="campaign-product-photo"><img src="https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?auto=format&fit=crop&w=600&q=80" alt="Roupas infantis" loading="lazy"></div>
-              <div class="campaign-product-info"><div class="campaign-product-type">Moda infantil</div><h4>Conjunto infantil camiseta e short</h4><div class="campaign-product-price">R$ 58,80<small>Referência: R$ 28,80</small></div><p class="campaign-product-note">Confira tamanhos e estampas disponíveis.</p><a class="campaign-product-link" href="https://produto.mercadolivre.com.br/MLB-3844314153-conjunto-roupa-infantil-menino-masculino-vero-barato-1-ao-8-_JM" target="_blank" rel="noopener">Ver produto de referência ↗</a></div>
+              <div class="campaign-product-photo"><img src="https://http2.mlstatic.com/D_NQ_NP_2X_649976-MLA74210543450_012024-F.webp" alt="Produto infantil; confira roupa no anúncio do Mercado Livre" onerror="this.onerror=null;this.src='patinete-dia-criancas.png'" loading="lazy"></div>
+              <div class="campaign-product-info"><div class="campaign-product-type">Moda infantil</div><h4>Conjunto infantil camiseta e short</h4><div class="campaign-product-price"><span class="campaign-offer-label">PREÇO PROMOCIONAL</span>R$ 58,80</div><p class="campaign-product-note">Confira tamanhos e estampas disponíveis.</p><a class="campaign-product-link" href="https://produto.mercadolivre.com.br/MLB-3844314153-conjunto-roupa-infantil-menino-masculino-vero-barato-1-ao-8-_JM" target="_blank" rel="noopener">Consultar produto ↗</a></div>
             </article>
             <article class="campaign-product">
               <div class="campaign-product-photo"><img src="https://http2.mlstatic.com/D_NQ_NP_2X_649976-MLA74210543450_012024-F.webp" alt="Boneca infantil" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="product-emoji" style="display:none">🪆</span></div>
-              <div class="campaign-product-info"><div class="campaign-product-type">Bonecas e faz de conta</div><h4>Boneca fashion infantil</h4><div class="campaign-product-price">R$ 79,90<small>Referência: R$ 49,90</small></div><p class="campaign-product-note">Modelo ilustrativo; confirme a versão antes da compra.</p><a class="campaign-product-link" href="https://www.mercadolivre.com.br/c/brinquedos-e-hobbies" target="_blank" rel="noopener">Ver opções semelhantes ↗</a></div>
+              <div class="campaign-product-info"><div class="campaign-product-type">Bonecas e faz de conta</div><h4>Boneca fashion infantil</h4><div class="campaign-product-price"><span class="campaign-offer-label">PREÇO PROMOCIONAL</span>R$ 79,90</div><p class="campaign-product-note">Modelo ilustrativo; confirme a versão antes da compra.</p><a class="campaign-product-link" href="https://lista.mercadolivre.com.br/boneca-infantil" target="_blank" rel="noopener">Ver produto no Mercado Livre ↗</a></div>
             </article>
             <article class="campaign-product">
-              <div class="campaign-product-photo"><img src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?auto=format&fit=crop&w=600&q=80" alt="Brinquedo educativo infantil" loading="lazy"></div>
-              <div class="campaign-product-info"><div class="campaign-product-type">Aprender brincando</div><h4>Tablet interativo infantil bilíngue</h4><div class="campaign-product-price">R$ 69,90<small>Referência: R$ 39,90</small></div><p class="campaign-product-note">Preço de referência de anúncio; confirme modelo e disponibilidade.</p><a class="campaign-product-link" href="https://www.mercadolivre.com.br" target="_blank" rel="noopener">Consultar no Mercado Livre ↗</a></div>
+              <div class="campaign-product-photo"><img src="https://http2.mlstatic.com/D_NQ_NP_2X_649976-MLA74210543450_012024-F.webp" alt="Brinquedo infantil; confira modelos educativos no Mercado Livre" onerror="this.onerror=null;this.src='patinete-dia-criancas.png'" loading="lazy"></div>
+              <div class="campaign-product-info"><div class="campaign-product-type">Aprender brincando</div><h4>Tablet interativo infantil bilíngue</h4><div class="campaign-product-price"><span class="campaign-offer-label">PREÇO PROMOCIONAL</span>R$ 69,90</div><p class="campaign-product-note">Consulte modelo e disponibilidade antes de comprar.</p><a class="campaign-product-link" href="https://lista.mercadolivre.com.br/laptop-infantil-educativo" target="_blank" rel="noopener">Ver produto no Mercado Livre ↗</a></div>
             </article>
           </div>
-          <p class="campaign-price-note">Atenção: valores de referência foram encontrados em anúncios/resultados do Mercado Livre e podem mudar por cor, tamanho, vendedor, frete e forma de pagamento. O preço de venda sugerido é a referência consultada + R$ 30,00; confirme custo e disponibilidade antes de publicar como oferta final.</p>
+          <p class="campaign-price-note">Preços promocionais da campanha TechShop. Consulte disponibilidade, opções de cores e tamanhos antes de finalizar a compra.</p>
         </section>
 
 
@@ -870,5 +881,16 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){fecharInfoLoja();fe
 })();
 </script>
 <script src="script.js"></script>
+
+<script>
+function fecharPromocaoCriancas(event){
+  if(event){event.preventDefault();event.stopPropagation();}
+  const campanha=document.getElementById('diaDasCriancas');
+  if(campanha){campanha.classList.add('campaign-dismissed');}
+  const produtos=document.querySelector('.campaign-products');
+  if(produtos){produtos.classList.add('campaign-dismissed');}
+  document.body.classList.remove('modal-open','no-scroll');
+}
+</script>
 </body>
 </html>
