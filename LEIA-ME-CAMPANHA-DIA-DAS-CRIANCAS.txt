@@ -1,0 +1,13 @@
+TECHSHOP — CAMPANHA DIA DAS CRIANÇAS
+
+O que foi corrigido:
+- Mantido o arquivo principal techshop.html.
+- Incluída a imagem do patinete no diretório raiz do site.
+- Atualizados os preços sugeridos para referência + R$ 30,00.
+- Produtos exibidos na seção promocional: patinete, quebra-cabeça, conjunto infantil, boneca e tablet infantil.
+
+Preços de referência consultados em resultados/anúncios do Mercado Livre podem mudar. Confira o preço, estoque, frete, variação e segurança do produto antes de publicar ofertas.
+
+IMPORTANTE: estes cards são uma vitrine promocional no HTML. Eles não cadastram automaticamente os produtos na API/estoque nem integram o botão ao carrinho atual. Isso precisa de uma integração separada para venda real.
+
+Para publicar, envie os arquivos do ZIP ao seu repositório/projeto mantendo a estrutura de pastas existente.

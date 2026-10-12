@@ -71,6 +71,50 @@ footer{padding:30px 20px;border-top:1px solid #202020;text-align:center;color:#6
 @media (max-width:600px){#cartToast{right:10px;left:10px;bottom:10px;min-width:0;max-width:none}#cartToast button{padding:0 8px;font-size:9px}#cartModal{align-items:flex-end}#cartModal .modal-content{width:100vw;height:min(92vh,760px);max-height:92vh;align-self:flex-end;border-radius:22px 22px 0 0}.cart-drawer-actions{grid-template-columns:1fr}.pix-copy{flex-direction:column}.pix-copy button{height:42px}}
 @media (max-width:430px){.auth-box{padding:21px 16px}.auth-security-row{grid-template-columns:1fr}.hero-actions{display:grid;grid-template-columns:1fr 1fr}.hero-primary,.hero-secondary{width:100%;padding:0 10px}.product-image{height:128px}.product-image img{max-width:92px!important;max-height:92px!important}.product-info{padding:9px}.product-name{font-size:10.5px}.product-description{font-size:8.5px;line-height:1.4}.product-price{font-size:16px}.buy-btn{height:36px;font-size:9.5px}.modal{padding:10px}.modal-content{padding:16px}.account-modal-content{padding:0}.account-modal-header{padding:18px}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+
+/* CAMPANHA DIA DAS CRIANÇAS */
+.nav-promo-link{color:#ffb15c!important;font-weight:800!important}
+.childrens-day{position:relative;isolation:isolate;overflow:hidden;margin:26px auto 34px;padding:clamp(22px,4vw,44px);width:min(1200px,calc(100% - 32px));border:1px solid rgba(255,115,0,.38);border-radius:24px;background:radial-gradient(circle at 90% 15%,rgba(255,190,55,.17),transparent 28%),radial-gradient(circle at 8% 100%,rgba(255,115,0,.16),transparent 35%),linear-gradient(120deg,#17100b,#101014 62%,#1b120a)}
+.childrens-day:after{content:"🎈  🧸  🎁";position:absolute;right:22px;top:18px;font-size:clamp(24px,4vw,42px);opacity:.7;transform:rotate(5deg);z-index:-1}
+.childrens-day .campaign-kicker{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:999px;background:rgba(255,115,0,.16);border:1px solid rgba(255,115,0,.4);color:#ffb15c;font-size:11px;font-weight:800;letter-spacing:1px}
+.childrens-day h2{margin:16px 0 10px;font-size:clamp(28px,5vw,46px);line-height:1.05;max-width:720px}
+.childrens-day h2 span{color:#ff8a26}
+.childrens-day p{max-width:680px;color:#c9c3bd;line-height:1.65;font-size:15px}
+.campaign-categories{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:25px}
+.campaign-category{display:flex;align-items:center;gap:12px;min-height:82px;padding:15px;border:1px solid #34302b;border-radius:16px;background:rgba(255,255,255,.035);text-decoration:none;transition:transform .2s,border-color .2s}
+.campaign-category:hover{transform:translateY(-3px);border-color:#ff7300}
+.campaign-category .campaign-emoji{font-size:30px}
+.campaign-category strong{display:block;font-size:14px;margin-bottom:4px}
+.campaign-category small{display:block;color:#a8a29e;font-size:11px;line-height:1.4}
+.campaign-cta{display:inline-flex;align-items:center;justify-content:center;margin-top:22px;padding:13px 18px;border-radius:12px;background:#ff7300;color:#fff;text-decoration:none;font-weight:800;font-size:13px}
+.campaign-cta:hover{background:#ff8a26}
+@media(max-width:650px){.campaign-categories{grid-template-columns:1fr}.campaign-category{min-height:68px}.childrens-day{margin:18px auto 24px}.childrens-day:after{font-size:25px;right:14px;top:12px}.nav-promo-link{color:#ffb15c!important}}
+
+
+/* PRODUTOS DA CAMPANHA */
+.campaign-products{width:min(1200px,calc(100% - 32px));margin:0 auto 42px}
+.campaign-products-head{display:flex;align-items:end;justify-content:space-between;gap:14px;margin-bottom:18px}
+.campaign-products-head .eyebrow{color:#ff8a26;font-size:10px;font-weight:900;letter-spacing:1.5px;margin-bottom:7px}
+.campaign-products-head h3{font-size:clamp(23px,3vw,32px);letter-spacing:-.6px}
+.campaign-products-head p{margin-top:7px;color:#999;font-size:12px;line-height:1.5}
+.campaign-product-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:13px}
+.campaign-product{overflow:hidden;border:1px solid #292929;border-radius:16px;background:linear-gradient(155deg,#151515,#0d0d0d);transition:transform .2s,border-color .2s}
+.campaign-product:hover{transform:translateY(-4px);border-color:rgba(255,115,0,.6)}
+.campaign-product-photo{height:175px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:10px}
+.campaign-product-photo img{width:100%;height:100%;object-fit:contain}
+.campaign-product-photo .product-emoji{font-size:74px}
+.campaign-product-info{padding:13px}
+.campaign-product-type{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:#ff9a3e;font-weight:900}
+.campaign-product-info h4{margin:7px 0 10px;font-size:12px;line-height:1.4;min-height:34px}
+.campaign-product-price{font-size:21px;font-weight:900;color:#fff}
+.campaign-product-price small{display:block;margin-top:4px;color:#7d7d7d;font-size:10px;font-weight:500}
+.campaign-product-note{margin-top:8px;color:#a1a1a1;font-size:10px;line-height:1.4;min-height:28px}
+.campaign-product-link{display:flex;align-items:center;justify-content:center;margin-top:12px;min-height:38px;border-radius:9px;background:#ff7300;color:#fff;text-decoration:none;font-size:10px;font-weight:900}
+.campaign-product-link:hover{background:#ff8a26}
+.campaign-price-note{margin-top:14px;color:#777;font-size:10px;line-height:1.5}
+@media(max-width:1000px){.campaign-product-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:650px){.campaign-product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.campaign-product-photo{height:145px}.campaign-product-info{padding:10px}.campaign-product-info h4{font-size:11px}.campaign-product-price{font-size:18px}.campaign-products-head{align-items:flex-start;flex-direction:column}}
+
 </style>
 
 <style id="techshop-layout-fix">
@@ -521,12 +565,64 @@ body{
 <!-- SITE -->
 <div id="siteContent">
     <header>
-        <div class="header-inner">
+              <section id="diaDasCriancas" class="childrens-day" aria-labelledby="childrensDayTitle">
+            <div class="campaign-kicker">🎉 CAMPANHA ESPECIAL • 12 DE OUTUBRO</div>
+            <h2 id="childrensDayTitle">Dia das Crianças <span>TechShop</span></h2>
+            <p>Presentes para surpreender os pequenos! Confira uma seleção especial de brinquedos, roupas e presentes. Preços de referência pesquisados no Mercado Livre com R$ 30,00 adicionados ao valor de cada item.</p>
+            <div class="campaign-categories">
+                <a class="campaign-category" href="#produtos" onclick="setTimeout(()=>document.getElementById('searchInput')?.focus(),250)">
+                    <span class="campaign-emoji" aria-hidden="true">👕</span>
+                    <span><strong>Roupas infantis</strong><small>Camisetas, conjuntos e acessórios</small></span>
+                </a>
+                <a class="campaign-category" href="#produtos" onclick="setTimeout(()=>document.getElementById('searchInput')?.focus(),250)">
+                    <span class="campaign-emoji" aria-hidden="true">🧸</span>
+                    <span><strong>Brinquedos</strong><small>Carrinhos, bonecas e diversão</small></span>
+                </a>
+                <a class="campaign-category" href="#produtos" onclick="setTimeout(()=>document.getElementById('searchInput')?.focus(),250)">
+                    <span class="campaign-emoji" aria-hidden="true">🎒</span>
+                    <span><strong>Presentes e acessórios</strong><small>Mochilas, fones e muito mais</small></span>
+                </a>
+            </div>
+            <a class="campaign-cta" href="#produtos">Ver produtos da loja ↓</a>
+        </section>
+
+        <section class="campaign-products" aria-labelledby="campaignProductsTitle">
+          <div class="campaign-products-head">
+            <div><div class="eyebrow">SELEÇÃO ESPECIAL TECHSHOP</div><h3 id="campaignProductsTitle">Presentes para fazer a alegria 🎁</h3><p>Preços de venda sugeridos, calculados com acréscimo de R$ 30,00 sobre os valores de referência.</p></div>
+          </div>
+          <div class="campaign-product-grid">
+            <article class="campaign-product">
+              <div class="campaign-product-photo"><img src="patinete-dia-criancas.png" alt="Patinete infantil de três rodas rosa e azul" loading="lazy"></div>
+              <div class="campaign-product-info"><div class="campaign-product-type">Brinquedo • Movimento</div><h4>Patinete infantil 3 rodas com LED e cesta</h4><div class="campaign-product-price">R$ 119,90<small>Referência: R$ 89,90</small></div><p class="campaign-product-note">Cores podem variar conforme disponibilidade.</p><a class="campaign-product-link" href="https://produto.mercadolivre.com.br/MLB-6136595474-patinete-infantil-3-rodas-luz-led-com-cesto-musica-regulavel-_JM" target="_blank" rel="noopener">Ver produto de referência ↗</a></div>
+            </article>
+            <article class="campaign-product">
+              <div class="campaign-product-photo"><img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=600&q=80" alt="Brinquedos infantis coloridos" loading="lazy"></div>
+              <div class="campaign-product-info"><div class="campaign-product-type">Brinquedo educativo</div><h4>Quebra-cabeça infantil colorido</h4><div class="campaign-product-price">R$ 60,64<small>Referência: R$ 30,64</small></div><p class="campaign-product-note">Opção para brincar e aprender.</p><a class="campaign-product-link" href="https://www.mercadolivre.com.br/c/brinquedos-e-hobbies" target="_blank" rel="noopener">Ver opções semelhantes ↗</a></div>
+            </article>
+            <article class="campaign-product">
+              <div class="campaign-product-photo"><img src="https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?auto=format&fit=crop&w=600&q=80" alt="Roupas infantis" loading="lazy"></div>
+              <div class="campaign-product-info"><div class="campaign-product-type">Moda infantil</div><h4>Conjunto infantil camiseta e short</h4><div class="campaign-product-price">R$ 58,80<small>Referência: R$ 28,80</small></div><p class="campaign-product-note">Confira tamanhos e estampas disponíveis.</p><a class="campaign-product-link" href="https://produto.mercadolivre.com.br/MLB-3844314153-conjunto-roupa-infantil-menino-masculino-vero-barato-1-ao-8-_JM" target="_blank" rel="noopener">Ver produto de referência ↗</a></div>
+            </article>
+            <article class="campaign-product">
+              <div class="campaign-product-photo"><img src="https://http2.mlstatic.com/D_NQ_NP_2X_649976-MLA74210543450_012024-F.webp" alt="Boneca infantil" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="product-emoji" style="display:none">🪆</span></div>
+              <div class="campaign-product-info"><div class="campaign-product-type">Bonecas e faz de conta</div><h4>Boneca fashion infantil</h4><div class="campaign-product-price">R$ 79,90<small>Referência: R$ 49,90</small></div><p class="campaign-product-note">Modelo ilustrativo; confirme a versão antes da compra.</p><a class="campaign-product-link" href="https://www.mercadolivre.com.br/c/brinquedos-e-hobbies" target="_blank" rel="noopener">Ver opções semelhantes ↗</a></div>
+            </article>
+            <article class="campaign-product">
+              <div class="campaign-product-photo"><img src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?auto=format&fit=crop&w=600&q=80" alt="Brinquedo educativo infantil" loading="lazy"></div>
+              <div class="campaign-product-info"><div class="campaign-product-type">Aprender brincando</div><h4>Tablet interativo infantil bilíngue</h4><div class="campaign-product-price">R$ 69,90<small>Referência: R$ 39,90</small></div><p class="campaign-product-note">Preço de referência de anúncio; confirme modelo e disponibilidade.</p><a class="campaign-product-link" href="https://www.mercadolivre.com.br" target="_blank" rel="noopener">Consultar no Mercado Livre ↗</a></div>
+            </article>
+          </div>
+          <p class="campaign-price-note">Atenção: valores de referência foram encontrados em anúncios/resultados do Mercado Livre e podem mudar por cor, tamanho, vendedor, frete e forma de pagamento. O preço de venda sugerido é a referência consultada + R$ 30,00; confirme custo e disponibilidade antes de publicar como oferta final.</p>
+        </section>
+
+
+  <div class="header-inner">
             <div class="logo">TECH<span>SHOP</span></div>
 
             <nav class="main-nav" aria-label="Navegação principal">
                 <a href="#inicio">Início</a>
                 <a href="#produtos">Produtos</a>
+                <a href="#diaDasCriancas" class="nav-promo-link">🎁 Dia das Crianças</a>
                 <a href="#acompanharPedido">Pedidos</a>
                 <button class="nav-link-button" type="button" onclick="abrirInfoLoja()">Sobre a loja</button>
                 <button class="nav-link-button" type="button" onclick="abrirSuporte()">Suporte</button>
@@ -587,6 +683,7 @@ body{
                 <button class="filtro-produto" data-categoria="Energia" type="button">Energia</button>
                 <button class="filtro-produto" data-categoria="Informática" type="button">Informática</button>
                 <button class="filtro-produto" data-categoria="Gamer" type="button">Gamer</button>
+                <button class="filtro-produto" data-categoria="Dia das Crianças" type="button">🎁 Dia das Crianças</button>
             </div>
 
             <div id="products"></div>
