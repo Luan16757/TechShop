@@ -496,6 +496,7 @@ async function fazerLogin(event) {
 
         if (!resposta.ok) {
             throw new Error(
+                dados.detalhe ||
                 dados.erro ||
                 dados.mensagem ||
                 dados.error ||
@@ -570,6 +571,110 @@ async function fazerLogin(event) {
             botao.disabled = false;
             botao.textContent =
                 "Entrar na TECHSHOP →";
+        }
+    }
+}
+
+/* =========================================================
+   CADASTRO
+========================================================= */
+
+async function fazerCadastro(event) {
+    event?.preventDefault();
+
+    const nome = document.getElementById("cadastroNome")?.value.trim() || "";
+    const email = document.getElementById("cadastroEmail")?.value.trim() || "";
+    const telefone = document.getElementById("cadastroTelefone")?.value.trim() || "";
+    const cpf = document.getElementById("cadastroCpf")?.value.trim() || "";
+    const senha = document.getElementById("cadastroSenha")?.value || "";
+
+    if (!nome || !email || !telefone || !cpf || !senha) {
+        mostrarMensagem(cadastroMessage, "Preencha todos os campos.");
+        return;
+    }
+
+    if (senha.length < 6) {
+        mostrarMensagem(cadastroMessage, "A senha deve ter pelo menos 6 caracteres.");
+        return;
+    }
+
+    const botao = document.getElementById("cadastroButton");
+    if (botao) {
+        botao.disabled = true;
+        botao.textContent = "Criando conta...";
+    }
+
+    try {
+        const resposta = await fetch("/api/cliente/cadastro", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify({
+                nome,
+                email,
+                telefone,
+                cpf,
+                senha
+            })
+        });
+
+        const texto = await resposta.text();
+        let dados = {};
+
+        try {
+            dados = texto ? JSON.parse(texto) : {};
+        } catch {
+            throw new Error("O servidor não retornou uma resposta válida.");
+        }
+
+        if (!resposta.ok) {
+            throw new Error(
+                dados.detalhe ||
+                dados.erro ||
+                dados.mensagem ||
+                dados.error ||
+                "Não foi possível criar a conta."
+            );
+        }
+
+        clienteAtual =
+            dados.usuario ||
+            dados.cliente ||
+            dados.user ||
+            null;
+
+        if (!clienteAtual) {
+            throw new Error("Conta criada, mas os dados do cliente não foram retornados.");
+        }
+
+        mostrarMensagem(
+            cadastroMessage,
+            "Conta criada com sucesso!",
+            true
+        );
+
+        liberarLoja();
+        atualizarInterfaceCliente();
+
+        try {
+            await carregarProdutos();
+        } catch (erroProdutos) {
+            console.error("Erro ao carregar produtos depois do cadastro:", erroProdutos);
+        }
+
+    } catch (erro) {
+        console.error("ERRO CADASTRO:", erro);
+        mostrarMensagem(
+            cadastroMessage,
+            erro.message || "Não foi possível criar a conta."
+        );
+    } finally {
+        if (botao) {
+            botao.disabled = false;
+            botao.textContent = "Criar minha conta →";
         }
     }
 }
@@ -2856,6 +2961,58 @@ function atualizarResumoCheckout() {
     `;
 }
 
+function cpfEhValido(cpf) {
+
+    const numero =
+        String(cpf || "")
+            .replace(/\D/g, "");
+
+    if (
+        numero.length !== 11 ||
+        /^(\d)\1{10}$/.test(numero)
+    ) {
+        return false;
+    }
+
+    let soma = 0;
+
+    for (let i = 0; i < 9; i++) {
+        soma += Number(numero[i]) * (10 - i);
+    }
+
+    let primeiroDigito =
+        (soma * 10) % 11;
+
+    if (primeiroDigito === 10) {
+        primeiroDigito = 0;
+    }
+
+    if (
+        primeiroDigito !==
+        Number(numero[9])
+    ) {
+        return false;
+    }
+
+    soma = 0;
+
+    for (let i = 0; i < 10; i++) {
+        soma += Number(numero[i]) * (11 - i);
+    }
+
+    let segundoDigito =
+        (soma * 10) % 11;
+
+    if (segundoDigito === 10) {
+        segundoDigito = 0;
+    }
+
+    return (
+        segundoDigito ===
+        Number(numero[10])
+    );
+}
+
 /* =========================================================
    FINALIZAR PEDIDO / PIX
    ========================================================= */
@@ -2926,9 +3083,9 @@ async function finalizarPedido(event) {
         return;
     }
 
-    if (cpfNumeros.length !== 11) {
+    if (!cpfEhValido(cpfNumeros)) {
         alert(
-            "Digite um CPF válido com 11 números."
+            "Digite um CPF válido para continuar."
         );
         return;
     }
